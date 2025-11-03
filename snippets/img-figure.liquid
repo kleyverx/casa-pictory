@@ -1,0 +1,14 @@
+{% if _img != blank %}
+<figure class="{{ _wrapper_class }}" style="background-color:{{ _color_bg | default:'#ccc' }};">
+    {% if _width == blank and _height == blank %}
+    <img src="{{ _img | img_url: 'master' }}" alt="{{ _alt | default: 'image' }}"/>
+    {% else %}
+    {% assign _img_url = _width | append: 'x' | append: _height %}
+    <img src="{{ _img | img_url: _img_url, scale: 2 }}" alt="{{ _alt | default: 'image' }}" width="{{ _width }}" height="{{ _height }}"/>
+    {% endif %}
+</figure>
+{% else %}
+<figure style="background-color:{{ _color_bg | default:'#ccc' }};min-height:{{ _height | default: '250' }}px">
+    {% if _has_placeholder == true %}{{ 'image' | placeholder_svg_tag }}{% endif %}  
+</figure>
+{% endif %}

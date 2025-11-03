@@ -1,0 +1,38 @@
+{%- assign formId = 'ContactForm' -%}
+{% form 'contact', id: formId , class: "pl-lg-2 contact-form-wrapper" %}
+<h4 class="fs-3 font-weight-slight-bold">{{ "contact.form.heading" | t }}</h4>
+<div class="row mb-2">
+    <div class="col-md-4 mb-4">
+        <input class="form-control" type="text" id="{{ formId }}-name" name="contact[{{ 'contact.form.name' | t }}]"  placeholder="{{ 'contact.form.name' | t }}" required value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}">
+    </div>
+    <div class="col-md-4 mb-4">
+        <input placeholder="{{'contact.form.phone' | t}}" type="text" id="phone" class="form-control" value="{{form.phone}}" name="contact[phone]" />
+    </div>
+    <div class="col-md-4 mb-4">
+        <input
+        type="email"
+        id="{{ formId }}-email"
+        class="form-control  {%- if form.errors contains 'email' -%}input--error{%- endif -%}"
+        name="contact[email]"
+        placeholder="{{ 'contact.form.email' | t }}"
+        autocorrect="off"
+        autocapitalize="off"
+        value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+        aria-required="true"
+        >
+        {%- if form.errors contains 'email' -%}
+            <span id="{{ formId}}-email-error" class="input-error-message">
+            <span class="visually-hidden">{{ 'general.accessibility.error' | t }} </span>
+            {% include 'icon-error' %}
+            <span>{{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}.</span>
+            </span>
+        {%- endif -%}
+    </div>
+    <div class="col-12 mb-4">
+        <textarea class="form-control" id="{{ formId }}-message" name="contact[{{ 'contact.form.message' | t }}]" placeholder="{{ 'contact.form.message' | t }}">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+    </div>
+</div>
+<button type="submit" class="btn btn-dark">
+    {{ 'contact.form.submit' | t }}
+</button>
+{% endform %}

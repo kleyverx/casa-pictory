@@ -1,0 +1,12 @@
+
+<div class="social-links">
+    {% assign _socials = 'facebook,twitter,linkedin,pinterest,instagram,tumblr,snapchat,youtube,vimeo' | split: ',' %}
+    {% assign _social_classparts = 'facebook-f,twitter,linkedin,pinterest,instagram,tumblr,snapchat,youtube,vimeo' | split: ',' %}  
+    {% for _social in _socials %}
+    {% assign _setting_name = 'social_' | append: _social | append: '_link' %}
+    {% assign _social_link = settings[_setting_name] %}
+    {% if _social_link != blank %}
+    <a href="{{ _social_link }}" class="social-link social-{{ _social }} fab fa-{{ _social_classparts[forloop.index0] }} border-transparent"></a>
+    {% endif %}
+    {% endfor %}
+</div>

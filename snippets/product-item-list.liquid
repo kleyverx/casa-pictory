@@ -1,0 +1,148 @@
+<div class="product product-list {% if product.available  %}product-item-wrapper{% endif %}">
+    <figure class="product-visual" style="--aspect-ratio:{{ aspect_ratio }}">
+        <a href="{{ product.url }}">
+            <img src="{{ preview_image | img_url: '280x315', scale: 2 }}" alt="product" width="280"
+                height="315">
+        </a>
+        
+        {%- render 'product-labels', product: product, current_variant: current_variant  -%}
+        {%- if available == true %}
+        <div class="product-cta-upright">
+            {%- if settings.enable_wishlist and settings.wishlist_page != blank -%}
+            {%- assign wishlist = customer.metafields.wishlist | json -%}
+            <a href="/pages/{{ settings.wishlist_page }}" class="btn-product-icon btn-wishlist addwishlist_btn{% if wishlist contains product.id %} added{% endif %}" {% unless wishlist contains product.id %} data-added="{{ 'wishlist.general.view_wishlist' | t | escape }}" data-product_handle="{{ product.handle }}" data-product_id="{{ product.id }}" data-customer_id="{{ customer.id }}" data-shop_domain="{{ shop.permanent_domain }}"{% endunless %}>
+                <i class="">{% render 'icon-wishlist' %}</i>
+            </a>
+            {%- endif -%}
+            {%- if settings.enable_compare -%}
+            <a href="javascript:void(0);" class="btn-product-icon btn-compare addcompare_btn" 
+            data-tooltip="{{ 'compare.general.add_to_compare' | t | escape }}" 
+            data-added="{{ 'compare.general.view_compare' | t | escape }}" data-product_id="{{ product.id }}">
+                <i class="">{% render 'icon-compare' %}</i>
+                
+            </a>
+            {%- endif -%}
+          {% if collection.metafields.custom.direct_add_to_cart %}
+          
+            <a href="{{ product.url }}" 
+               
+                class="btn-product-icon" 
+                title="{{ 'products.product.quick_view' | t }}">
+                <i class="">{% render 'icon-search' %}</i>
+            </a>
+          {% else %}
+          {% if settings.show_quickview %}
+          <a href="{{ product.url | within: collection  }}" 
+             data-handle="{{product.handle}}"
+             class="btn-product-icon btn-quickview" 
+             {% if product_type !=  "list" %} data-tposition="left"{% endif %}
+             data-tooltip="{{ 'products.product.quick_view' | t }}">
+            <i class="">{% render 'icon-search', _wrapper_class: 'stroke-protected' %}</i>
+          </a>
+          {% endif %}
+          {% endif %}
+        </div>
+        {% endif -%}
+        <div class="product-cta">
+            {%- if available == true %}
+            <a href="{{ product.url }}" class="btn-product btn-cart" 
+                {% if collection.metafields.custom.direct_add_to_cart %}
+               	{% else %}
+                {% if product.available  %}data-add-to-cart{% endif %} 
+               {% endif %}
+                title="{% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}">
+                <i class="mr-1"></i>
+                {% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}
+            </a>
+            {% endif -%}
+        </div>
+    </figure>
+    <div class="product-details">
+        <div class="product-cat">
+            <a href="{{ product.collections[0].url }}">{{ product.collections[0].title }}</a>
+        </div>
+        <h3 class="product-name">
+            <a href="{{ product.url }}">{{ product.title }}</a>
+        </h3>
+        <div product-id="{{ product.id }}" product-handle="{{ product.handle }}" class="alireviews-review-star-rating"></div>
+      <div class="loox-rating" data-id="{{ product.id }}" data-rating="{{ product.metafields.loox.avg_rating }}" data-raters="{{ product.metafields.loox.num_reviews }}"></div>
+        <div class="product-price">
+            {% if available == false %}
+            <span class="old-price">{{ 'products.product.sold_out' | t }}</span>
+            {% else %}
+            {% if compare_at_price > price %}
+            <ins class="new-price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </ins>
+            <del class="old-price">{{ compare_at_price | money }}</del>
+            {% else %}
+            <span class="price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </span>
+            {% endif %}
+            {% endif %}
+        </div>
+        
+        {%- if settings.enable_review -%}
+        <div class="ratings-wrapper">
+            <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+        </div>
+        {%- endif -%}
+        <p class="product-short-desc">{{ product.description | strip_html | truncate: 219 }}
+        </p>
+        
+        {% if product.available  %}
+        <form class="product__form_card" action="/cart/add" method="post" enctype="multipart/form-data" data-product-form>
+            {% unless product.has_only_default_variant %}
+                <div class="product-form__controls-group">
+                    {% for option in product.options_with_values %}
+                    {% assign swatch_option = false %}
+                    {%- assign downcased_option = option.name | downcase -%}
+                    {% if downcased_option contains 'color' and settings.product_swatch_color %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if downcased_option contains 'size' and settings.product_swatch_size %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if swatch_option %}
+                        {% render 'product-options-swatch', product: product, option:option, function: "item", option_drop: option, forloop: forloop, option_index: forloop.index, option_index0: forloop.index0, sign: sign %}
+                    {% else %} 
+                    <div class="product-form product-variations product-form__item" >
+                        <label class="hide label--hidden" for="{{singleOptionSelector}}">
+                            <b class="product_section-title">{{ option.name }}</b>
+                        </label>
+                        <div class="select-box">
+                            <select class="form-control {{singleOptionSelector}} single-option-selector single-option-selector-card product-form__input w-100" data-index="option{{ forloop.index }}">
+                                {% for value in option.values %}
+                                <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            {% endunless %}
+            <select class="hide product__form_variant_id" name="id">
+                {%- for variant in product.variants -%}
+                <option {% if variant == current_variant %}selected="selected" {% endif %} value="{{variant.id}}">{{variant.title | escape}} - {{variant.price | money}}</option>
+                {%- endfor -%}
+            </select>
+            <input type="hidden" name="quantity" value="1" />
+        </form>
+        {% unless product == empty %}
+        <script type="application/json" class="ProductItemJson">
+            {{ product | json }}
+        </script>
+        {% endunless %}
+        {% endif %}
+    </div>
+</div>

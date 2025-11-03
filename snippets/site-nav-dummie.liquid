@@ -1,0 +1,40 @@
+<nav class="{% if custom_class != blank %}{{ custom_class }}{% else %}main-nav{% endif%}{% if wrapper_class != blank %} {{ wrapper_class }}{% endif %}">
+    <ul class="menu{% if menu_wrapper_class != blank %} {{ menu_wrapper_class }}{% endif %}">
+        <li class="active">
+            <a href="#">Sample item</a>
+        </li>
+        {% unless one_item_menu == true %}
+        <li class="submenu">
+            <a href="#">Sample item with subs</a>
+            <ul>
+                <li><a href="#">Sub item</a></li>
+                <li><a href="#">Sub item</a></li>
+                <li>
+                    <a href="#">Sub item</a>
+                    <ul>
+                        <li><a href="#">Sub item level 2</a></li>
+                        <li><a href="#">Sub item level 2</a></li>
+                        <li><a href="#">Sub item level 2</a></li>
+                        <li><a href="#">Sub item level 2</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Sub item</a>
+                    <ul>
+                        <li><a href="#">Sub item level 2</a></li>
+                        <li><a href="#">Sub item level 2</a></li>
+                        <li><a href="#">Sub item level 2</a></li>
+                        <li><a href="#">Sub item level 2</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">Sample item</a>
+        </li>
+        <li>
+            <a href="#">Sample item</a>
+        </li>
+        {% endunless %}
+    </ul>
+</nav>

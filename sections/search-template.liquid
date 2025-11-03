@@ -1,0 +1,60 @@
+{% paginate search.results by 12 %}
+<div class="container loaded">
+  <ul class="breadcrumb mt-4">
+    <li><a href="{{ shop.url }}">{{ 'homepage.general.title' | t }}</a></li>
+    <li>{{ 'general.search.results_with_count' | t: terms: search.terms, count: search.results_count }}</li>
+  </ul>
+  <div class="page-search-content pt-6 pb-6">  
+    <h1 class="title text-left mb-0">{{ 'general.search.results_with_count' | t: terms: search.terms, count: search.results_count }}</h1>
+    <div class="row main-content-wrap gutter-lg">
+      <div class="col-lg-12 main-content">
+        {% if search.performed and search.results_count == 0 %}
+          <div class="rte search--no-results-found mt-3">
+            <p>{{ 'general.search.no_results' | t }}</p>
+          </div>
+        {% endif %}
+        <div class="page-search-form header-search mt-3 mb-8">
+          <form action="/search"  class="input-wrapper input-wrapper-inline input-wrapper-round">
+            <input type="text" name="q" placeholder="{{ 'general.search.placeholder' | t }}" role="combobox" class="form-control mr-2" value="{{ search.terms | escape }}"/>
+            <button class="btn btn-primary btn-sm btn-icon-right fs-1p4" data-search-form-submit type="submit"><i class="icon-search-3 mr-1"></i> {{ 'general.search.submit' | t }}</button>
+          </form>
+        </div>
+        {% if search.performed %}
+        <div class="row cols-2 cols-sm-3 cols-md-4 product-wrapper">
+          {% for item in search.results %}
+          <div class="product-wrap">
+          {% if item.object_type == 'article' %}
+            <div class="product shadow-visual ">
+              <figure class="product-visual" style="--aspect-ratio:3/4">
+                <a href="{{ item.url }}">
+                    <img src="{{ item.image | img_url: '280x315', scale: 2 }}" alt="product" width="280" height="315">
+                </a>
+              </figure>
+              <div class="product-details">
+                  <h3 class="product-name">
+                      <a href="{{ item.url }}">{{ item.title }}</a>
+                  </h3>
+              </div>
+            </div>
+          {% elsif item.object_type == 'page' %}
+
+          {% else %}
+          {% include 'product-item', product:item, sign: 'search-page' %}
+          {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% include 'pagination', paginate: paginate, layout_type: 'grid' %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endpaginate %}
+
+{% schema %}
+{
+    "name": "Search Page"
+}
+{% endschema %}
+  

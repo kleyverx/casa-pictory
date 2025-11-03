@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+
+<head>{% render 'pagefly-head' %}
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="{{ settings.color_primary }}">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TFX2Z6W');</script>
+<!-- End Google Tag Manager -->
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.shopify.com" crossorigin>
+  <link rel="preconnect" href="https://monorail-edge.shopifysvc.com">
+
+  {% if settings.enforce_googlefont_heading == false %}
+  {%- assign first_font = settings.type_first_font -%}
+  {% else %}
+  <link href="https://fonts.googleapis.com/css2?family={{settings.enforce_googlefont_heading_name}}:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+  {% endif %}
+
+  {% if settings.enforce_googlefont_body == false %}
+  {%- assign second_font = settings.type_second_font -%}
+  {% else %}
+  {% if settings.enforce_googlefont_heading_name != settings.enforce_googlefont_body_name %}
+  <link href="https://fonts.googleapis.com/css2?family={{settings.enforce_googlefont_body_name}}:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+  {% endif %}
+  {% endif %}
+  
+  {%- assign third_font = settings.type_third_font -%}
+
+  {% if settings.enforce_googlefont_body == false %}
+  {%- assign second_font_bolder = second_font | font_modify: 'weight', 'bolder' -%}
+  {%- assign second_font_bold = second_font | font_modify: 'weight', 'bold' -%}
+  {%- assign second_font_italic = second_font | font_modify: 'style', 'italic' -%}
+  {%- assign second_font_bold_italic = second_font_bold | font_modify: 'style', 'italic' -%}
+  {% endif %}
+
+  <link rel="preload" href="{{ 'base.css' | asset_url }}" as="style">
+  {% if settings.enforce_googlefont_heading == false %}
+  <link rel="preload" as="font" href="{{ first_font | font_url }}" type="font/woff2" crossorigin>
+  {% endif %}
+  {% if settings.enforce_googlefont_body == false %}
+  <link rel="preload" as="font" href="{{ second_font | font_url }}" type="font/woff2" crossorigin>
+  <link rel="preload" as="font" href="{{ second_font_bold | font_url }}" type="font/woff2" crossorigin>
+  {% endif %}
+  <link rel="preload" as="font" href="{{ third_font | font_url }}" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ 'lazysizes.js' | asset_url }}" as="script">
+  <link rel="preload" href="{{ 'theme.js' | asset_url }}" as="script">
+
+  {%- if canonical_url != blank  -%}
+    <link rel="canonical" href="{{ canonical_url }}">
+  {%- endif -%}
+
+  {%- if settings.favicon != blank -%}
+    <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+  {%- endif -%}
+
+  {%- capture seo_title -%}
+    {%- if request.page_type == 'search' and search.performed == true -%}
+      {{ 'general.search.heading' | t: count: search.results_count }}: {{ 'general.search.results_with_count' | t: terms: search.terms, count: search.results_count }}
+    {%- else -%}
+      {{ page_title }}
+    {%- endif -%}
+    {%- if current_tags -%}
+      {%- assign meta_tags = current_tags | join: ', ' -%} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags -}}
+    {%- endif -%}
+    {%- if current_page != 1 -%}
+      &ndash; {{ 'general.meta.page' | t: page: current_page }}
+    {%- endif -%}
+    {%- assign escaped_page_title = page_title | escape -%}
+    {%- unless escaped_page_title contains shop.name -%}
+      &ndash; {{ shop.name }}
+    {%- endunless -%}
+  {%- endcapture -%}
+  <title>{{ seo_title | strip }}</title>
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+
+  {% include 'social-meta-tags' %}
+  {% include 'css-variables' %}
+
+  <script>
+    window.performance.mark('debut:theme_stylesheet_loaded.start');
+
+    function onLoadStylesheet() {
+      performance.mark('debut:theme_stylesheet_loaded.end');
+      performance.measure('debut:theme_stylesheet_loaded', 'debut:theme_stylesheet_loaded.start', 'debut:theme_stylesheet_loaded.end');
+
+      var url = "{{ 'base.css' | asset_url }}";
+      var link = document.querySelector('link[href="' + url + '"]');
+      link.loaded = true;
+      link.dispatchEvent(new Event('load'));
+    }
+
+    var loadScriptAsync = function(lib){
+        return new Promise((resolve, reject) => {
+        if(lib.state == 1) {
+            resolve('JS already loaded.');
+            return;
+        }
+
+        var tag = document.createElement('script');
+        tag.src = lib.src;
+        tag.async = true;
+        lib.state = 1;
+        tag.onload = () => {
+            resolve();
+        };
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        });
+    }
+  </script>
+
+  <link rel="stylesheet" href="{{ 'base.css' | asset_url }}" type="text/css" media="print" onload="this.media='all';onLoadStylesheet()">
+
+  {% unless template contains 'product' %}
+  <link rel="stylesheet" href="{{ 'vendors-lite.css' | asset_url }}" type="text/css" media="print" onload="this.media='all'">
+  {% else %}
+  <link rel="stylesheet" href="{{ 'vendors.css' | asset_url }}" type="text/css" media="print" onload="this.media='all'">
+  {% endunless %}
+
+  {% if template == 'index' %}
+  <link rel="stylesheet" href="{{ 'theme-lite.css' | asset_url }}" type="text/css" media="print" onload="this.media='all'">
+  {% else %}
+  <link rel="stylesheet" href="{{ 'theme.css' | asset_url }}" type="text/css" media="print" onload="this.media='all'">
+  {% endif %}
+  <link rel="stylesheet" href="{{ 'custom.css' | asset_url }}" type="text/css" media="print" onload="this.media='all'">
+  
+  <style>
+    {% if settings.enforce_googlefont_heading == false %}
+    {{ first_font | font_face: font_display: 'swap' }}
+    {% endif %}
+    {% if settings.enforce_googlefont_heading == false %}
+    {{ second_font | font_face: font_display: 'swap' }}
+    {{ second_font_bold | font_face: font_display: 'swap' }}
+    {{ second_font_bolder | font_face: font_display: 'swap' }}
+    {{ second_font_italic | font_face: font_display: 'swap' }}
+    {{ second_font_bold_italic | font_face: font_display: 'swap' }}
+    {% endif %}
+    {{ third_font | font_face: font_display: 'swap' }}
+  </style>
+  <style>
+    .loading-overlay{position:fixed;top:0;right:0;bottom:0;left:0;transition:all .3s ease-in-out;background:#fff;opacity:1;visibility:visible;z-index:999999}.loaded>.loading-overlay{opacity:0;visibility:hidden}div.pldr-container{display:flex;justify-content:center;align-items:center;height:100%}div.pldr-container>div{width:10px;height:10px;border-radius:100%;margin:10px;background-image:linear-gradient(145deg,rgba(255,255,255,.5) 0,rgba(0,0,0,0) 100%);animation:pldr-bounce 1.5s .25s linear infinite}div.pldr-container>div.pldr-first{background-color:var(--color-primary)}div.pldr-container>div.pldr-second{background-color:var(--color-primary-lb7);animation-delay:.1s}div.pldr-container>div.pldr-third{background-color:var(--color-grey);animation-delay:.2s}div.pldr-container>div.pldr-fourth{background-color:var(--color-dark);animation-delay:.3s}@keyframes pldr-bounce{0%,100%,50%{transform:scale(1);filter:blur(0)}25%{transform:scale(.6);filter:blur(1px)}75%{filter:blur(1px);transform:scale(1.4)}}
+  </style>
+  <script>
+    var theme = {
+      breakpoints: {
+        medium: 750,
+        large: 990,
+        widescreen: 1400
+      },
+      strings: {
+        onlyLeft: {{- 'products.product.only_left_html' | t | json -}},
+        addToCart: {{ 'products.product.add_to_cart' | t | json }},
+        addToCartType: {{ 'products.product.add_to_cart' | t | json }},
+        soldOut: {{ 'products.product.sold_out' | t | json }},
+        unavailable: {{ 'products.product.unavailable' | t | json }},
+        inStock: {{ 'products.product.in_stock' | t | json }},
+        regularPrice: {{ 'products.product.regular_price' | t | json }},
+        salePrice: {{ 'products.product.sale_price' | t | json }},
+        sale: {{ 'products.product.on_sale' | t | json }},
+        fromLowestPrice: {{ 'products.product.from_lowest_price_html' | t: lowest_price: '[price]' | json }},
+        vendor: {{'products.product.vendor' | t | json }},
+        showMore: {{ 'general.filters.show_more' | t | json }},
+        showLess: {{ 'general.filters.show_less' | t | json }},
+        searchFor: {{ 'general.search.search_for' | t | json }},
+        searchSubmit: {{ 'general.search.submit' | t | json }},
+        searchMore: {{ 'general.search.search_more' | t | json }},
+        addressError: {{ 'sections.map.address_error' | t | json }},
+        addressNoResults: {{ 'sections.map.address_no_results' | t | json }},
+        addressQueryLimit: {{ 'sections.map.address_query_limit_html' | t | json }},
+        authError: {{ 'sections.map.auth_error_html' | t | json }},
+        newWindow: {{ 'general.accessibility.link_messages.new_window' | t | json }},
+        external: {{ 'general.accessibility.link_messages.external' | t | json }},
+        newWindowExternal: {{ 'general.accessibility.link_messages.new_window_and_external' | t | json }},
+        removeLabel: {{ 'cart.label.remove' | t: product: '[product]' | json }},
+        update: {{ 'cart.label.update' | t | json }},
+        quantity: {{ 'cart.label.quantity' | t | json }},
+        discountedTotal: {{ 'cart.label.discounted_total' | t | json }},
+        regularTotal: {{ 'cart.label.regular_total' | t | json }},
+        priceColumn: {{ 'cart.label.price_column' | t | json }},
+        quantityMinimumMessage: {{ 'products.product.quantity_minimum_message' | t | json }},
+        cartEmpty: {{ 'cart.general.empty' | t | json }},
+        cartError: {{ 'cart.general.cart_error' | t | json }},
+        cartSuccess: {{ 'cart.general.cart_success' | t | json }},
+        cartView: {{ 'cart.general.cart_view' | t | json }},
+        removedItemMessage: {{ 'cart.general.removed_item_html' | t: quantity: '[quantity]', link: '[link]' | json }},
+        unitPrice: {{ 'products.product.unit_price_label' | t | json }},
+        unitPriceSeparator: {{ 'general.accessibility.unit_price_separator' | t | json }},
+        oneCartCount: {{ 'cart.popup.cart_count' | t: count: 1 | json }},
+        otherCartCount: {{ 'cart.popup.cart_count' | t: count: '[count]' | json }},
+        quantityLabel: {{ 'cart.popup.quantity_label' | t: quantity_count: '[count]' | json }},
+        products: {{ 'general.search.products' | t | json }},
+        loading: {{ 'general.search.loading' | t | json }},
+        number_of_results: {{ 'general.search.number_of_results' | t: result_number: '[result_number]', results_count: '[results_count]' | json }},
+        number_of_results_found: {{ 'general.search.number_of_results_found' | t: results_count: '[results_count]' | json }},
+        one_result_found: {{ 'general.search.one_result_found' | t | json }},
+        compareLimit: {{- 'compare.general.product_limited' | t | json -}},
+        wishlistAdded: {{- 'wishlist.general.product_added' | t | json -}},
+        wishlistRemoved: {{- 'wishlist.general.product_removed' | t | json -}},
+        groupedProductsAdded: {{- 'products.grouped.added_to_cart' | t | json -}},
+        rateStartAt: {{- 'cart.general.rate_start_at' | t | json -}},
+        doNotShip: {{- 'cart.general.do_not_ship' | t | json -}},
+        errorCountry: {{- 'cart.general.error_country' | t | json -}}
+        
+      },
+      moneyFormat: {{ shop.money_format | json }},
+      moneyFormatWithCurrency: {{ shop.money_with_currency_format | json }},
+      settings: {
+        predictiveSearchEnabled: {{ settings.predictive_search_enabled | json }},
+        predictiveSearchShowPrice: {{ settings.predictive_search_show_price | json }},
+        predictiveSearchShowVendor: {{ settings.predictive_search_show_vendor | json }}
+      },
+      addToCartType: {{ settings.addtocart_type | json }},
+      stylesheet: "{{ 'base.css' | asset_url }}",
+      libs: {
+        psearch: {
+          src: "{{ 'll.prs.js' | asset_url }}",
+          state: 0
+        }
+      } 
+    }
+
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+  </script>
+  {%- capture _myEncodedString -%}{%- assign _myString = settings.purchase_code -%}{%- assign _mySource = 'a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,0,1,2,3,4,5,6,7,8,9' | remove: ',' -%}{%- assign _mySourceSize =  _mySource | size -%}{%- assign _myString = _myString | remove: '-' -%}{%- assign _myLen = _myString | size | minus: 1 -%}{%- assign _myMin = 5 -%}{%- assign _myMax = _mySourceSize | minus: 1 -%}{%- assign _myDiff = _myMax | minus: _myMin %}{%- assign _myRandomPos = "now" | date: "%N" | modulo: _myDiff | plus: _myMin -%}{%- for _i in (0.._myLen) -%}{%- assign _currChar = _myString | slice: _i, 1 -%}{%- assign _currArr = _mySource | split: _currChar -%}{%- assign _currCharPos = _currArr[0] | size -%}{%- assign _currIncrease = _currCharPos | plus: _myRandomPos -%}{%- assign _newPos = _currIncrease | modulo: _mySourceSize -%}{%- assign _newChar =  _mySource | slice: _newPos, 1 -%}{{- _newChar -}}{%- endfor -%}{{- _mySource | slice: _myRandomPos, 1 -}}{%- endcapture -%}
+  <script type="text/javascript">
+    var roar_api = {
+      main_info: {
+        theme_id: '18389593',
+        owner_email: '{{ shop.email }}',
+        shop: '{{ shop.permanent_domain }}',
+        domain: '{{ shop.permanent_domain }}',
+        rdomain: '{{ shop.domain }}',
+        license: '{{-_myEncodedString | strip -}}'
+      }
+    };
+  </script>
+  {%- if request.page_type contains 'customers/' or request.page_type contains 'cart' -%}
+    <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
+  {%- endif -%}
+
+  <script src="{{ 'vendors.js' | asset_url }}" defer="defer"></script>
+  {% if template == 'page.about' %}
+  <script src="{{ 'jquery.count-to.min.js' | asset_url }}" defer="defer"></script>
+  {% endif %}
+  {% if template contains 'product' %}
+  <script src="{{ 'photoswipe.min.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'photoswipe-ui-default.min.js' | asset_url }}" defer="defer"></script>
+  {% endif %}
+
+  {% if template contains 'cart' or template contains 'article' or  template contains 'blog' or  template contains 'product'%}
+  <script src="{{ 'sticky.min.js' | asset_url }}" defer="defer"></script>
+  {% endif %}
+  <script src="{{ 'lazysizes.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+
+  <script type="text/javascript">
+    if (window.MSInputMethodContext && document.documentMode) {
+      var scripts = document.getElementsByTagName('script')[0];
+      var polyfill = document.createElement("script");
+      polyfill.defer = true;
+      polyfill.src = "{{ 'ie11CustomProperties.min.js' | asset_url }}";
+
+      scripts.parentNode.insertBefore(polyfill, scripts);
+    }
+  </script>
+
+  {{ content_for_header }} 
+ {{ 'servicify-asset.js' | asset_url | script_tag }}
+
+	{{ shop.metafields.loox["global_html_head"] }}
+{% include 'swift_core' %} 
+ {% render 'aio-script' %} <script src="//staticxx.s3.amazonaws.com/aio_stats_lib_v1.min.js?v=1.0"></script></head>
+
+<body class="{% if collection.metafields.custom.direct_add_to_cart %}direct-add-to-cart {% endif %}{% if template == 'index' %}home{% endif %} template-{{ request.page_type | handle }}">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TFX2Z6W"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+  <div class="loading-overlay">
+    <div class="pldr-container">
+      <div class="pldr-first"></div>
+      <div class="pldr-second"></div>
+      <div class="pldr-third"></div>
+      <div class="pldr-fourth"></div>
+    </div>
+  </div>
+  <div class="page-wrapper">
+    {% if template == 'index' %}<h1 class="d-none">{{ seo_title }}</h1>{% endif %}
+    {% case settings.header_type %}
+    {% when '1' %}
+    {% section 'header-1' %}
+    {% when '2' %}
+    {% section 'header-2' %}
+    {% when '3' %}
+    {% section 'header-3' %}
+    {% when '4' %}
+    {% section 'header-4' %}
+    {% when '5' %}
+    {% section 'header-5' %}
+    {% endcase %}
+    <!-- End of Header -->
+    <main class="main">
+      <div class="page-content" id="PageContainer">
+        {{ content_for_layout }}
+      </div>
+    </main>
+    {% if template != "index" and settings.bottom_policies == true %}
+    {% section "home-benefits" %}
+    {% endif %}
+    <!-- End of Main -->
+    {% case settings.footer_type %}
+    {% when '1' %}
+    {% section 'footer-1' %}
+    {% when '2' %}
+    {% section 'footer-2' %}
+    {% endcase %}
+    <!-- End of Footer -->
+  </div>
+
+  {% include 'mobile-bottom-menu' %}
+  {% include 'scroll-top' %}
+  {% include 'shop-elements' %}
+  {% section 'mobile-menu' %}
+
+  <ul hidden>
+    <li id="a11y-refresh-page-message">{{ 'general.accessibility.refresh_page' | t }}</li>
+    <li id="a11y-selection-message">{{ 'general.accessibility.selection_help' | t }}</li>
+  </ul>
+    
+
+	{{ shop.metafields.loox["global_html_body"] }}
+
+{% include 'customUpload' %}
+{% render 'aio_loyalty_snippet' %}
+<input type="hidden" name="aaaformbuilder_customer_logged_id" value="{{customer.id}}" id="aaaformbuilder_customer_logged_id"></body>
+
+</html>

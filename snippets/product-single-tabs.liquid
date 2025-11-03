@@ -1,0 +1,112 @@
+<div class="tab tab-nav-simple product-tabs mb-4">
+  <ul class="nav nav-tabs justify-content-center" role="tablist">
+    {%- for block in section.blocks -%}
+    {%- case block.type -%}
+    {%- when 'description' -%}
+    <li class="nav-item">
+      <a class="nav-link active" href="#product-tab-description">{{ "products.product.description" | t }}</a>
+    </li>
+    {%- when 'review' -%}
+    {% if settings.enable_review %}
+    <li class="nav-item">
+      <a class="nav-link" href="#product-tab-reviews">{{ "products.product.reviews" | t }}</a>
+    </li>
+    {% endif %}
+    {%- when 'custom' -%}
+    <li class="nav-item">
+      <a class="nav-link" href="#product-tab-additional-{{ block.id }}">{{ block.settings.tab_title }}</a>
+    </li>
+    {%- when 'gallery' -%}
+    <li class="nav-item">
+      <a class="nav-link" href="#product-tab-gallery">{{ block.settings.gallery_title }}</a>
+    </li>
+    {%- endcase -%}
+    {%- endfor -%}
+  </ul>
+  <div class="tab-content">
+    {%- for block in section.blocks -%}
+    {%- case block.type -%}
+    {%- when 'description' -%}
+    <div class="tab-pane active in" id="product-tab-description">
+      <div class="product-description promotion-list">
+        <div class="row mt-6">
+          <div class="col-md-{% if block.settings.featured_image != blank %}6{% else %}12{% endif %}">
+            <div class="description">
+              {{ product.description }}
+            </div>
+            {% if block.settings.product_promotions %}
+            <div class="row">
+              {% for i in (1..4) %}
+              {% assign s_promotion_icon = "product_promotion_icon_" | append: i %}
+              {% assign s_promotion_text = "product_promotion_text_" | append: i %}
+              <div class="col-md-12">
+                <div class="icon-box icon-box-side justify-content-start mb-2">
+                  <span class="icon-box-icon">
+                      {{ block.settings[s_promotion_icon] }}
+                  </span>
+                  <div class="icon-box-content">
+                      <p class="mb-0">{{ block.settings[s_promotion_text] }}</p>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          {% if block.settings.featured_image != blank %}
+          <div class="col-md-6">
+            <div class="image">
+              <img src="{{ block.settings.featured_image | img_url: 'master' }}" />
+            </div>
+          </div>
+          {% endif %}
+        </div>  
+      </div>
+    </div>
+    {%- when 'review' -%}
+    {% if settings.enable_review %}
+    <div class="tab-pane " id="product-tab-reviews">
+      <div id="shopify-product-reviews" data-id="{{ product.id }}">{{ product.metafields.spr.reviews }}</div>
+    </div>
+    {% endif %}
+    {%- when 'custom' -%}
+    <div class="tab-pane" id="product-tab-additional-{{ block.id }}">
+        {% assign page_tab_content = block.settings.tab_content %}
+        {{ pages[page_tab_content].content }}
+    </div>
+    {%- when 'gallery' -%}
+    <div class="tab-pane " id="product-tab-gallery">
+      <div class="row mt-6">
+        <div class="col-md-6">
+          {% if block.settings.product_image_1 != blank %}
+          <div class="image">
+            <img class="w-100" src="{{ block.settings.product_image_1 | img_url: "master" }}" />
+          </div>
+          {% else %}
+          <div class="image" style="background-color:#ccc;">
+            {{ 'image' | placeholder_svg_tag }}
+          </div>
+          {% endif %}
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+          {% for i in (2..5) %}
+          {% assign s_image = "product_image_" | append : i %}
+          {% if block.settings[s_image] != blank %}
+            <div class="col-md-6 image {% cycle "pb-md-3",  "pb-md-3", "", "" %}">
+              <img class="w-100" src="{{ block.settings[s_image] | img_url: "master" }}" />
+            </div>
+          {% else %}
+          <div class="col-md-6 image {% cycle "pb-md-3",  "pb-md-3", "", "" %}" style="background-color:{% cycle '#e1e1e1',  '#ccc', '#ccc', '#e1e1e1' %}">
+            {{ 'image' | placeholder_svg_tag }}
+          </div>
+          {% endif %}
+          {% endfor %}
+          </div>  
+        </div>
+      </div>
+    </div>
+    {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</div>

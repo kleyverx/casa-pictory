@@ -1,0 +1,12 @@
+
+
+  <section
+  class="error-section d-flex flex-column justify-content-center align-items-center text-center pl-3 pr-3">
+  <h1 class="mb-2 ls-m">{{ 'general.404.title' | t }}</h1>
+  {% if settings.notfound_image != blank %}
+  <img src="{{ settings.notfound_image |  img_url: "master"}}" alt="{{ 'general.404.title' | t }}" width="609" height="131">
+  {% endif %}
+  <h4 class="mt-7 mb-0 ls-m text-uppercase">{{ 'general.404.subtext' | t }}</h4>
+  <p class="text-grey font-primary ls-m">{{ 'general.404.description' | t }}</p>
+  <a href="{{ routes.root_url }}" class="btn btn-primary mb-4">{{ 'general.404.link' | t }}</a>
+</section>

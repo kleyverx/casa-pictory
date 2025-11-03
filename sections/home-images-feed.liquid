@@ -1,0 +1,205 @@
+<section class="instagram-section mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}} appear-animate" id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="images-feed-section" data-animation-options="{
+    'delay': '.2s',
+    'duration': '.5s'
+}">
+    <div class="container{% unless section.settings.has_container %}-fluid{% endunless %}">
+        <h2 class="title title-simple text-normal font-weight-slight-bold">{{ section.settings.title }}</h2>
+        <div class="owl-carousel owl-theme row cols-xl-5 cols-lg-4 cols-sm-3 cols-2" data-owl-options="{
+            'items': 5,
+            'nav': false,
+            'dots': false,
+            'margin': 20,
+            'autoplay': true,
+            'responsive': {
+                '0': {
+                    'items': 2
+                },
+                '576': {
+                    'items': 3
+                },
+                '992': {
+                    'items': 4
+                },
+                '1200': {
+                    'items': 5
+                }
+            }
+        }">
+            {% for block in section.blocks %}
+            <figure class="instagram"{% if block.settings.image == blank %} style="background-color:#eee;"{% endif %}>
+                <a href="{{ block.settings.url | default: 'javascript:void(0);' }}">
+                    {% if block.settings.image != blank %}
+                    <img src="{{ block.settings.image | img_url: '220x220', scale: 2 }}" alt="Instagram" width="220" height="220" />
+                    {% else %}
+                    {{ 'image' | placeholder_svg_tag }}
+                    {% endif %}
+                </a>
+            </figure>
+            {% endfor %}
+        </div>
+        {% if section.settings.sub_title_text != blank %}
+        <h6 class="font-weight-normal text-center text-underline mt-8 mb-0"><a href="{{ section.settings.sub_title_text_url | default: 'javascript:void(0);' }}">{{ section.settings.sub_title_text }}</a></h6>
+        {% endif %}
+    </div>
+</section>
+
+{% schema %}
+{
+    "name": "Images Feed",
+    "class": "index-section index-section--images-feed",
+    "settings": [
+        {
+            "type": "checkbox",
+            "id": "has_container",
+            "label": "Within container",
+            "default": true
+        },
+        {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Our Images"
+        },
+        {
+            "type": "text",
+            "id": "sub_title_text",
+            "label": "Sub heading",
+            "default": "Follow us"
+        },
+        {
+            "type": "url",
+            "id": "sub_title_url",
+            "label": "Sub heading URL"
+        },
+        {
+            "type": "header",
+            "content": "Spacing (large screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt_lg",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 8
+        },
+        {
+            "type": "range",
+            "id": "pt_lg",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb_lg",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb_lg",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "header",
+            "content": "Spacing (mobile screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "pt",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        }
+    ],
+    "blocks": [
+        {
+            "type": "image",
+            "name": "Image",
+            "settings": [
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Your image"
+                },
+                {
+                    "type": "url",
+                    "id": "url",
+                    "label": "URL"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Images Feed",
+            "category": "Fastor",
+            "blocks": [
+                {
+                    "type": "image"
+                },
+                {
+                    "type": "image"
+                },
+                {
+                    "type": "image"
+                },
+                {
+                    "type": "image"
+                },
+                {
+                    "type": "image"
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

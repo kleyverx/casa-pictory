@@ -1,0 +1,50 @@
+{% if section.settings.featured_products_enable %}
+<section class="mt-8">
+    <h2 class="title">{{- section.settings.featured_products_heading -}}</h2>
+    {% if section.settings.featured_products != blank %}
+    {% assign _collection = collections[section.settings.featured_products]  %}
+    {% else %}
+      {%- if collection == null -%}
+        {%- assign my_collection_found = false -%}
+        {%- for my_collection in product.collections -%}
+          {%- if my_collection_found == false and my_collection.all_products_count > 1 -%}
+            {%- assign my_collection_found = true -%}
+            {%- assign _collection = my_collection -%}
+            {% break %}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
+      {%- assign _collection = collection -%}
+      {%- endif -%}
+    {% endif %}
+
+
+    <div class="owl-carousel owl-theme row cols-2 cols-md-3 cols-lg-4"
+         data-owl-options="{
+                           'items': 5,
+                           'nav': false,
+                           'loop': false,
+                           'dots': true,
+                           'margin': 20,
+                           'responsive': {
+                           '0': {
+                           'items': 2
+                           },
+                           '768': {
+                           'items': 3
+                           },
+                           '992': {
+                           'items': 4,
+                           'dots': false,
+                           'nav': true
+                           }
+                           }
+                           }">
+    {% if _collection != blank %}
+      {% for _product in _collection.products limit:section.settings.items_limit %}
+        {% render 'product-item', product:_product, style:'default', sign: section.id %}
+      {% endfor %}
+    {% endif %}
+    </div>
+</section>
+{% endif %}

@@ -1,0 +1,47 @@
+
+{%- assign selected_collection = nil -%}
+{%- if settings.badge_collection != blank -%}
+  {%- assign selected_collection = collections[settings.badge_collection] -%}
+{%- endif -%}
+
+{%- assign in_selected_collection = false -%}
+{%- if selected_collection -%}
+  {%- for c in product.collections -%}
+    {%- if c.handle == selected_collection.handle -%}
+      {%- assign in_selected_collection = true -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
+{%- assign show_collection_label = false -%}
+{%- if in_selected_collection and settings.badge_collection_label_text != blank -%}
+  {%- assign show_collection_label = true -%}
+{%- endif -%}
+
+{%- if product.metafields.info.label != blank or settings.product_sale_badge != "" or show_collection_label -%}
+<div class="product-label-group{% if settings.badge_position == 'right' %} badge-right{% else %} badge-left{% endif %}">
+  {%- if product.metafields.info.label != blank -%}
+  <label class="product-label label-new" style="color: {{ settings.badge_text_color }} !important; background-color: {{ settings.badge_bg_color }} !important;">
+  {{- product.metafields.info.label -}}
+  </label>
+  {% endif %}
+
+  {%- if show_collection_label and product.metafields.info.label == blank -%}
+  <label class="product-label label-new" style="color: {{ settings.badge_text_color }} !important; background-color: {{ settings.badge_bg_color }} !important;">
+    {{- settings.badge_collection_label_text -}}
+  </label>
+  {%- endif -%}
+
+  {%- if settings.product_sale_badge != "" and current_variant.compare_at_price > current_variant.price-%}
+    <label class="product-label label-sale text-black bg-white">
+      {%- if settings.product_sale_badge == "text" -%}
+      {{- "products.labels.sale" | t -}}
+      {%- else -%}
+      {%- assign sale_percent = current_variant.compare_at_price | minus:current_variant.price | times:100.0 | divided_by:current_variant.compare_at_price | ceil -%}
+      {{- "products.labels.sale_off" | t : percent : sale_percent -}}
+      {%- endif -%}
+    </label>
+  {%- endif -%}
+</div>
+{%- endif -%}

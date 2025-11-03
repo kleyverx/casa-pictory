@@ -1,0 +1,43 @@
+
+        <div style="padding-top: {{section.settings.sg_feed_padding_top}}px"></div>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.4.0/css/lightgallery-bundle.min.css" rel="stylesheet" type="text/css"/>
+
+        <link href="https://sgscript.nyc3.cdn.digitaloceanspaces.com/ifeedgallery.css" rel="stylesheet" type="text/css"/>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.4.0/lightgallery.min.js"></script>
+
+        <h2 class="flex p-1" style="text-align: {{section.settings.sg_feed_heading_alignment}};
+            padding: 0 12px 0 12px;
+            font-family: inherit; letter-spacing: {{section.settings.sg_feed_letter_spacing}}px; line-height:inherit; word-spacing: inherit; font-weight: inherit; font-variant: inherit; font-style: inherit; font-stretch: inherit;
+            justify-content: center; margin: 12px 0 20px 0; font-size: {{section.settings.sg_feed_heading_size}}px;">
+            {{section.settings.sg_feed_heading_text}}
+        </h2>
+        <div 
+            id="shopgracias-instafeed-gallery"
+            data-shopname="{{ shop.permanent_domain }}"
+            data-product-id="{{ product.id }}"
+            data-name="{{ product.title | escape }}"   
+            data-url="{{ shop.url }}{{ product.url }}">
+
+
+        </div>
+
+        <div style="padding-bottom: {{section.settings.sg_feed_padding_bottom}}px"></div>
+
+        {%schema%}
+            {
+                "name":"ShopGracias Insta Gallery",
+                "settings":[
+                    {"type": "text", "id": "sg_feed_heading_text", "label": "Heading Text", "default": "Instagram Gallery"},
+                    {"type": "select", "id": "sg_feed_heading_alignment", "label": "Heading Alignment", "options": [{"value": "left", "label": "Left"}, {"value": "center", "label": "Center"}], "default": "center"},
+                    {"type":"range","id":"sg_feed_heading_size","min":10,"max":30,"step":1,"unit":"px","label":"Heading Size","default":16},
+                    {"type":"range","id":"sg_feed_letter_spacing","min":0,"max":40,"step":1,"unit":"px","label":"Letter Spacing","default":0},
+                    {"type":"range","id":"sg_feed_padding_top","min":0,"max":90,"step":1,"unit":"px","label":"Padding Top","default":0},
+                    {"type":"range","id":"sg_feed_padding_bottom","min":0,"max":90,"step":1,"unit":"px","label":"Padding Bottom","default":0}
+                ],
+
+                "presets":[{"name":"ShopGracias Insta Gallery", "category":"Instagram Feed"}]
+            }
+        {%endschema%}
+
+        <script defer src="https://sgscript.nyc3.cdn.digitaloceanspaces.com/ifeedgallery.js"></script>
+            

@@ -1,0 +1,49 @@
+
+
+        <link
+        href="https://cdn.ampproject.org/amp-story-player-v0.css"
+        rel="stylesheet"
+        type="text/css"
+        />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/glider-js/1.7.7/glider.min.css" integrity="sha512-YM6sLXVMZqkCspZoZeIPGXrhD9wxlxEF7MzniuvegURqrTGV2xTfqq1v9FJnczH+5OGFl5V78RgHZGaK34ylVg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link href="https://sgscript.nyc3.cdn.digitaloceanspaces.com/istories.css" rel="stylesheet" type="text/css"/>
+
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/glider-js/1.7.7/glider-compat.min.js" integrity="sha512-uDuWqOxg/d52jrK9sfrZf5qj1VjXlbekCDElkB/EOJAa6xOhLR1mVU1RZ0rFUqx5L4EkUPwyqPfJiwLF3D7Ypw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/glider-js/1.7.7/glider.min.js" integrity="sha512-tHimK/KZS+o34ZpPNOvb/bTHZb6ocWFXCtdGqAlWYUcz+BGHbNbHMKvEHUyFxgJhQcEO87yg5YqaJvyQgAEEtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+        <div style="padding-top: {{section.settings.sg_hi_padding_top}}px"></div>
+
+        <h2 class="flex p-1" style="text-align: {{section.settings.heading_alignment}};
+            padding: 0 12px 0 12px;
+            font-family: inherit; letter-spacing: {{section.settings.sg_hi_letterspacing}}px; line-height:inherit; word-spacing: inherit; font-weight: inherit; font-variant: inherit; font-style: inherit; font-stretch: inherit;
+            justify-content: center; margin: 12px 0 20px 0; font-size: {{section.settings.sh_hi_heading_size}}px;">
+            {{section.settings.heading_text}}
+        </h2>
+        <div 
+            id="shopgracias-insta-highlights"
+            data-shopname="{{ shop.permanent_domain }}"
+            data-product-id="{{ product.id }}"   
+            data-name="{{ product.title | escape }}"   
+            data-product-title="{{product.title}}"
+            >
+        </div>
+        <div style="padding-bottom: {{section.settings.sg_hi_padding_bottom}}px"></div>
+
+
+        {%schema%}
+            {
+                "name":"ShopGracias Stories",
+                "settings":[
+                    {"type": "text", "id": "heading_text", "label": "Heading Text", "default": "Instagram Stories"},
+                    {"type": "select", "id": "heading_alignment", "label": "Heading Alignment", "options": [{"value": "left", "label": "Left"}, {"value": "center", "label": "Center"}], "default": "center"},
+                    {"type":"range","id":"sh_hi_heading_size","min":10,"max":30,"step":1,"unit":"px","label":"Heading Size","default":16},
+                    {"type": "range", "id": "sg_hi_letterspacing", "min":0,"max":40,"step":1,"unit":"px","label":"Letter Spacing", "default": 0},
+                    {"type":"range","id":"sg_hi_padding_top","min":0,"max":90,"step":1,"unit":"px","label":"Padding Top","default":0},
+                    {"type":"range","id":"sg_hi_padding_bottom","min":0,"max":90,"step":1,"unit":"px","label":"Padding Bottom","default":0}
+                ],
+                "presets":[{"name":"ShopGracias Stories", "category":"Instagram Feed"}]
+            }
+        {%endschema%}
+        <script defer src="https://cdn.ampproject.org/amp-story-player-v0.js"></script>
+        <script defer src="https://sgscript.nyc3.cdn.digitaloceanspaces.com/istories.js"></script>
+        

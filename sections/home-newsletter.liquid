@@ -1,0 +1,224 @@
+<section class="rt-banner banner-cta text-center container{% unless section.settings.has_container %}-fluid{% endunless %} mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} p-0" id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="newsletter-section" style="background-color:{{ section.settings.color_bg }}{% if section.settings.image_bg != blank %};background-image:url({{ section.settings.image_bg | img_url: 'master' }}){% endif %}">
+    <div class="banner-content container pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}} w-100 appear-animate" data-animation-options="{
+        'delay': '.2s',
+        'name': 'blurIn'
+    }">
+        {% if section.settings.has_top_separate == true %}<hr class="mt-0 mb-5 mb-lg-18{% if section.settings.separator_for_dark == true %} border-dark{% endif %}">{% endif %}
+        {% if section.settings.sub_title != blank %}
+        <h4 class="banner-subtitle font-weight-bold ls-s pb-2 text-normal text-{{ section.settings.color }}">{{ section.settings.sub_title }}</h4>
+        {% endif %}
+        <h2 class="banner-title font-weight-slight-bold ls-m mb-4 text-{{ section.settings.color }} text-normal fs-custom lh-custom" style="--fs:4rem;--lh:1.3">{{ section.settings.title }}</h2>
+        <p class="font-primary font-weight-normal text-{{ section.settings.color }} ls-normal text-normal mb-4 fs-custom lh-custom" style="--fs:2.2rem;--lh:1.8">{{ section.settings.description }}</p>
+        {%- assign formId = 'Contact_' | append: section.id -%}
+        {% form 'customer', id: formId, novalidate: 'novalidate' %}
+            <div class="input-wrapper d-flex">
+                <input name="contact[tags]" type="hidden" value="newsletter">
+                <input type="email" class="form-control bg-white mr-4" name="email" id="{{ formId }}-email" value="{{ form.email }}" placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}" required />
+                <button class="btn btn-primary btn-shadow-lg btn-ellipse custom-lh" type="submit" style="--lh:1.45">{{ 'general.newsletter_form.submit' | t }}<i
+                    class="d-icon-arrow-right"></i></button>
+            </div>    
+            {%- if form.posted_successfully? -%}
+            <span id="{{ formId }}-email-error" class="alert-success d-inline-block mt-2 pt-1 pr-1 pb-1 pl-1">
+                <p class="font-primary ls-s text-white mb-0 lh-1" data-form-status tabindex="-1">
+                {{ 'general.newsletter_form.confirmation' | t }}
+                </p>
+            </span>
+            {%- endif -%}
+            {%- if form.errors contains 'email' -%}
+            <span id="{{ formId }}-email-error" class="alert-danger d-inline-block mt-2 pt-1 pr-1 pb-1 pl-1">
+                <p class="font-primary ls-s text-white mb-0 lh-1">{{ form.errors.translated_fields['email'] | capitalize }}
+                {{ form.errors.messages['email'] }}.</p>
+            </span>
+            {%- endif -%}
+        {% endform %}
+        {% if section.settings.has_bottom_separate == true %}<hr class="mb-0 mt-5 mt-lg-18{% if section.settings.separator_for_dark == true %} border-dark{% endif %}">{% endif %}
+    </div>
+</section>
+
+{% schema %}
+
+{
+    "name": "Newsletter",
+    "class": "index-section index-section--newsletter",
+    "settings": [
+        {
+            "type": "header",
+            "content": "General"
+        },
+        {
+            "type": "checkbox",
+            "id": "has_container",
+            "label": "Within container",
+            "default": false
+        },
+        {
+			"type": "select",
+			"id": "color",
+			"label": "Text color",
+			"options": [
+				{
+					"value": "white",
+					"label": "White"
+				},
+				{
+					"value": "black",
+					"label": "Black"
+				}
+			],
+			"default": "black"
+		},
+        {
+            "type": "header",
+            "content": "Content"
+        },
+        {
+            "type": "image_picker",
+            "id": "image_bg",
+            "label": "Background image"
+        },
+        {
+            "type": "color",
+            "id": "color_bg",
+            "label": "Background color",
+            "default": "#ccc"
+        },
+        {
+            "type": "header",
+            "content": "Content"
+        },
+        {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Newsletter"
+        },
+        {
+            "type": "text",
+            "id": "sub_title",
+            "label": "Sub title"
+        },
+        {
+            "type": "text",
+            "id": "description",
+            "label": "Description"
+        },
+        {
+            "type": "header",
+            "content": "Separators"
+        },
+        {
+            "type": "checkbox",
+            "id": "has_top_separate",
+            "label": "Has top separator",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "has_bottom_separate",
+            "label": "Has bottom separator",
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "separator_for_dark",
+            "label": "Consistent with dark background",
+            "default": false
+        },
+        {
+            "type": "header",
+            "content": "Spacing (large screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt_lg",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 8
+        },
+        {
+            "type": "range",
+            "id": "pt_lg",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 16
+        },
+        {
+            "type": "range",
+            "id": "mb_lg",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb_lg",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 16
+        },
+        {
+            "type": "header",
+            "content": "Spacing (mobile screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "pt",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "mb",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        }
+    ],
+    "presets": [
+        {
+            "name": "Newsletter",
+            "category": "Fastor"
+        }
+    ]
+}
+
+{% endschema %}

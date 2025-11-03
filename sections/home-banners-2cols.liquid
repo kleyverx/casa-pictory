@@ -1,0 +1,1020 @@
+<section class="banner-mass mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}}" id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="banners-2cols-section">
+    <div class="{% if section.settings.has_container %}container{% endif %}">
+        <div class="row {% if section.settings.no_gutter == true %}gutter-no{% else %}gutter-lg{% endif %}">
+            <div class="col-lg-6">
+                <div class="row {% if section.settings.no_gutter == true %}gutter-no{% else %}gutter-lg{% endif %}">
+                    {% for block in section.blocks %}
+                    {% if block.settings.position == 'col_1' %}
+                    <div class="col-lg-{{ block.settings.width_destop}} col-md-{{ block.settings.width_tablet}} col-12{% unless section.settings.no_gutter == true %} mb-6{% endunless %} appear-animate" data-animation-options="{
+                        'name': '{% cycle "fadeInRightShorter", "fadeInLeftShorter" %}',
+                        'delay': '.2s'
+                    }" {{ block.shopify_atrributes }}>
+                        {% case block.type %}
+                        {% when 'banner_1' %}
+                        <div class="rt-banner banner-fixed banner_1 hover-zoom ani-wrapper-fadeInRight">
+                            <a href="{{ block.settings.button_url | default: "javascript:void(0);"}}">
+                                {% if block.settings.image != blank %}
+                                {% if section.settings.has_container == true %}
+                                {% assign _container_width = 1220 %}
+                                {% else %}
+                                {% assign _container_width = 1820 %}
+                                {% endif %}
+                                {% case block.settings.width_destop %}
+                                    {% when '3' %}
+                                    {% assign _img_width = _container_width | divided_by: 4 %}
+                                    {% when '4' %}
+                                    {% assign _img_width = _container_width | divided_by: 3 %}
+                                    {% when '6' %}
+                                    {% assign _img_width = _container_width | divided_by: 2 %}
+                                    {% when '8' %}
+                                    {% assign _img_width = _container_width | divided_by: 3 | plus: 2 %}
+                                    {% when '12' %}
+                                    {% assign _img_width = _container_width %}
+                                {% endcase %}
+                                {% assign _img_height = _img_width | divided_by: block.settings.image.aspect_ratio | round %}
+                                {% assign _img_url = _img_width | append: 'x' | append: _img_height %}
+                                <figure>
+                                    <img src="{{ block.settings.image | img_url: _img_url, scale: 2 }}" alt="banner" width="{{ _img_width }}" height="{{ _img_height }}"/>
+                                </figure>
+                                {% else %}
+                                <figure style="background-color:#ccc;height:240px"></figure>
+                                {% endif %}
+                            </a>
+                            <div class="banner-content {{ block.settings.content_hori_align }} {{ block.settings.content_vert_align }} appear-animate pe-none">
+                                {% if block.settings.sub_title %}
+                                <h4 class="banner-subtitle text-{{ block.settings.color_text }} font-weight-light fs-{{ block.settings.fs_subtitle | replace: '.', 'p' }} mb-2">{{ block.settings.sub_title }}</h4>
+                                {% endif %}
+                                {% if block.settings.title %}
+                                <h3 class="banner-title ls-m mb-1 text-{{ block.settings.color_text }} font-weight-normal fs-{{ block.settings.fs_title | replace: '.', 'p' }}">{{ block.settings.title }}</h3>
+                                {% endif %}
+                                {% if block.settings.button_text != blank %}
+                                <a href="{{ block.settings.button_url | default: "javascript:void(0);"}}" class="btn btn-dark btn-md">
+                                    {{block.settings.button_text}}
+                                </a>
+                                {% else %}
+                                <a href="{{ block.settings.button_url | default: "javascript:void(0);"}}" class="text-{{ block.settings.color_text }} btn-arrow ani-el">
+                                    {% render 'icon-arrow-right' %}
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% when 'banner_2' %}
+                        <div class="rt-banner banner-fixed banner_2 content-{{ block.settings.content_hori_align }} hover-zoom hover-gloom appear-animate">
+                            {% if block.settings.image != blank %}
+                            <figure class="d-flex">
+                                <img src="{{ block.settings.image | img_url: 'master' }}" alt="banner" />
+                            </figure>
+                            {% else %}
+                            <figure style="min-height:400px;background-color:#ccc;"></figure>
+                            {% endif %}
+                            <div class="banner-content {{ block.settings.content_vert_align }}">
+                                <div class="appear-animate" data-animation-options="{
+                                    'name': 'fadeInUpShorter',
+                                    'delay': '.2s'
+                                }">
+                                    <h3 class="banner-title font-weight-slight-bold ls-m text-{{ block.settings.color_text }} fs-{{ block.settings.fs_title | replace: '.', 'p' }}">{{ block.settings.title }}</h3>
+                                    <p class="text-{{ block.settings.color_text }} fs-{{ block.settings.fs_description | replace: '.', 'p' }}">{{ block.settings.description }}</p>
+                                    {% if block.settings.button_text != blank %}
+                                    <a href="{{ block.settings.button_url | default: 'javascript:void(0);' }}" class="btn btn-primary btn-shadow-lg btn-ellipse text-normal">{{ block.settings.button_text }}</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% when 'banner_3' %}
+                        <div class="rt-banner hover-zoom hover-gloom appear-animate" style="background-color:{{ block.settings.color_bg }}">
+                            {% if block.settings.image != blank %}
+                            <figure class="d-flex">
+                                <img src="{{ block.settings.image | img_url: 'master' }}" alt="banner" />
+                            </figure>
+                            {% endif %}
+                            <div class="banner-content text-center mt-5 mb-5">
+                                <a href="{{ block.settings.button_url | default: "javascript:void(0);"}}">
+                                    <div class="appear-animate" data-animation-options="{
+                                        'name': 'fadeInUpShorter',
+                                        'delay': '.2s'
+                                    }">
+                                        <div class="d-flex flex-wrap justify-content-center align-items-center">
+                                            <h3 class="banner-title font-weight-slight-bold ls-m text-{{ block.settings.color_text }} fs-{{ block.settings.fs_title | replace: '.', 'p' }}">{{ block.settings.title }}</h3>
+                                            {% if block.settings.button_text != blank %}
+                                            <span class="text-{{ block.settings.color_text }} text-normal fs-1p3 ml-lg-5 pl-3 pr-3 pt-1 pb-1" style="border: 1px dashed">{{ block.settings.button_text }}</span>
+                                            {% endif %}
+                                        </div>
+                                        <p class="text-{{ block.settings.color_text }} fs-{{ block.settings.fs_description | replace: '.', 'p' }} mb-0">{{ block.settings.description }}</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        {% endcase %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="row {% if section.settings.no_gutter == true %}gutter-no{% else %}gutter-lg{% endif %}">
+                    {% for block in section.blocks %}
+                    {% if block.settings.position == 'col_2' %}
+                    <div class="col-lg-{{ block.settings.width_destop}} col-md-{{ block.settings.width_tablet}} col-12{% unless section.settings.no_gutter == true %} mb-6{% endunless %} appear-animate" data-animation-options="{
+                        'name': '{% cycle "fadeInRightShorter", "fadeInLeftShorter" %}',
+                        'delay': '.2s'
+                    }" {{ block.shopify_atrributes }}>
+                        {% case block.type %}
+                        {% when 'banner_1' %}
+                        <div class="rt-banner banner-fixed banner_1 hover-zoom ani-wrapper-fadeInRight">
+                            <a href="{{ block.settings.button_url | default: "javascript:void(0);"}}">
+                                {% if block.settings.image != blank %}
+                                {% if section.settings.has_container == true %}
+                                {% assign _container_width = 1220 %}
+                                {% else %}
+                                {% assign _container_width = 1820 %}
+                                {% endif %}
+                                {% case block.settings.width_destop %}
+                                    {% when '3' %}
+                                    {% assign _img_width = _container_width | divided_by: 4 %}
+                                    {% when '4' %}
+                                    {% assign _img_width = _container_width | divided_by: 3 %}
+                                    {% when '6' %}
+                                    {% assign _img_width = _container_width | divided_by: 2 %}
+                                    {% when '8' %}
+                                    {% assign _img_width = _container_width | divided_by: 3 | plus: 2 %}
+                                    {% when '12' %}
+                                    {% assign _img_width = _container_width %}
+                                {% endcase %}
+                                {% assign _img_height = _img_width | divided_by: block.settings.image.aspect_ratio | round %}
+                                {% assign _img_url = _img_width | append: 'x' | append: _img_height %}
+                                <figure>
+                                    <img src="{{ block.settings.image | img_url: _img_url, scale: 2 }}" alt="banner" width="{{ _img_width }}" height="{{ _img_height }}"/>
+                                </figure>
+                                {% else %}
+                                <figure style="background-color:#ccc;height:240px"></figure>
+                                {% endif %}
+                            </a>
+                            <div class="banner-content {{ block.settings.content_hori_align }} {{ block.settings.content_vert_align }} appear-animate pe-none">
+                                {% if block.settings.sub_title %}
+                                <h4 class="banner-subtitle text-{{ block.settings.color_text }} font-weight-light fs-{{ block.settings.fs_subtitle | replace: '.', 'p' }} mb-2">{{ block.settings.sub_title }}</h4>
+                                {% endif %}
+                                {% if block.settings.title %}
+                                <h3 class="banner-title ls-m mb-1 text-{{ block.settings.color_text }} font-weight-normal fs-{{ block.settings.fs_title | replace: '.', 'p' }}">{{ block.settings.title }}</h3>
+                                {% endif %}
+                                {% if block.settings.button_text != blank %}
+                                <a href="{{ block.settings.button_url | default: "javascript:void(0);"}}" class="btn btn-dark btn-md">
+                                    {{block.settings.button_text}}
+                                </a>
+                                {% else %}
+                                <a href="{{ block.settings.button_url | default: "javascript:void(0);"}}" class="text-{{ block.settings.color_text }} btn-arrow ani-el">
+                                    {% render 'icon-arrow-right' %}
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% when 'banner_2' %}
+                        <div class="rt-banner banner-fixed banner_2 content-{{ block.settings.content_hori_align }} hover-zoom hover-gloom appear-animate">
+                            {% if block.settings.image != blank %}
+                            <figure class="d-flex">
+                                <img src="{{ block.settings.image | img_url: 'master' }}" alt="banner" />
+                            </figure>
+                            {% else %}
+                            <figure style="min-height:400px;background-color:#ccc;"></figure>
+                            {% endif %}
+                            <div class="banner-content {{ block.settings.content_vert_align }}">
+                                <div class="appear-animate" data-animation-options="{
+                                    'name': 'fadeInUpShorter',
+                                    'delay': '.2s'
+                                }">
+                                    <h3 class="banner-title font-weight-slight-bold ls-m text-{{ block.settings.color_text }} fs-{{ block.settings.fs_title | replace: '.', 'p' }}">{{ block.settings.title }}</h3>
+                                    <p class="text-{{ block.settings.color_text }} fs-{{ block.settings.fs_description | replace: '.', 'p' }}">{{ block.settings.description }}</p>
+                                    {% if block.settings.button_text != blank %}
+                                    <a href="{{ block.settings.button_url | default: 'javascript:void(0);' }}" class="btn btn-primary btn-shadow-lg btn-ellipse text-normal">{{ block.settings.button_text }}</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% when 'banner_3' %}
+                        <div class="rt-banner hover-zoom hover-gloom appear-animate" style="background-color:{{ block.settings.color_bg }}">
+                            {% if block.settings.image != blank %}
+                            <figure class="d-flex">
+                                <img src="{{ block.settings.image | img_url: 'master' }}" alt="banner" />
+                            </figure>
+                            {% endif %}
+                            <div class="banner-content text-center mt-5 mb-5">
+                                <a href="{{ block.settings.button_url | default: "javascript:void(0);"}}">
+                                    <div class="appear-animate" data-animation-options="{
+                                        'name': 'fadeInUpShorter',
+                                        'delay': '.2s'
+                                    }">
+                                        <div class="d-flex flex-wrap justify-content-center align-items-center">
+                                            <h3 class="banner-title font-weight-slight-bold ls-m text-{{ block.settings.color_text }} fs-{{ block.settings.fs_title | replace: '.', 'p' }}">{{ block.settings.title }}</h3>
+                                            {% if block.settings.button_text != blank %}
+                                            <span class="text-{{ block.settings.color_text }} text-normal fs-1p3 ml-lg-5 pl-3 pr-3 pt-1 pb-1" style="border: 1px dashed">{{ block.settings.button_text }}</span>
+                                            {% endif %}
+                                        </div>
+                                        <p class="text-{{ block.settings.color_text }} fs-{{ block.settings.fs_description | replace: '.', 'p' }} mb-0">{{ block.settings.description }}</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        {% endcase %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="row {% if section.settings.no_gutter == true %}gutter-no{% else %}gutter-lg{% endif %}">
+                    {% for block in section.blocks %}
+                    {% if block.settings.position == 'bottom' %}
+                    <div class="col-lg-{{ block.settings.width_destop}} col-md-{{ block.settings.width_tablet}} col-12{% unless section.settings.no_gutter == true %} mb-6{% endunless %} appear-animate" data-animation-options="{
+                        'name': '{% cycle "fadeInRightShorter", "fadeInLeftShorter" %}',
+                        'delay': '.2s'
+                    }" {{ block.shopify_atrributes }}>
+                        {% case block.type %}
+                        {% when 'banner_1' %}
+                        <div class="rt-banner banner-fixed banner_1 hover-zoom ani-wrapper-fadeInRight">
+                            <a href="{{ block.settings.button_url | default: "javascript:void(0);"}}">
+                                {% if block.settings.image != blank %}
+                                {% if section.settings.has_container == true %}
+                                {% assign _container_width = 1220 %}
+                                {% else %}
+                                {% assign _container_width = 1820 %}
+                                {% endif %}
+                                {% case block.settings.width_destop %}
+                                    {% when '3' %}
+                                    {% assign _img_width = _container_width | divided_by: 4 %}
+                                    {% when '4' %}
+                                    {% assign _img_width = _container_width | divided_by: 3 %}
+                                    {% when '6' %}
+                                    {% assign _img_width = _container_width | divided_by: 2 %}
+                                    {% when '8' %}
+                                    {% assign _img_width = _container_width | divided_by: 3 | plus: 2 %}
+                                    {% when '12' %}
+                                    {% assign _img_width = _container_width %}
+                                {% endcase %}
+                                {% assign _img_height = _img_width | divided_by: block.settings.image.aspect_ratio | round %}
+                                {% assign _img_url = _img_width | append: 'x' | append: _img_height %}
+                                <figure>
+                                    <img src="{{ block.settings.image | img_url: _img_url, scale: 2 }}" alt="banner" width="{{ _img_width }}" height="{{ _img_height }}"/>
+                                </figure>
+                                {% else %}
+                                <figure style="background-color:#ccc;height:240px"></figure>
+                                {% endif %}
+                            </a>
+                            <div class="banner-content {{ block.settings.content_hori_align }} {{ block.settings.content_vert_align }} appear-animate pe-none">
+                                {% if block.settings.sub_title %}
+                                <h4 class="banner-subtitle text-{{ block.settings.color_text }} font-weight-light fs-{{ block.settings.fs_subtitle | replace: '.', 'p' }} mb-2">{{ block.settings.sub_title }}</h4>
+                                {% endif %}
+                                {% if block.settings.title %}
+                                <h3 class="banner-title ls-m mb-1 text-{{ block.settings.color_text }} font-weight-normal fs-{{ block.settings.fs_title | replace: '.', 'p' }}">{{ block.settings.title }}</h3>
+                                {% endif %}
+                                {% if block.settings.button_text != blank %}
+                                <a href="{{ block.settings.button_url | default: "javascript:void(0);"}}" class="btn btn-dark btn-md">
+                                    {{block.settings.button_text}}
+                                </a>
+                                {% else %}
+                                <a href="{{ block.settings.button_url | default: "javascript:void(0);"}}" class="text-{{ block.settings.color_text }} btn-arrow ani-el">
+                                    {% render 'icon-arrow-right' %}
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% when 'banner_2' %}
+                        <div class="rt-banner banner-fixed banner_2 content-{{ block.settings.content_hori_align }} hover-zoom hover-gloom appear-animate">
+                            {% if block.settings.image != blank %}
+                            <figure class="d-flex">
+                                <img src="{{ block.settings.image | img_url: 'master' }}" alt="banner" />
+                            </figure>
+                            {% else %}
+                            <figure style="min-height:400px;background-color:#ccc;"></figure>
+                            {% endif %}
+                            <div class="banner-content {{ block.settings.content_vert_align }}">
+                                <div class="appear-animate" data-animation-options="{
+                                    'name': 'fadeInUpShorter',
+                                    'delay': '.2s'
+                                }">
+                                    <h3 class="banner-title font-weight-slight-bold ls-m text-{{ block.settings.color_text }} fs-{{ block.settings.fs_title | replace: '.', 'p' }}">{{ block.settings.title }}</h3>
+                                    <p class="text-{{ block.settings.color_text }} fs-{{ block.settings.fs_description | replace: '.', 'p' }}">{{ block.settings.description }}</p>
+                                    {% if block.settings.button_text != blank %}
+                                    <a href="{{ block.settings.button_url | default: 'javascript:void(0);' }}" class="btn btn-primary btn-shadow-lg btn-ellipse text-normal">{{ block.settings.button_text }}</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% when 'banner_3' %}
+                        <div class="rt-banner hover-zoom hover-gloom appear-animate" style="background-color:{{ block.settings.color_bg }}">
+                            {% if block.settings.image != blank %}
+                            <figure class="d-flex">
+                                <img src="{{ block.settings.image | img_url: 'master' }}" alt="banner" />
+                            </figure>
+                            {% endif %}
+                            <div class="banner-content text-center mt-5 mb-5">
+                                <a href="{{ block.settings.button_url | default: "javascript:void(0);"}}">
+                                    <div class="appear-animate" data-animation-options="{
+                                        'name': 'fadeInUpShorter',
+                                        'delay': '.2s'
+                                    }">
+                                        <div class="d-flex flex-wrap justify-content-center align-items-center">
+                                            <h3 class="banner-title font-weight-slight-bold ls-m text-{{ block.settings.color_text }} fs-{{ block.settings.fs_title | replace: '.', 'p' }}">{{ block.settings.title }}</h3>
+                                            {% if block.settings.button_text != blank %}
+                                            <span class="text-{{ block.settings.color_text }} text-normal fs-1p3 ml-lg-5 pl-3 pr-3 pt-1 pb-1" style="border: 1px dashed">{{ block.settings.button_text }}</span>
+                                            {% endif %}
+                                        </div>
+                                        <p class="text-{{ block.settings.color_text }} fs-{{ block.settings.fs_description | replace: '.', 'p' }} mb-0">{{ block.settings.description }}</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        {% endcase %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% schema %}
+{
+    "name": "2 Columns Banners",
+    "class": "index-section index-section--banners-2cols",
+    "settings": [
+        {
+            "type": "checkbox",
+            "id": "has_container",
+            "label": "Within container",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "no_gutter",
+            "label": "No gutter",
+            "default": false
+        },
+        {
+            "type": "header",
+            "content": "Spacing (large screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt_lg",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 8
+        },
+        {
+            "type": "range",
+            "id": "pt_lg",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb_lg",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb_lg",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "header",
+            "content": "Spacing (mobile screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "pt",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        }
+    ],
+    "blocks": [
+        {
+            "type": "banner_1",
+            "name": "Banner - Type 1",
+            "settings": [
+                {
+                    "type": "header",
+                    "content": "Position"
+                },
+                {
+                    "type": "select",
+                    "id": "position",
+                    "label": "Width on Desktop",
+                    "options": [
+                        {
+                            "value": "col_1",
+                            "label": "Left column"
+                        },
+                        {
+                            "value": "col_2",
+                            "label": "Right column"
+                        },
+                        {
+                            "value": "bottom",
+                            "label": "Bottom"
+                        }
+                    ],
+                    "default": "col_1"
+                },
+                {
+                    "type": "header",
+                    "content": "Width"
+                },
+                {
+                    "type": "select",
+                    "id": "width_destop",
+                    "label": "Width on Desktop",
+                    "options": [
+                        {
+                            "value": "6",
+                            "label": "50%"
+                        },
+                        {
+                            "value": "12",
+                            "label": "100%"
+                        }
+                    ],
+                    "default": "12"
+                },
+                {
+                    "type": "select",
+                    "id": "width_tablet",
+                    "label": "Width on Tablet",
+                    "options": [
+                        {
+                            "value": "6",
+                            "label": "50%"
+                        },
+                        {
+                            "value": "12",
+                            "label": "100%"
+                        }
+                    ],
+                    "default": "12"
+                },
+                {
+                    "type": "header",
+                    "content": "Content"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Background image"
+                },
+                {
+                    "type": "text",
+                    "id": "title",
+                    "label": "Title",
+                    "default": "Banner title"
+                },
+                {
+                    "type": "text",
+                    "id": "sub_title",
+                    "label": "Sub title"
+                },
+                {
+                    "type": "url",
+                    "id": "button_url",
+                    "label": "Button URL"
+                },
+                {
+                    "type": "header",
+                    "content": "Layout"
+                },
+                {
+                    "type": "select",
+                    "id": "content_hori_align",
+                    "label": "Content horizontal align",
+                    "options": [
+                        {
+                            "value": "x-left pl-8",
+                            "label": "Left"
+                        },
+                        {
+                            "value": "w-100 text-center",
+                            "label": "Center"
+                        },
+                        {
+                            "value": "x-right pr-8",
+                            "label": "Right"
+                        }
+                    ],
+                    "default": "w-100 text-center"
+                },
+                {
+                    "type": "select",
+                    "id": "content_vert_align",
+                    "label": "Content vertical align",
+                    "options": [
+                        {
+                            "value": "y-top pt-8",
+                            "label": "Top"
+                        },
+                        {
+                            "value": "y-50",
+                            "label": "Middle"
+                        },
+                        {
+                            "value": "y-bottom pb-8",
+                            "label": "Bottom"
+                        }
+                    ],
+                    "default": "y-50"
+                },
+                {
+                    "type": "header",
+                    "content": "Font size"
+                },
+                {
+                    "type": "range",
+                    "id": "fs_title",
+                    "label": "Title",
+                    "unit": "x",
+                    "min": 1,
+                    "max": 6,
+                    "step": 0.5,
+                    "default": 4
+                },
+                {
+                    "type": "range",
+                    "id": "fs_subtitle",
+                    "label": "Sub title",
+                    "unit": "x",
+                    "min": 1,
+                    "max": 6,
+                    "step": 0.5,
+                    "default": 2.5
+                },
+                {
+                    "type": "header",
+                    "content": "Color"
+                },
+                {
+                    "type": "select",
+                    "id": "color_text",
+                    "label": "Text color",
+                    "options": [
+                        {
+                            "value": "white",
+                            "label": "White",
+                            "group": "Basic"
+                        },
+                        {
+                            "value": "black",
+                            "label": "Black",
+                            "group": "Basic"
+                        },
+                        {
+                            "value": "primary",
+                            "label": "Primary",
+                            "group": "From settings"
+                        },
+                        {
+                            "value": "dark",
+                            "label": "Dark",
+                            "group": "From settings"
+                        }
+                    ],
+                    "default": "white"
+                }
+            ]
+        },
+        {
+            "type": "banner_2",
+            "name": "Banner - Type 2",
+            "settings": [
+                {
+                    "type": "header",
+                    "content": "Position"
+                },
+                {
+                    "type": "select",
+                    "id": "position",
+                    "label": "Width on Desktop",
+                    "options": [
+                        {
+                            "value": "col_1",
+                            "label": "Left column"
+                        },
+                        {
+                            "value": "col_2",
+                            "label": "Right column"
+                        },
+                        {
+                            "value": "bottom",
+                            "label": "Bottom"
+                        }
+                    ],
+                    "default": "col_1"
+                },
+                {
+                    "type": "header",
+                    "content": "Width"
+                },
+                {
+                    "type": "select",
+                    "id": "width_destop",
+                    "label": "Width on Desktop",
+                    "options": [
+                        {
+                            "value": "6",
+                            "label": "50%"
+                        },
+                        {
+                            "value": "12",
+                            "label": "100%"
+                        }
+                    ],
+                    "default": "12"
+                },
+                {
+                    "type": "select",
+                    "id": "width_tablet",
+                    "label": "Width on Tablet",
+                    "options": [
+                        {
+                            "value": "6",
+                            "label": "50%"
+                        },
+                        {
+                            "value": "12",
+                            "label": "100%"
+                        }
+                    ],
+                    "default": "12"
+                },
+                {
+                    "type": "header",
+                    "content": "Content"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Background image"
+                },
+                {
+                    "type": "textarea",
+                    "id": "title",
+                    "label": "Title",
+                    "default": "Banner title"
+                },
+                {
+                    "type": "textarea",
+                    "id": "description",
+                    "label": "Description"
+                },
+                {
+                    "type": "text",
+                    "id": "button_text",
+                    "label": "Button text",
+                    "default": "Shop now"
+                },
+                {
+                    "type": "url",
+                    "id": "button_url",
+                    "label": "Button URL"
+                },
+                {
+                    "type": "header",
+                    "content": "Layout"
+                },
+                {
+                    "type": "select",
+                    "id": "content_hori_align",
+                    "label": "Content alignment",
+                    "options": [
+                        {
+                            "value": "left",
+                            "label": "Left"
+                        },
+                        {
+                            "value": "center",
+                            "label": "Center"
+                        },
+                        {
+                            "value": "right",
+                            "label": "Right"
+                        }
+                    ],
+                    "default": "left"
+                },
+                {
+                    "type": "select",
+                    "id": "content_vert_align",
+                    "label": "Content vertical align",
+                    "options": [
+                        {
+                            "value": "y-top pt-9",
+                            "label": "Top"
+                        },
+                        {
+                            "value": "y-50",
+                            "label": "Middle"
+                        },
+                        {
+                            "value": "y-bottom pb-9",
+                            "label": "Bottom"
+                        }
+                    ],
+                    "default": "y-50"
+                },
+                {
+                    "type": "header",
+                    "content": "Font size"
+                },
+                {
+                    "type": "range",
+                    "id": "fs_title",
+                    "label": "Title",
+                    "unit": "x",
+                    "min": 1,
+                    "max": 6,
+                    "step": 0.5,
+                    "default": 5.5
+                },
+                {
+                    "type": "range",
+                    "id": "fs_description",
+                    "label": "Description",
+                    "unit": "x",
+                    "min": 1,
+                    "max": 6,
+                    "step": 0.5,
+                    "default": 2.5
+                },
+                {
+                    "type": "header",
+                    "content": "Color"
+                },
+                {
+                    "type": "select",
+                    "id": "color_text",
+                    "label": "Text color",
+                    "options": [
+                        {
+                            "value": "white",
+                            "label": "White",
+                            "group": "Basic"
+                        },
+                        {
+                            "value": "black",
+                            "label": "Black",
+                            "group": "Basic"
+                        },
+                        {
+                            "value": "primary",
+                            "label": "Primary",
+                            "group": "From settings"
+                        },
+                        {
+                            "value": "dark",
+                            "label": "Dark",
+                            "group": "From settings"
+                        }
+                    ],
+                    "default": "white"
+                }
+            ]
+        },
+        {
+            "type": "banner_3",
+            "name": "Banner - Type 3",
+            "settings": [
+                {
+                    "type": "header",
+                    "content": "Position"
+                },
+                {
+                    "type": "select",
+                    "id": "position",
+                    "label": "Width on Desktop",
+                    "options": [
+                        {
+                            "value": "col_1",
+                            "label": "Left column"
+                        },
+                        {
+                            "value": "col_2",
+                            "label": "Right column"
+                        },
+                        {
+                            "value": "bottom",
+                            "label": "Bottom"
+                        }
+                    ],
+                    "default": "col_1"
+                },
+                {
+                    "type": "header",
+                    "content": "Width"
+                },
+                {
+                    "type": "select",
+                    "id": "width_destop",
+                    "label": "Width on Desktop",
+                    "options": [
+                        {
+                            "value": "6",
+                            "label": "50%"
+                        },
+                        {
+                            "value": "12",
+                            "label": "100%"
+                        }
+                    ],
+                    "default": "12"
+                },
+                {
+                    "type": "select",
+                    "id": "width_tablet",
+                    "label": "Width on Tablet",
+                    "options": [
+                        {
+                            "value": "6",
+                            "label": "50%"
+                        },
+                        {
+                            "value": "12",
+                            "label": "100%"
+                        }
+                    ],
+                    "default": "12"
+                },
+                {
+                    "type": "header",
+                    "content": "Content"
+                },
+                {
+                    "type": "color",
+                    "id": "color_bg",
+                    "label": "Background color",
+                    "default": "#FFEEEF"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Background image"
+                },
+                {
+                    "type": "textarea",
+                    "id": "title",
+                    "label": "Title",
+                    "default": "Banner title"
+                },
+                {
+                    "type": "textarea",
+                    "id": "description",
+                    "label": "Description"
+                },
+                {
+                    "type": "text",
+                    "id": "button_text",
+                    "label": "Button text",
+                    "default": "Shop now"
+                },
+                {
+                    "type": "url",
+                    "id": "button_url",
+                    "label": "Button URL"
+                },
+                {
+                    "type": "header",
+                    "content": "Layout"
+                },
+                {
+                    "type": "header",
+                    "content": "Font size"
+                },
+                {
+                    "type": "range",
+                    "id": "fs_title",
+                    "label": "Title",
+                    "unit": "x",
+                    "min": 1,
+                    "max": 6,
+                    "step": 0.5,
+                    "default": 5.5
+                },
+                {
+                    "type": "range",
+                    "id": "fs_description",
+                    "label": "Description",
+                    "unit": "x",
+                    "min": 1,
+                    "max": 6,
+                    "step": 0.5,
+                    "default": 2.5
+                },
+                {
+                    "type": "header",
+                    "content": "Color"
+                },
+                {
+                    "type": "select",
+                    "id": "color_text",
+                    "label": "Text color",
+                    "options": [
+                        {
+                            "value": "white",
+                            "label": "White",
+                            "group": "Basic"
+                        },
+                        {
+                            "value": "black",
+                            "label": "Black",
+                            "group": "Basic"
+                        },
+                        {
+                            "value": "primary",
+                            "label": "Primary",
+                            "group": "From settings"
+                        },
+                        {
+                            "value": "dark",
+                            "label": "Dark",
+                            "group": "From settings"
+                        }
+                    ],
+                    "default": "white"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "2 Columns Banners",
+            "category": "Fastor",
+            "blocks": [
+                {
+                    "type": "banner_1",
+                    "settings": {
+                        "position": "col_1"
+                    }
+                },
+                {
+                    "type": "banner_1",
+                    "settings": {
+                        "position": "col_2"
+                    }
+                },
+                {
+                    "type": "banner_1",
+                    "settings": {
+                        "position": "bottom"
+                    }
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

@@ -1,0 +1,1 @@
+{"sections":{"cart_page":{"type":"cart-template","settings":{"cart_ajax_enable":true,"cart_coupon_enable":true,"cart_notes_enable":true,"shipping_calculator":"Disabled","shipping_calculator_heading":"","shipping_calculator_default_country":"","shipping_calculator_submit_button_label":"","shipping_calculator_submit_button_label_disabled":""}}},"order":["cart_page"]}

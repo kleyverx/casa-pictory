@@ -1,0 +1,228 @@
+/* Custom SVG Text Banner Section Styles */
+.custom-svg-text-banner {
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-svg-text-banner .background-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.custom-svg-text-banner .container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Desktop Layout - Horizontal Blocks */
+.blocks-horizontal-container {
+    gap: 2rem;
+    min-height: 200px;
+}
+
+.blocks-horizontal-container .block-item {
+    flex: 1;
+    min-width: 200px;
+    max-width: 400px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Mobile Layout - Carousel */
+.blocks-carousel-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.carousel-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.3s ease-in-out;
+    width: 100%;
+}
+
+.carousel-slide {
+    min-width: 100%;
+    flex-shrink: 0;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Carousel Controls - Owl Carousel Style Dots (matching theme.css) */
+.owl-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5rem;
+    padding: 0 1rem;
+}
+
+.owl-dot {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+}
+
+.owl-dot span {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    background-color: transparent;
+    margin: 5px;
+    transition: all 0.3s ease;
+    transform: scale(1);
+}
+
+.owl-dot:hover span {
+    transform: scale(1.2);
+    border-color: var(--color-primary);
+}
+
+.owl-dot.active span {
+    background-color: var(--color-primary);
+    transform: scale(1.3);
+    border-color: var(--color-primary);
+    position: relative;
+}
+
+.owl-dot.active span::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: rgba(var(--color-primary-rgb), 0.3);
+    transform: translate(-50%, -50%);
+    animation: dotPulse 4s infinite;
+}
+
+.owl-dot.active:hover span {
+    transform: scale(1.4);
+}
+
+/* SVG Container Styles */
+.svg-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.svg-custom-code,
+.svg-image-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.svg-custom-code svg,
+.svg-image {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Typography Styles */
+.custom-title {
+    margin: 0;
+    font-family: inherit;
+}
+
+.custom-subtitle {
+    margin: 0;
+    font-family: inherit;
+}
+
+.custom-description {
+    margin: 0;
+    font-family: "bree", var(--font-stack-first), Arial, sans-serif;
+}
+
+/* Button Styles */
+.custom-btn {
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.custom-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
+    .blocks-horizontal-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .blocks-horizontal-container .block-item {
+        max-width: 100%;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .carousel-slide {
+        padding: 1.5rem 0.5rem;
+    }
+    
+    .owl-dots {
+        margin-top: 1rem;
+    }
+    
+    .owl-dot span {
+        width: 8px;
+        height: 8px;
+        margin: 3px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .carousel-slide {
+        padding: 1rem 0.25rem;
+    }
+}
+
+/* Dot Pulse Animation - Same as home-benefits section */
+@keyframes dotPulse {
+    from {
+        opacity: 1;
+        transform: scale(0.2);
+    }
+    to {
+        opacity: 0;
+        transform: scale(1);
+    }
+}
+
+.dotPulse {
+    animation-name: dotPulse;
+    animation-iteration-count: infinite;
+    animation-duration: 4s;
+}

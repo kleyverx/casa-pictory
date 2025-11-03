@@ -1,0 +1,144 @@
+{%-if function == "item"-%}
+{%- assign swatch_file_extension = 'png' -%}
+{%- assign is_color = false -%}{%- assign downcased_option = option_drop.name | downcase  -%}
+{%- if downcased_option == "color" -%}{%- assign is_color = true -%}{%- endif -%}
+{% assign singleOptionSelector = "SingleOptionSelectorItem-" | append: forloop.index0 %}
+<div class="product-form product-variations product-form__item" >
+    <label class="hide label--hidden" for="{{singleOptionSelector}}">
+        <b class="product_section-title">{{ option.name }}</b>
+    </label>
+    <div class="select-box hide">
+        <select class="form-control {{singleOptionSelector}} single-option-selector single-option-selector-item product-form__input" data-index="option{{ forloop.index }}">
+            {% for value in option.values %}
+            <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="wrapper-swatches-item wrapper-swatches swatch swatch-{{downcased_option}} ">
+        {%- for value in option_drop.values -%}
+        {%- assign encode_value = value | handleize -%}
+        {%- assign product_available = "available" -%}
+        {%- if product.options.size == 1 -%}
+        {%- assign product_available = product.variants[forloop.index0].available -%}{%- endif %}
+        {%- if is_color -%}
+        {%- assign color_swatch_fallback = value | split: ' ' | last | handle -%}
+        {%- assign style_color = "background-color:" | append: color_swatch_fallback -%}
+        {%- assign swatch_image_url = value | handle | append: '.' | append: swatch_file_extension | asset_img_url: '150x' | prepend: 'https:' | split: '?' | first -%}
+        {%- if settings.product_swatch_color_advanced -%}
+        {%- if product.metafields.texture[encode_value] != blank -%}
+        {%- assign swatch_image_url = product.metafields.texture[encode_value] | asset_img_url: "150x" -%}
+        {%- else -%}
+        {%- assign select_img_variant = "" -%}
+        {%- assign variant_option_index = "option" | append: option_index -%}
+        {%- for variant in product.variants %}
+        {%- if variant.available and variant[variant_option_index] == value and variant.featured_image != null -%}
+        {%- assign select_img_variant = variant -%}
+        {%- break -%}
+        {%- endif -%}
+        {%- endfor -%}
+        {%- if select_img_variant != ""  and select_img_variant.featured_image != null -%}
+        {%- assign swatch_image_url = select_img_variant.featured_image | img_url: "150x" -%}
+        {%- endif -%}
+        {%- endif -%}
+        {%- endif -%}
+        {%- endif -%}
+        <div class="swatch-element {{downcased_option}}-{{encode_value}} {{product_available}}">
+            <label
+                for="swatch-{{ option_index0 }}-{{encode_value}}-{{product.id}}{%- if sign != blank %}-{{sign}}{% endif -%}"
+                class="{% if is_color %}swatch-style-img{%else%}swatch-style-box{% endif %} {% if settings.product_swatch_color_advanced and is_color %}swatch_color_advanced{% endif %} {% if option_drop.selected_value == value %}label-selected{% endif %}"
+                title="{{value}}">
+                <input {% if option_drop.selected_value == value %} checked="checked" {% endif %}
+                    data-id="#{{ singleOptionSelector }}" 
+                    data-value="{{value}}"
+                    class="swatch-radio-item swatch-radio {% if option_drop.selected_value == value %}selected{% endif %}"
+                    id="swatch-{{ option_index0 }}-{{encode_value}}-{{product.id}}{%- if sign != blank %}-{{sign}}{% endif -%}" type="radio" data-swatch="{{downcased_option}}"
+                    data-poption="{{option_index0}}" name="option-{{option_index0}}" value="{{value}}">
+                    <span class="soldout-image"></span>
+                    {%- if is_color -%}
+                    <i class="lazyload" style="{{style_color}}"
+                    data-bg="{{swatch_image_url}}"></i>
+                    {%- else -%}
+                    {{- value -}}
+                    {%- endif -%}
+                </label>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{%-else-%}
+{%- assign swatch_file_extension = 'png' -%}
+{%- assign is_color = false -%}{%- assign downcased_option = option_drop.name | downcase  -%}
+{%- if downcased_option == "color" -%}{%- assign is_color = true -%}{%- endif -%}
+{% assign singleOptionSelector = "SingleOptionSelector-"| append: section_id | append: "-"| append: forloop.index0 %}
+<div class="mb-4 product-form product-{{ option.name | handleize }}">
+    <label {% if option.name == 'default' %}class="hide" {% endif %}for="{{singleOptionSelector}}">
+        {{ option.name }}
+    </label>
+    
+    <div class="d-flex flex-wrap">
+        <div class="wrapper-swatches-{{section_id}} wrapper-swatches swatch swatch-{{downcased_option}} mr-5">
+                <select class="single-option-selector single-option-selector-{{ section_id }} product-form__input w-100 hide custom-select"
+                    id="{{ singleOptionSelector }}"
+                    data-index="option{{ forloop.index }}">
+                    {% for value in option.values %}
+                    {%- assign encode_value = value | handleize -%}
+                    <option data-swatch="{{downcased_option}}-{{encode_value}}" value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+                {%- for value in option_drop.values -%}
+                {%- assign encode_value = value | handleize -%}
+                {%- assign product_available = "available" -%}
+                {%- if product.options.size == 1 -%}
+                {%- assign product_available = product.variants[forloop.index0].available -%}{%- endif %}
+                {%- if is_color -%}
+                {%- assign color_swatch_fallback = value | split: ' ' | last | handle -%}
+                {%- assign style_color = "background-color:" | append: color_swatch_fallback -%}
+                {%- assign swatch_image_url = value | handle | append: '.' | append: swatch_file_extension | asset_img_url: '150x' | prepend: 'https:' | split: '?' | first -%}
+                {%- if settings.product_swatch_color_advanced -%}
+                {%- if product.metafields.texture[encode_value] != blank -%}
+                {%- assign swatch_image_url = product.metafields.texture[encode_value] | asset_img_url:"150x" -%}
+                {%- else -%}
+                {%- assign select_img_variant = "" -%}
+                {%- assign variant_option_index = "option" | append: option_index -%}
+                {%- for variant in product.variants %}
+                {%- if variant.available and variant[variant_option_index] == value and variant.featured_image != null -%}
+                {%- assign select_img_variant = variant -%}
+                {%- break -%}
+                {%- endif -%}
+                {%- endfor -%}
+                {%- if select_img_variant != ""  and select_img_variant.featured_image != null -%}
+                {%- assign swatch_image_url = select_img_variant.featured_image | img_url:"150x" -%}
+                {%- endif -%}
+                {%- endif -%}
+                {%- endif -%}
+                {%- endif -%}
+                <div class="swatch-element {{downcased_option}}-{{encode_value}} {{product_available}}">
+                    <label
+                        for="swatch-{{ option_index0 }}-{{encode_value}}"
+                        class="{% if is_color %}swatch-style-img{%else%}swatch-style-box{% endif %} {% if settings.product_swatch_color_advanced and is_color %}swatch_color_advanced{% endif %} {% if option_drop.selected_value == value %}label-selected{% endif %}"
+                        title="{{value}}">
+                        <input {% if option_drop.selected_value == value %} checked="checked" {% endif %}
+                            data-id="#{{ singleOptionSelector }}" 
+                            data-value="{{value}}"
+                            class="swatch-radio-{{ section_id }} swatch-radio {% if option_drop.selected_value == value %}selected{% endif %}"
+                            id="swatch-{{ option_index0 }}-{{encode_value}}" type="radio" data-swatch="{{downcased_option}}"
+                            data-poption="{{option_index0}}" name="option-{{option_index0}}" value="{{value}}">
+                            <span class="soldout-image"></span>
+                            {%- if is_color -%}
+                            <i class="lazyload" style="{{style_color}}"
+                            data-bg="{{swatch_image_url}}">
+                                <svg width="9" height="7" viewBox="0 0 9 7" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M9 1.21877L3.2004 7L0 3.79858L1.22477 2.58195L3.20253 4.56034L7.77736 0L9 1.21877Z" />
+                                </svg>
+                                </i>
+                            {%- else -%}
+                            {{- value -}}
+                            {%- endif -%}
+                        </label>
+                </div>
+                {% endfor %}
+        </div>
+        {%- render "product-sizechart" ,  option:option, _class: "" -%}
+    </div>
+</div>
+{%-endif-%}

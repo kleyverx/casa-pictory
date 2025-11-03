@@ -1,0 +1,640 @@
+<section class="intro-section {% if section.settings.has_container %}container{% endif %} mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}}" id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="slideshow-floating-section">
+  {% if section.blocks.size > 0 %}
+  <div id="slider-{{ section.id }}" class="owl-carousel owl-theme row owl-dot-inner owl-dot-dark intro-slider animation-slider cols-1 gutter-no"
+    data-owl-options="{
+      'nav': true,
+      'dots': true,
+      'loop': {{ section.settings.slider_loop}},
+      'autoplayTimeout': {{section.settings.slider_autoplaytimeout | times:  1000 }},
+      'autoplay': {{ section.settings.slider_autoplay }},
+      'items': 1,
+      'responsive': {
+        '992': {
+            'dots': {{ section.settings.slider_dots }},
+            'nav': {{ section.settings.slider_nav }}
+        }
+    }
+  }">
+      {% for block in section.blocks %}
+      {% assign slide_img = block.settings.image | img_url: '1903x630', scale: 2 %}
+      {% assign mobile_slide_img = slide_img %}
+      {% if block.settings.mobile_image != blank %}
+      {% assign mobile_slide_img = block.settings.mobile_image | img_url: 'master' %}
+      {% endif %}
+      {% case block.type %}
+      {% when 'slide_image_left' %}
+      <div class="rt-banner banner-fixed intro-slide1 slideshow__slide--{{ block.id }}" data-slider-slide-index="{{ forloop.index0 }}" style="{% if block.settings.image == blank %}min-height:550px{% endif %}" {{ block.shopify_attributes }}>
+          <span class="floating-mask" style="background-color:{{block.settings.color_bg}}"></span>
+          {% if block.settings.image != blank %}
+          <figure>
+              
+            <picture class="slide-picture-wrap">
+              <source srcset="{{ slide_img }}"
+                      media="(min-width: 768px)">
+              <img src="{{ mobile_slide_img }}"  alt="intro-banner" width="1903" height="630" />
+            </picture>
+          </figure>
+          {% endif %}
+          <div class="container">
+              <div class="banner-content y-50">
+                  {% if block.settings.title != blank %}
+                  <h2 class="banner-title font-weight-slight-bold text-{{ block.settings.color_title }} ls-m mb-4 slide-animate fs-mobile-4"
+                      data-animation-options="{'name': 'fadeInUpShorter', 'duration': '1.2s', 'delay': '1s'}">{{ block.settings.title }}</h2>
+                  {% endif %}
+                  {% if block.settings.description != blank %}
+                  <p class="slide-animate ls-m text-{{ block.settings.color_description }} font-primary mb-3"
+                      data-animation-options="{'name': 'fadeInUpShorter', 'duration': '1.2s', 'delay': '1s'}">
+                      {{ block.settings.description }}</p>
+                  {% endif %}
+                  {% if block.settings.button_text != blank %}
+                  <a href="{{ block.settings.button_url | default: 'javascript:void(0);' }}" class="btn btn-primary btn-shadow-lg btn-ellipse slide-animate text-normal"
+                      data-animation-options="{'name': 'fadeInUpShorter', 'duration': '1s', 'delay': '1.8s'}">{{ block.settings.button_text }}</a>
+                  {% endif %}
+              </div>
+          </div>
+      </div>
+      {% when 'slide_image_right' %}
+      <div class="rt-banner banner-fixed intro-slide2 slideshow__slide--{{ block.id }}" data-slider-slide-index="{{ forloop.index0 }}" style="background-color:{{block.settings.color_bg}};{% if block.settings.image == blank %}min-height:550px{% endif %}" {{ block.shopify_attributes }}>
+        {% if block.settings.image != blank %}
+        <figure>
+          
+          <picture class="slide-picture-wrap">
+            <source srcset="{{ slide_img }}"
+                    media="(min-width: 768px)">
+            <img src="{{ mobile_slide_img }}"  alt="intro-banner" width="1903" height="630" />
+          </picture>
+        </figure>
+        {% endif %}
+        <div class="container">
+            <div class="banner-content y-50 ml-auto text-right">
+                {% if block.settings.title != blank %}
+                <h2 class="banner-title mb-2 d-inline-block font-weight-bold text-{{ block.settings.color_title }} slide-animate fs-mobile-4"
+                    data-animation-options="{'name': 'fadeInRight', 'duration': '1.2s', 'delay': '.5s'}">
+                    {{ block.settings.title }}</h2>
+                {% endif %}
+                {% if block.settings.description != blank %}
+                <p class="slide-animate font-primary ls-s text-{{ block.settings.color_description }} mb-4"
+                    data-animation-options="{'name': 'fadeInUp', 'duration': '1s', 'delay': '1.2s'}">
+                    {{ block.settings.description }}</p>
+                {% else %}
+                <p></p>
+                {% endif %}
+                {% if block.settings.button_text != blank %}
+                <a href="{{ block.settings.button_url | default: 'javascript:void(0);' }}" class="btn btn-primary btn-shadow-lg btn-ellipse slide-animate text-normal"
+                    data-animation-options="{'name': 'fadeInUp', 'duration': '1s', 'delay': '1.4s'}">{{ block.settings.button_text }}</a>
+                {% endif %}
+            </div>
+        </div>
+      </div>
+      {% when 'slide_image_center' %}
+      <div class="rt-banner banner-fixed intro-slide3 slideshow__slide--{{ block.id }}" data-slider-slide-index="{{ forloop.index0 }}" style="background-color:{{block.settings.color_bg}};{% if block.settings.image == blank %}min-height:550px{% endif %}" {{ block.shopify_attributes }}>
+        {% if block.settings.image != blank %}
+        <figure>
+          
+          <picture class="slide-picture-wrap">
+            <source srcset="{{ slide_img }}"
+                    media="(min-width: 768px)">
+            <img src="{{ mobile_slide_img }}"  alt="intro-banner" width="1903" height="630" />
+          </picture>
+        </figure>
+        {% endif %}
+        <div class="container">
+            <div class="banner-content x-50 y-50 text-center">
+                {% if block.settings.title != blank %}
+                <h2 class="banner-title mb-3 text-{{ block.settings.color_title }} font-weight-bold ls-m slide-animate fs-mobile-4"
+                    data-animation-options="{'name': 'fadeInUp', 'duration': '.7s', 'delay': '.5s'}">
+                    {{ block.settings.title }}</h2>
+                {% endif %}
+                {% if block.settings.description != blank %}
+                <p class="slide-animate mb-5 text-{{ block.settings.color_description }} ls-s font-primary "
+                    data-animation-options="{'name': 'fadeInUp', 'duration': '1s', 'delay': '.8s'}">
+                    {{ block.settings.description }}</p>
+                {% endif %}
+                {% if block.settings.button_text != blank %}
+                <a href="{{ block.settings.button_url | default: 'javascript:void(0);' }}" class="btn btn-primary btn-shadow-lg btn-ellipse slide-animate text-normal"
+                    data-animation-options="{'name': 'fadeInLeft', 'duration': '1s', 'delay': '1.5s'}">{{ block.settings.button_text }}</a>
+                {% endif %}
+            </div>
+        </div>
+      </div>
+      {% endcase %}
+      {% endfor %}
+  </div>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Floating Slideshow",
+  "class": "index-section index-section--slideshow-floating",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "has_container",
+      "label": "Within container",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Slider options"
+    },
+    {
+      "type": "checkbox",
+      "id": "slider_nav",
+      "label": "Slider arrow",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "slider_dots",
+      "label": "Slider dots",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "slider_loop",
+      "label": "Slider loop",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "slider_autoplay",
+      "label": "Slider autoplay",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "slider_autoplaytimeout",
+      "label": "Autoplay Timeout",
+      "default": 5,
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "sec"
+    },
+    {
+        "type": "header",
+        "content": "Spacing (large screen)"
+    },
+    {
+        "type": "range",
+        "id": "mt_lg",
+        "label": "Margin top",
+        "unit": "x",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "default": 0
+    },
+    {
+        "type": "range",
+        "id": "pt_lg",
+        "label": "Padding top",
+        "unit": "x",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "default": 0
+    },
+    {
+        "type": "range",
+        "id": "mb_lg",
+        "label": "Margin bottom",
+        "unit": "x",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "default": 0
+    },
+    {
+        "type": "range",
+        "id": "pb_lg",
+        "label": "Padding bottom",
+        "unit": "x",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "default": 10
+    },
+    {
+        "type": "header",
+        "content": "Spacing (mobile screen)"
+    },
+    {
+        "type": "range",
+        "id": "mt",
+        "label": "Margin top",
+        "unit": "x",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "default": 0
+    },
+    {
+        "type": "range",
+        "id": "pt",
+        "label": "Padding top",
+        "unit": "x",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "default": 0
+    },
+    {
+        "type": "range",
+        "id": "mb",
+        "label": "Margin bottom",
+        "unit": "x",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "default": 0
+    },
+    {
+        "type": "range",
+        "id": "pb",
+        "label": "Padding bottom",
+        "unit": "x",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide_image_left",
+      "name": "Slide - Type 1",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Background"
+        },
+        {
+          "type": "color",
+          "id": "color_bg",
+          "label": "Color",
+          "default": "#999da4"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_image",
+          "label": "Mobile Image"
+        },
+        {
+          "type": "header",
+          "content": "Title"
+        },
+        {
+          "type": "textarea",
+          "id": "title",
+          "label": "Text",
+          "default": "Banner title"
+        },
+        {
+          "type": "select",
+          "id": "color_title",
+          "label": "Color",
+          "options": [
+            {
+              "value": "white",
+              "label": "White",
+              "group": "Basic"
+            },
+            {
+              "value": "black",
+              "label": "Black",
+              "group": "Basic"
+            },
+            {
+              "value": "primary",
+              "label": "Primary",
+              "group": "From settings"
+            },
+            {
+              "value": "dark",
+              "label": "Dark",
+              "group": "From settings"
+            }
+          ],
+          "default": "white"
+        },
+        {
+          "type": "header",
+          "content": "Description"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Text"
+        },
+        {
+          "type": "select",
+          "id": "color_description",
+          "label": "Color",
+          "options": [
+            {
+              "value": "white",
+              "label": "White",
+              "group": "Basic"
+            },
+            {
+              "value": "black",
+              "label": "Black",
+              "group": "Basic"
+            },
+            {
+              "value": "primary",
+              "label": "Primary",
+              "group": "From settings"
+            },
+            {
+              "value": "dark",
+              "label": "Dark",
+              "group": "From settings"
+            }
+          ],
+          "default": "white"
+        },
+        {
+          "type": "header",
+          "content": "Button"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Text",
+          "default": "Button text"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "URL"
+        }
+      ]
+    },
+    {
+      "type": "slide_image_right",
+      "name": "Slide - Type 2",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Background"
+        },
+        {
+          "type": "color",
+          "id": "color_bg",
+          "label": "Color",
+          "default": "#999da4"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_image",
+          "label": "Mobile Image"
+        },
+        {
+          "type": "header",
+          "content": "Title"
+        },
+        {
+          "type": "textarea",
+          "id": "title",
+          "label": "Text",
+          "default": "Banner title"
+        },
+        {
+          "type": "select",
+          "id": "color_title",
+          "label": "Color",
+          "options": [
+            {
+              "value": "white",
+              "label": "White",
+              "group": "Basic"
+            },
+            {
+              "value": "black",
+              "label": "Black",
+              "group": "Basic"
+            },
+            {
+              "value": "primary",
+              "label": "Primary",
+              "group": "From settings"
+            },
+            {
+              "value": "dark",
+              "label": "Dark",
+              "group": "From settings"
+            }
+          ],
+          "default": "white"
+        },
+        {
+          "type": "header",
+          "content": "Description"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Text"
+        },
+        {
+          "type": "select",
+          "id": "color_description",
+          "label": "Color",
+          "options": [
+            {
+              "value": "white",
+              "label": "White",
+              "group": "Basic"
+            },
+            {
+              "value": "black",
+              "label": "Black",
+              "group": "Basic"
+            },
+            {
+              "value": "primary",
+              "label": "Primary",
+              "group": "From settings"
+            },
+            {
+              "value": "dark",
+              "label": "Dark",
+              "group": "From settings"
+            }
+          ],
+          "default": "white"
+        },
+        {
+          "type": "header",
+          "content": "Button"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Text",
+          "default": "Button text"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "URL"
+        }
+      ]
+    },
+    {
+      "type": "slide_image_center",
+      "name": "Slide - Type 3",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Background"
+        },
+        {
+          "type": "color",
+          "id": "color_bg",
+          "label": "Color",
+          "default": "#999da4"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_image",
+          "label": "Mobile Image"
+        },
+        {
+          "type": "header",
+          "content": "Title"
+        },
+        {
+          "type": "textarea",
+          "id": "title",
+          "label": "Text",
+          "default": "Banner title"
+        },
+        {
+          "type": "select",
+          "id": "color_title",
+          "label": "Color",
+          "options": [
+            {
+              "value": "white",
+              "label": "White",
+              "group": "Basic"
+            },
+            {
+              "value": "black",
+              "label": "Black",
+              "group": "Basic"
+            },
+            {
+              "value": "primary",
+              "label": "Primary",
+              "group": "From settings"
+            },
+            {
+              "value": "dark",
+              "label": "Dark",
+              "group": "From settings"
+            }
+          ],
+          "default": "white"
+        },
+        {
+          "type": "header",
+          "content": "Description"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Text"
+        },
+        {
+          "type": "select",
+          "id": "color_description",
+          "label": "Color",
+          "options": [
+            {
+              "value": "white",
+              "label": "White",
+              "group": "Basic"
+            },
+            {
+              "value": "black",
+              "label": "Black",
+              "group": "Basic"
+            },
+            {
+              "value": "primary",
+              "label": "Primary",
+              "group": "From settings"
+            },
+            {
+              "value": "dark",
+              "label": "Dark",
+              "group": "From settings"
+            }
+          ],
+          "default": "white"
+        },
+        {
+          "type": "header",
+          "content": "Button"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Text",
+          "default": "Button Text"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Floating Slideshow",
+      "category": "Fastor",
+      "settings": {
+
+      },
+      "blocks": [
+        {
+          "type": "slide_image_left"
+        },
+        {
+          "type": "slide_image_right"
+        },
+        {
+          "type": "slide_image_center"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

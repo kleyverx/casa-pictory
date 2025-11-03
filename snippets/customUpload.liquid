@@ -1,0 +1,26 @@
+{% assign url = product.selected_or_first_available_variant %}
+{% if shop.metafields.imageUploader %}
+  <link rel="stylesheet" href="https://cdn.littlebesidesme.com/PIU/main.css">
+  <script>
+    window.imageUploader = window.imageUploader || {};
+    window.imageUploader.domain = {{shop.permanent_domain | json}}
+    window.imageUploader.settings = {% if shop.metafields.imageUploader.settings == blank %}{}{% else %}{{ shop.metafields.imageUploader.settings }}{% endif %};
+  </script>
+
+  {% if template contains 'product' %}
+    <script>
+      window.imageUploader.meta = {};
+      window.imageUploader.meta.product = {{product | json}};
+      window.imageUploader.meta.collections = {{ product.collections | json }}
+    </script> 
+  {% endif %}
+
+  {% if shop.metafields.imageUploader.settingScript %}
+    <script type="text/javascript" async src={{shop.metafields.imageUploader.settingScript}}></script>
+  {% endif %}
+  {% if shop.metafields.imageUploader.longSettings != blank %}
+    <script>
+      window.imageUploader.longSettings = {{shop.metafields.imageUploader.longSettings}}
+    </script>
+  {% endif %}
+{% endif %}

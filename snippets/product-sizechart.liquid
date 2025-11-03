@@ -1,0 +1,5 @@
+
+{% if option.name contains "Size" and settings.sizechart != blank %}
+{% assign sizechart_page = pages[settings.sizechart] %}
+<a href="{{sizechart_page.url}}" data-handle="{{settings.sizechart}}" data-wrapper="page-popup-wrapper" class="{{_class}} fastor-popup-open size-guide"><i class=""></i><span>{{ "products.product.size_guide" | t }}</span></a>
+{% endif %}

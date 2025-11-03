@@ -1,0 +1,1139 @@
+{%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
+{%- assign pUrl = contentForQuerystring | split:'"pageurl":"' | last | split:'"' | first | split:'.myshopify.com' | last |
+   replace:'\/','/' | 
+   replace:'%20',' ' | 
+   replace:'\u0026','&'
+-%}
+
+{%- assign limit = section.settings.limit -%}
+{%- assign aView =  pUrl | split : "limit=" -%}
+{%- if aView.size > 1 and aView[1] != blank-%}
+{%- assign limit = aView[1] | plus: 0  -%}
+{%- endif -%}
+{%- assign limit_string = limit | append: '' %}
+
+{%- assign layout = section.settings.layout %}
+{%- assign aLayout =  pUrl | split : "lo=" -%}
+{%- if aLayout.size > 1 and aLayout[1] != blank-%}
+{%- assign aLayout = aLayout[1] | split: "&" -%}
+{%- assign layout = aLayout[0] -%}
+{%- endif -%}
+
+{%- assign actionType = '' %}
+{%- assign aActionType =  pUrl | split : "act=" -%}
+{%- if aActionType.size > 1 and aActionType[1] != blank-%}
+{%- assign aActionType = aActionType[1] | split: "&" -%}
+{%- assign actionType = aActionType[0] -%}
+{%- endif -%}
+
+{% paginate collection.products by limit %}
+
+<div class="container{%-if section.settings.collection_fullwidth-%}-fluid{%-endif-%}">
+	{% if section.settings.show_collection_image and collection.image != blank %}
+	<div class="collection-image"><img class="lazyload w-100 d-block"
+			data-src="{{ collection.image | img_url: "master" }}" /></div>
+	{% endif %}
+	<div class="loaded" id="section-{{ section.id }}" data-section-id="{{ section.id }}"
+		data-section-type="collection-template" data-collection-handle="{{ collection.handle }}">
+		<ul class="w-100 pt-2 pb-2 breadcrumb">
+			<li><a href="{{ shop.url }}">{{ 'homepage.general.title' | t }}</a></li>
+			<li><a href="{{ shop.url }}/collections">{{ 'collections.general.shop' | t }}</a></li>
+			<li>{{ collection.title }}</li>
+		</ul>
+		{% if section.settings.banner_top %}
+		<div class="collection-promotion-banner banner-mass">
+			<div class="col-12 mb-4 appear-animate" data-animation-options="{
+          'name': '{% cycle "fadeInRightShorter", "fadeInLeftShorter" %}',
+          'delay': '.2s'
+            }">
+				<div
+					class="rt-banner banner-fixed banner_2 content-{{ section.settings.banner_content_hori_align}} hover-zoom hover-gloom appear-animate">
+					{% if section.settings.banner_image != blank %}
+					<figure class="d-flex">
+						<img src="{{ section.settings.banner_image | img_url: 'master' }}" alt="banner" />
+					</figure>
+					{% else %}
+					<figure style="min-height:400px;background-color:#ccc;"></figure>
+					{% endif %}
+					<div class="banner-content {{ section.settings.banner_content_vert_align }}">
+						<div class="appear-animate" data-animation-options="{
+                        'name': 'fadeInUpShorter',
+                        'delay': '.2s'
+                    }">
+							<h3 class="banner-title font-weight-slight-bold ls-m text-{{ section.settings.banner_color_text }} fs-5">
+								{{ section.settings.banner_title }}</h3>
+							<p class="text-{{ section.settings.banner_color_text }} fs-2p5">{{ section.settings.banner_description }}
+							</p>
+							{% if section.settings.banner_button_text != blank %}
+							<a href="{{ section.settings.banner_button_url | default: 'javascript:void(0);' }}"
+								class="btn btn-primary btn-shadow-lg btn-ellipse text-normal">{{ section.settings.banner_button_text }}</a>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+		<!-- filter -->
+		<div class="toolbox-wrap">
+			<aside class="sidebar sidebar-fixed border-bottom">
+				<form id="CollectionFiltersForm">
+					<div class="sidebar-overlay">
+						<a class="sidebar-close" href="#"><i class="close-icon"></i></a>
+					</div>
+					<div class="sidebar-content">
+						<div class="filter-actions pb-0 pt-4 pb-lg-4 pt-lg-0">
+							<div class="select-items" style="display: block;">
+								{%- assign has_active_value = false %}
+								{%- for filter in collection.filters -%}
+									{%- for value in filter.active_values -%}
+										<a class="select-item" href="{{ value.url_to_remove }}">
+											{{ value.label | escape }}<i class="la la-close"></i>
+										</a>
+										{%- assign has_active_value = true %}
+									{%- endfor -%}
+									{% if filter.type == "price_range" %}
+										{%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+											<a class="select-item" href="{{ filter.url_to_remove }}">
+												{%- if filter.min_value.value -%}{{ filter.min_value.value | money }}{%- else -%}{{ 0 | money }}{%- endif -%}-{%- if filter.max_value.value -%}{{ filter.max_value.value | money }}{%- else -%}{{ filter.range_max | money }}{%- endif -%}
+												<i class="la la-close"></i>
+											</a>
+											{%- assign has_active_value = true %}
+										{%- endif -%}
+									{% endif %}
+								{%- endfor -%}
+								{%- if has_active_value == true -%}
+								<a href="{{ collection.url }}" class="filter-clean text-primary">{{ 'collections.general.filters_clean' | t }}</a>
+								{%- endif -%}
+							</div>
+						</div>
+						<div class="row cols-lg-3">
+							{% for block in section.blocks %}
+							{% case block.type %}
+							{% when "cat_list" %}
+							<div class="widget col-lg-3 pr-lg-5" {{ block.shopify_attributes }}>
+								<h3 class="widget-title mb-0 pb-2">{{ block.settings.cat_list_heading }}</h3>
+								{% assign categories = linklists[block.settings.cat_list_linklist] %}
+								{% if categories != blank %}
+								<ul class="widget-body filter-items search-ul cat-ul{% if categories.links.size > 7 %} d-flex cols-1 cols-lg-2 flex-wrap{% endif %}">
+									{% for link in categories.links %}
+									<li class="{% if link.links.size > 0 %}with-ul{% if link.active %} show{% endif %}{% endif %}">
+										<a href="{{ link.url }}"
+											class="fs-1p7">{{ link.title | remove: '|megamenu' | remove: '| megamenu' }}</a>
+										{% if link.links.size > 0 and false %}
+										<ul {% if link.active %}style="display:block" {% endif %}>
+											{% for sub_link in link.links %}
+											<li><a href="{{ sub_link.url }}" class="fs-1p7">{{ sub_link.title }}</a></li>
+											{% endfor %}
+										</ul>
+										{% endif %}
+									</li>
+									{% endfor %}
+								</ul>
+								{% else %}
+								YOUR MENU CONTENT
+								{% endif %}
+							</div>
+							{% when "filters" %}
+							{%- assign total_active_values = 0 -%}
+							{%- for filter in collection.filters -%}
+								{%- assign total_active_values = total_active_values | plus: filter.active_values.size -%}
+								{%- assign has_swatches = false %}
+								{% case filter.type %}
+								{% when 'list' %}
+								{%- if block.settings.swatch_color -%}
+								{%- assign _filter_label_handle = filter.label | handle | downcase -%}
+								{%- if _filter_label_handle == 'color' or _filter_label_handle == 'colour' -%}
+								{%- assign has_swatches = true %}
+								{%- endif -%}
+								{%- endif -%}
+								<div class="widget col-lg-3 pr-lg-5" {{ block.shopify_attributes }}>
+									<h3 class="widget-title mb-0 pb-2">{{ filter.label | escape }}</h3>
+									<ul
+										class="widget-body pt-2 widget-tags-filter filter-items{% if has_swatches == true %} filter-swatch{% endif %}">
+										{%- for value in filter.values -%}
+										<li {% if value.active %}class="active"{% endif %}>
+											<a data-filter-choice data-value="{{ value.value }}" data-name="{{ value.param_name }}"
+												href="javascript:void(0);"
+												{% if has_swatches == true %}
+												class="filter-color"
+												style="background-color:{{ value.label | escape }};background-image: url({{ value.label | escape | append : '.png' | asset_url }})"
+												{% endif %}>
+												<label for="Filter-{{ filter.label | escape }}-{{ forloop.index }}"{% if value.count == 0 and value.active == false %} style="text-decoration: line-through;"{% endif %}>
+												{{ value.label | escape }}
+												</label>
+												<input type="checkbox"
+													name="{{ value.param_name }}"
+													value="{{ value.value }}"
+													id="Filter-{{ filter.label | escape }}-{{ forloop.index }}"
+													{% if value.active %}checked{% endif %}
+													{% if value.count == 0 and value.active == false %}disabled{% endif %}
+												>
+												<span>({{ value.count }})</span>
+											</a>
+										</li>
+										{% endfor %}
+									</ul>
+								</div>
+								
+								{% when 'price_range' %}
+								{% liquid
+									assign currencies_using_comma_decimals = 'ANG,ARS,BRL,BYN,BYR,CLF,CLP,COP,CRC,CZK,DKK,EUR,HRK,HUF,IDR,ISK,MZN,NOK,PLN,RON,RUB,SEK,TRY,UYU,VES,VND' | split: ','
+									assign uses_comma_decimals = false
+									if currencies_using_comma_decimals contains cart.currency.iso_code
+										assign uses_comma_decimals = true
+									endif
+								%}
+								<div class="widget col-lg-3 pr-lg-5" {{ block.shopify_attributes }}>
+									<h3 class="widget-title mb-0 pb-2">{{ filter.label | escape }}</h3>
+									<div class="widget-body pt-2">
+										<div class="filter-price-slider" data-rangemin="0" data-rangemax="{%- if uses_comma_decimals -%}
+                                                                                      {{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' | floor }}
+                                                                                      {%- else -%}
+                                                                                      {{ filter.range_max | money_without_currency | replace: ',', '' | floor }}
+                                                                                      {%- endif -%}"
+											data-currmin="
+											{%- if filter.min_value.value -%}
+												{%- if uses_comma_decimals -%}
+												{{- filter.min_value.value | money_without_currency | replace: '.', '' | replace: ',', '.' | floor -}}
+												{%- else -%}
+												{{- filter.min_value.value | money_without_currency | replace: ',', '' | floor -}}
+												{%- endif -%}
+											{%- else -%}0
+											{%- endif -%}"
+											data-currmax="
+											{%- if filter.max_value.value -%}
+												{%- if uses_comma_decimals -%}
+												{{- filter.max_value.value | money_without_currency | replace: '.', '' | replace: ',', '.' | floor -}}
+												{%- else -%}
+												{{- filter.max_value.value | money_without_currency | replace: ',', '' | floor -}}
+												{%- endif -%}
+											{%- else -%}
+												{%- if uses_comma_decimals -%}
+                        {{ filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.' | floor }}
+                        {%- else -%}
+                        {{ filter.range_max | money_without_currency | replace: ',', '' | floor }}
+                        {%- endif -%}
+                      {%- endif -%}">
+										</div>
+										<div class="filter-actions">
+											<button type="button" class="btn btn-sm btn-outline btn-dark btn-rounded price-filter-action fs-1p4 pt-1 pb-1">{{ 'collections.general.filter_price' | t }}</button>
+											<div class="filter-price-text">
+												<span class="filter-price-range"></span>
+											</div>
+										</div>
+										<input type="hidden" class="filter-price--min"
+											name="{{ filter.min_value.param_name }}" 
+											{%- if filter.min_value.value -%}
+												{%- if uses_comma_decimals -%}
+													value="{{ filter.min_value.value | money_without_currency | replace: '.', '' | replace: ',', '.'  | floor }}"
+												{%- else -%}
+													value="{{ filter.min_value.value | money_without_currency | replace: ',', '' | floor }}"
+												{% endif %}
+											{%- endif -%}>
+										</input>
+										<input type="hidden" class="filter-price--max"
+											name="{{ filter.max_value.param_name }}"
+											{%- if filter.max_value.value -%}
+												{%- if uses_comma_decimals -%}
+													value="{{ filter.max_value.value | money_without_currency | replace: '.', '' | replace: ',', '.'  | floor }}"
+												{%- else -%}
+													value="{{ filter.max_value.value | money_without_currency | replace: ',', '' | floor }}"
+												{% endif %}
+											{%- endif -%}>
+										</input>
+									</div>
+								</div>
+								{% endcase %}
+							{%- endfor -%}
+							{%- endcase -%}
+							{% endfor %}
+						</div>
+					</div>
+				</form>
+			</aside>
+		</div>
+		<!-- featured products-->
+		{% if section.settings.featured_collection_used %}
+		<section class="mt-8 mb-0 mt-lg-8 pb-3 pb-lg-8 content-center">
+			<h2 class="title">{{- section.settings.featured_collection_heading -}}</h2>
+			{% assign _collection = collections[section.settings.featured_collection]  %}
+			<div class="owl-carousel owl-theme row cols-2 cols-md-3 cols-lg-4" data-owl-options="{
+                                'items': 4,
+                                'nav': false,
+                                'loop': false,
+                                'dots': true,
+                                'margin': 20,
+                                'responsive': {
+                                '0': {
+                                'items': 2
+                                },
+                                '768': {
+                                'items': 3
+                                },
+                                '992': {
+                                'items': {{ section.settings.featured_collection_items_visible}},
+                                'dots': false,
+                                'nav': true
+                                }
+                                }
+                                }">
+				{% if _collection != blank %}
+				{% assign sign_id =  section.id | append :"-feature" %}
+				{% for _product in _collection.products limit:block.settings.featured_collection_items_limit %}
+				{% render 'product-item', product:_product, style:'default', sign: sign_id %}
+				{% endfor %}
+				{% else %}
+				{% for i in (1..4) %}
+				{% render 'product-item-dummy' %}
+				{% endfor %}
+				{% endif %}
+			</div>
+		</section>
+		{% endif %}
+		<!-- two banners-->
+		{% if section.settings.two_banners %}
+		<div class="collection-promotion-banner banner-mass mb-4">
+			<div class="container pl-0 pr-0">
+				<div class="row">
+					<div class="col-lg-6 mb-4 appear-animate" data-animation-options="{
+              'name': 'fadeInRightShorter',
+              'delay': '.2s'
+                }">
+						<div
+							class="rt-banner banner-fixed banner_2 content-{{ section.settings.banner_content_hori_align_1}} hover-zoom hover-gloom appear-animate">
+							{% if section.settings.banner_image_1 != blank %}
+							<figure class="d-flex">
+								<img src="{{ section.settings.banner_image_1 | img_url: 'master' }}" alt="banner" />
+							</figure>
+							{% else %}
+							<figure style="min-height:400px;background-color:#ccc;"></figure>
+							{% endif %}
+							<div class="banner-content {{ section.settings.banner_content_vert_align_1 }}">
+								<div class="appear-animate" data-animation-options="{
+                            'name': 'fadeInUpShorter',
+                            'delay': '.2s'
+                        }">
+									<p class="text-{{ section.settings.color_text_1 }} fs-2p2">{{ section.settings.banner_description_1 }}
+									</p>
+									<h3
+										class="banner-title font-weight-slight-bold ls-m text-{{ section.settings.banner_color_text_1 }} fs-4 mb-4">
+										{{ section.settings.banner_title_1 }}</h3>
+									{% if section.settings.banner_button_text_1 != blank %}
+									<a href="{{ section.settings.banner_button_url_1 | default: 'javascript:void(0);' }}"
+										class="btn btn-primary btn-shadow-lg btn-ellipse text-normal">{{ section.settings.banner_button_text_1 }}</a>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6 mb-4 appear-animate" data-animation-options="{
+              'name': 'fadeInLeftShorter',
+              'delay': '.2s'
+                }">
+						<div
+							class="rt-banner banner-fixed banner_2 content-{{ section.settings.banner_content_hori_align_2}} hover-zoom hover-gloom appear-animate">
+							{% if section.settings.banner_image_2 != blank %}
+							<figure class="d-flex">
+								<img src="{{ section.settings.banner_image_2 | img_url: 'master' }}" alt="banner" />
+							</figure>
+							{% else %}
+							<figure style="min-height:400px;background-color:#ccc;"></figure>
+							{% endif %}
+							<div class="banner-content {{ section.settings.banner_content_vert_align_2 }}">
+								<div class="appear-animate" data-animation-options="{
+                            'name': 'fadeInUpShorter',
+                            'delay': '.2s'
+                        }">
+									<p class="text-{{ section.settings.color_text_2 }} fs-2p2">{{ section.settings.banner_description_2 }}
+									</p>
+									<h3
+										class="banner-title font-weight-slight-bold ls-m text-{{ section.settings.banner_color_text_2 }} fs-4 mb-4">
+										{{ section.settings.banner_title_2 }}</h3>
+									{% if section.settings.banner_button_text_2 != blank %}
+									<a href="{{ section.settings.banner_button_url_2 | default: 'javascript:void(0);' }}"
+										class="btn btn-primary btn-shadow-lg btn-ellipse text-normal">{{ section.settings.banner_button_text_2 }}</a>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+		<!-- sale products banners-->
+		{% if section.settings.sale_collection_used != blank %}
+		<section class="mt-8 mb-0 mt-lg-8 pb-3 pb-lg-8 content-center row justify-content-center">
+			<h2 class="title">{{- section.settings.sale_collection_heading -}}</h2>
+
+			{% assign _collection = collections[section.settings.sale_collection]  %}
+			<div class="owl-carousel owl-theme row cols-2 cols-md-3 cols-lg-4 col-md-6 offset-md-3
+        " data-owl-options="{
+                                'items': 4,
+                                'nav': false,
+                                'loop': false,
+                                'dots': true,
+                                'margin': 20,
+                                'responsive': {
+                                '0': {
+                                'items': 2
+                                },
+                                '768': {
+                                'items': 3
+                                },
+                                '992': {
+                                'items': {{ section.settings.sale_collection_items_visible}},
+                                'dots': false,
+                                'nav': true
+                                }
+                                }
+                                }">
+				{% if _collection != blank %}
+				{% assign sign_id =  section.id | append :"-sale" %}
+				{% for _product in _collection.products limit:block.settings.sale_collection_items_limit %}
+				{% render 'product-item', product:_product, style:'default', sign: sign_id %}
+				{% endfor %}
+				{% else %}
+				{% for i in (1..3) %}
+				{% render 'product-item-dummy' %}
+				{% endfor %}
+				{% endif %}
+			</div>
+		</section>
+		{% endif %}
+
+		<div class="row main-content-wrap gutter-lg">
+			<div class="col-lg-12 main-content">
+				<nav class="toolbox border-top">
+					<div class="toolbox-left">
+						<a href="#" class="left-sidebar-toggle btn btn-sm fs-1p4 btn-outline btn-dark btn-icon-left d-lg-none"><i
+								class="fas fa-align-left"></i>{{ 'collections.general.filters' | t }}</a>
+						<h1 class="font-weight-slight-bold hide">{{ collection.title }}</h1>
+						<div class="toolbox-item toolbox-layout">
+							<a href="javascript:void(0);" data-layout data-value="list"
+								class="btn-layout{% if layout == 'list' %} active{% endif %}">
+								<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M0 0H15V3H0V0Z" />
+									<path d="M0 6H15V9H0V6Z" />
+									<path d="M0 12H15V15H0V12Z" />
+								</svg>
+							</a>
+							<a href="javascript:void(0);" data-layout data-value="grid-2"
+								class="btn-layout{% if layout == 'grid-2' %} active{% endif %}">
+								<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M0 0H6V6H0V0Z" />
+									<path d="M0 9H6V15H0V9Z" />
+									<path d="M9 0H15V6H9V0Z" />
+									<path d="M9 9H15V15H9V9Z" />
+								</svg>
+							</a>
+							<a href="javascript:void(0);" data-layout data-value="grid-3"
+								class="btn-layout{% if layout == 'grid-3' %} active{% endif %}">
+								<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M0 0H3V3H0V0Z" />
+									<path d="M0 6H3V9H0V6Z" />
+									<path d="M0 12H3V15H0V12Z" />
+									<path d="M6 0H9V3H6V0Z" />
+									<path d="M6 6H9V9H6V6Z" />
+									<path d="M6 12H9V15H6V12Z" />
+									<path d="M12 0H15V3H12V0Z" />
+									<path d="M12 6H15V9H12V6Z" />
+									<path d="M12 12H15V15H12V12Z" />
+								</svg>
+							</a>
+							<a href="javascript:void(0);" data-layout data-value="grid-4"
+								class="btn-layout{% if layout == 'grid-4' %} active{% endif %}">
+								<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M0 0H2V2H0V0Z" />
+									<path d="M0 4H2V6H0V4Z" />
+									<path d="M0 8H2V10H0V8Z" />
+									<path d="M0 12H2V14H0V12Z" />
+									<path d="M4 0H6V2H4V0Z" />
+									<path d="M4 4H6V6H4V4Z" />
+									<path d="M4 8H6V10H4V8Z" />
+									<path d="M4 12H6V14H4V12Z" />
+									<path d="M8 0H10V2H8V0Z" />
+									<path d="M8 4H10V6H8V4Z" />
+									<path d="M8 8H10V10H8V8Z" />
+									<path d="M8 12H10V14H8V12Z" />
+									<path d="M12 0H14V2H12V0Z" />
+									<path d="M12 4H14V6H12V4Z" />
+									<path d="M12 8H14V10H12V8Z" />
+									<path d="M12 12H14V14H12V12Z" />
+								</svg>
+							</a>
+						</div>
+					</div>
+					<div class="toolbox-right">
+						{% if section.settings.sort_enable %}
+						{%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+						<div class="toolbox-item toolbox-sort select-box">
+							<label>{{ 'collections.sorting.title' | t }}</label>
+							<select name="orderby" class="form-control" id="SortBy"
+								data-default-sortby="{{ collection.default_sort_by }}">
+								{%- for option in collection.sort_options -%}
+								<option value="{{ option.value }}" {% if option.value == sort_by %}selected="selected" {% endif %}>
+									{{ option.name }}</option>
+								{%- endfor -%}
+							</select>
+						</div>
+						{% endif %}
+						<div class="toolbox-item toolbox-show select-box">
+							<label>{{ 'collections.general.show' | t }}</label>
+							{% assign limits = '6,8,9,10,12,14,15,16,20,24' | split: ',' %}
+							<select name="count" class="form-control" id="limit" data-default-limit="{{ section.settings.limit }}">
+								{% for _current_limit in limits %}
+								<option value="{{ _current_limit }}" {% if _current_limit == limit_string %} selected{% endif %}>
+									{{ _current_limit }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+				</nav>
+				{% if layout == 'list' %}
+				<div
+					class="product-lists product-wrapper{% if section.settings.pagination == 'infinite-scroll' %} scroll-load{% endif %}"
+					data-next-url="{% if paginate.pages > 1 and paginate.next.is_link %} {{ paginate.next.url }}&act=ajax&lo={{ layout }}{% endif %}">
+					{% for product in collection.products %}
+					{% include 'product-item', product:product, product_type:'list', sign: section.id %}
+					{% else %}
+					{%- assign is_empty_collection = true -%}
+					{% endfor %}
+				</div>
+				{% else %}
+				<div
+					class="row cols-2 cols-sm-{{ layout | replace: 'grid-', '' }} product-wrapper{% if section.settings.pagination == 'infinite-scroll' %} scroll-load{% endif %}"
+					data-next-url="{% if paginate.pages > 1 and paginate.next.is_link %} {{ paginate.next.url }}&act=ajax&lo={{ layout }}{% endif %}">
+					{% for product in collection.products %}
+					<div class="product-wrap{% if actionType == 'ajax' %} fade{% endif %}">
+						{% include 'product-item', product:product, sign: section.id %}
+					</div>
+					{% else %}
+					{%- assign is_empty_collection = true -%}
+					{% endfor %}
+				</div>
+				{% endif %}
+				{% if is_empty_collection %}
+				<p class="text-center">{{ 'collections.general.no_matches' | t }}</p>
+				{% endif %}
+				{%- if paginate.pages > 1 and section.settings.pagination != "infinite-scroll" -%}
+				{% include 'pagination', paginate: paginate, layout_type: layout %}
+				{%- endif -%}
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endpaginate %}
+
+<style>
+	[data-section-type="collection-template"]:not(.loaded) {
+		pointer-events: none;
+	}
+
+	[data-section-type="collection-template"]:not(.loaded) .product-wrapper .product>* {
+		opacity: 0;
+	}
+
+	[data-section-type="collection-template"]:not(.loaded) .product-wrapper .product-visual {
+		position: relative;
+		overflow: hidden;
+		background: #ebeef0;
+		opacity: 1;
+	}
+
+	[data-section-type="collection-template"]:not(.loaded) .product-wrapper .product-visual>* {
+		opacity: 0;
+	}
+
+	[data-section-type="collection-template"]:not(.loaded) .product-wrapper .product-visual::after {
+		content: '';
+		display: block;
+		position: absolute;
+		left: -150px;
+		top: 0;
+		height: 100%;
+		width: 150px;
+		background: linear-gradient(to right, transparent 0%, #E8E8E8 50%, transparent 100%);
+		animation: placeholder_load 0.7s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+	}
+
+	@keyframes placeholder_load {
+		from {
+			left: -150px;
+		}
+
+		to {
+			left: 100%;
+		}
+	}
+</style>
+
+{% schema %}
+{
+  "name": "Collection pages",
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "checkbox",
+      "id": "collection_fullwidth",
+      "label": "Full Width",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "grid-4",
+          "label": "Grid 4 columns"
+        },
+        {
+          "value": "grid-3",
+          "label": "Grid 3 columns"
+        },
+        {
+          "value": "grid-2",
+          "label": "Grid"
+        },
+        {
+          "value": "list",
+          "label": "List"
+        }
+      ],
+      "default": "grid-2"
+    },
+    {
+      "type": "select",
+      "id": "limit",
+      "label": "Products per page",
+      "options": [
+        {
+          "value": "6",
+          "label": "6"
+        },
+        {
+          "value": "8",
+          "label": "8"
+        },
+        {
+          "value": "9",
+          "label": "9"
+        },
+        {
+          "value": "10",
+          "label": "10"
+        },
+        {
+          "value": "12",
+          "label": "12"
+        },
+        {
+          "value": "14",
+          "label": "14"
+        },
+        {
+          "value": "15",
+          "label": "15"
+        },
+        {
+          "value": "16",
+          "label": "16"
+        },
+        {
+          "value": "20",
+          "label": "20"
+        },
+        {
+          "value": "24",
+          "label": "24"
+        }
+      ],
+      "default": "12"
+    },
+    {
+      "type": "select",
+      "id": "pagination",
+      "label": "Pagination",
+      "options": [
+        {
+          "value": "",
+          "label": "Classic (buttons)"
+        },
+        {
+          "value": "infinite-scroll",
+          "label": "Infinite scroll"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_image",
+      "label": "Show collection image",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "- Top Banner"
+    },
+    {
+      "type": "checkbox",
+      "id": "banner_top",
+      "label": "Enabled",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "Background image"
+    },
+    {
+      "type": "textarea",
+      "id": "banner_title",
+      "label": "Title",
+      "default": "Banner title"
+    },
+    {
+      "type": "textarea",
+      "id": "banner_description",
+      "label": "Description"
+    },
+    {
+      "type": "text",
+      "id": "banner_button_text",
+      "label": "Button text",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "banner_button_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "banner_content_hori_align",
+      "label": "Content alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "banner_content_vert_align",
+      "label": "Content vertical align",
+      "options": [
+        {
+          "value": "y-top pt-9",
+          "label": "Top"
+        },
+        {
+          "value": "y-50",
+          "label": "Middle"
+        },
+        {
+          "value": "y-bottom pb-9",
+          "label": "Bottom"
+        }
+      ],
+      "default": "y-50"
+    },
+    {
+      "type": "header",
+      "content": "Color"
+    },
+    {
+      "type": "select",
+      "id": "banner_color_text",
+      "label": "Text color",
+      "options": [
+        {
+          "value": "white",
+          "label": "White",
+          "group": "Basic"
+        },
+        {
+          "value": "black",
+          "label": "Black",
+          "group": "Basic"
+        },
+        {
+          "value": "primary",
+          "label": "Primary",
+          "group": "From settings"
+        },
+        {
+          "value": "dark",
+          "label": "Dark",
+          "group": "From settings"
+        }
+      ],
+      "default": "white"
+    },
+    {
+      "type": "header",
+      "content": "- Featured Collection"
+    },
+    {
+      "type": "checkbox",
+      "id": "featured_collection_used",
+      "label": "Enabled",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "featured_collection_heading",
+      "label": "Heading",
+      "default": "Featured collection"
+    },
+    {
+      "type": "collection",
+      "id": "featured_collection",
+      "label": "Choose a collection"
+    },
+    {
+      "type": "range",
+      "id": "featured_collection_items_visible",
+      "label": "Visible items",
+      "min": 1,
+      "step": 1,
+      "max": 12,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "featured_collection_items_limit",
+      "label": "Limit",
+      "min": 1,
+      "step": 1,
+      "max": 12,
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "- Two Banner"
+    },
+    {
+      "type": "checkbox",
+      "id": "two_banners",
+      "label": "Enabled",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "- Banner #1"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image_1",
+      "label": "Background image"
+    },
+    {
+      "type": "textarea",
+      "id": "banner_title_1",
+      "label": "Title",
+      "default": "Banner title"
+    },
+    {
+      "type": "textarea",
+      "id": "banner_description_1",
+      "label": "Description"
+    },
+    {
+      "type": "text",
+      "id": "banner_button_text_1",
+      "label": "Button text",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "banner_button_url_1",
+      "label": "Button URL"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "banner_content_hori_align_1",
+      "label": "Content alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "banner_content_vert_align_1",
+      "label": "Content vertical align",
+      "options": [
+        {
+          "value": "y-top pt-9",
+          "label": "Top"
+        },
+        {
+          "value": "y-50",
+          "label": "Middle"
+        },
+        {
+          "value": "y-bottom pb-9",
+          "label": "Bottom"
+        }
+      ],
+      "default": "y-50"
+    },
+    {
+      "type": "header",
+      "content": "Color"
+    },
+    {
+      "type": "select",
+      "id": "banner_color_text_1",
+      "label": "Text color",
+      "options": [
+        {
+          "value": "white",
+          "label": "White",
+          "group": "Basic"
+        },
+        {
+          "value": "black",
+          "label": "Black",
+          "group": "Basic"
+        },
+        {
+          "value": "primary",
+          "label": "Primary",
+          "group": "From settings"
+        },
+        {
+          "value": "dark",
+          "label": "Dark",
+          "group": "From settings"
+        }
+      ],
+      "default": "white"
+    },
+    {
+      "type": "header",
+      "content": "- Banner #2"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image_2",
+      "label": "Background image"
+    },
+    {
+      "type": "textarea",
+      "id": "banner_title_2",
+      "label": "Title",
+      "default": "Banner title"
+    },
+    {
+      "type": "textarea",
+      "id": "banner_description_2",
+      "label": "Description"
+    },
+    {
+      "type": "text",
+      "id": "banner_button_text_2",
+      "label": "Button text",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "banner_button_url_2",
+      "label": "Button URL"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "banner_content_hori_align_2",
+      "label": "Content alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "banner_content_vert_align_2",
+      "label": "Content vertical align",
+      "options": [
+        {
+          "value": "y-top pt-9",
+          "label": "Top"
+        },
+        {
+          "value": "y-50",
+          "label": "Middle"
+        },
+        {
+          "value": "y-bottom pb-9",
+          "label": "Bottom"
+        }
+      ],
+      "default": "y-50"
+    },
+    {
+      "type": "header",
+      "content": "Color"
+    },
+    {
+      "type": "select",
+      "id": "banner_color_text_2",
+      "label": "Text color",
+      "options": [
+        {
+          "value": "white",
+          "label": "White",
+          "group": "Basic"
+        },
+        {
+          "value": "black",
+          "label": "Black",
+          "group": "Basic"
+        },
+        {
+          "value": "primary",
+          "label": "Primary",
+          "group": "From settings"
+        },
+        {
+          "value": "dark",
+          "label": "Dark",
+          "group": "From settings"
+        }
+      ],
+      "default": "white"
+    },
+    {
+      "type": "header",
+      "content": "- Sale Collection"
+    },
+    {
+      "type": "checkbox",
+      "id": "sale_collection_used",
+      "label": "Enabled",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "sale_collection_heading",
+      "label": "Heading",
+      "default": "Sale collection"
+    },
+    {
+      "type": "collection",
+      "id": "sale_collection",
+      "label": "Choose a collection"
+    },
+    {
+      "type": "range",
+      "id": "sale_collection_items_visible",
+      "label": "Visible items",
+      "min": 1,
+      "step": 1,
+      "max": 12,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "sale_collection_items_limit",
+      "label": "Limit",
+      "min": 1,
+      "step": 1,
+      "max": 12,
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "- Main collection"
+    },
+    {
+      "type": "checkbox",
+      "id": "sort_enable",
+      "label": "Enable sorting",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "filters",
+      "name": "Filters",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "swatch_color",
+          "label": "Show swatch color"
+        }
+      ]
+    },
+    {
+      "type": "cat_list",
+      "name": "Categories list",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "cat_list_heading",
+          "label": "Heading",
+          "default": "All Categories"
+        },
+        {
+          "type": "link_list",
+          "id": "cat_list_linklist",
+          "label": "Choose a menu"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

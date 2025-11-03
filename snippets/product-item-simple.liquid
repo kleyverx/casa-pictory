@@ -1,0 +1,60 @@
+{% if product != blank %}
+{%- liquid
+    if product.title
+      assign compare_at_price = product.compare_at_price
+      assign price = product.price
+      assign available = product.available
+      assign variant = product.variants.selected_or_first_available_variant
+    else
+      assign compare_at_price = 1999
+      assign price = 1999
+      assign available = true
+    endif
+  
+    assign money_price = price | money
+-%}
+{%- assign preview_image = product.featured_media.preview_image -%}
+
+<div class="product product-list-sm">
+    <figure class="product-visual" style="--aspect-ratio:1">
+        <a href="{{ product.url }}">
+            <img src="{{ preview_image | img_url: '100x100', scale: 2 }}" alt="product" width="100"
+                height="100">
+        </a>
+    </figure>
+    <div class="product-details">
+        <h3 class="product-name">
+            <a href="{{ product.url }}">{{ product.title }}</a>
+        </h3>
+        <div class="product-price">
+            {% if available == false %}
+            <span class="old-price">{{ 'products.product.sold_out' | t }}</span>
+            {% else %}
+            {% if compare_at_price > price %}
+            <ins class="new-price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </ins>
+            <del class="old-price">{{ compare_at_price | money }}</del>
+            {% else %}
+            <span class="price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </span>
+            {% endif %}
+            {% endif %}
+        </div>
+        <div class="ratings-wrapper">
+            <div class="ratings-full">
+                <span class="ratings" style="width:100%"></span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

@@ -1,0 +1,34 @@
+<div class="svv-wgt-container">
+    <link
+            rel="stylesheet"
+            href="https://web.servv.io/client-shop-widget/css/servv-widget.css"
+    />
+    <a href="https://servv.ai/" style="display: none;">Powered by servv.ai</a>
+    <input type="hidden" value="{{ customer.id }}" id="servv_calendar_customer_id">
+    <input type="hidden" value="{{ customer.email }}" id="servv_calendar_customer_email">
+    <input type="hidden" value="{{ customer.first_name }}" id="servv_calendar_customer_first_name">
+    <input type="hidden" value="{{ customer.last_name }}" id="servv_calendar_customer_last_name">
+    <input type="hidden" value="{{ shop.permanent_domain }}" id="servv_calendar_shop_domain">
+    <input type="hidden" value="{{ shop.currency }}" id="servv_calendar_shop_currency">
+    <input type="hidden" value="shopify" id="servv_calendar_shop_type">
+    {% assign servv_strint_to_sign = shop.permanent_domain  | append: customer.id | append: customer.first_name | append: customer.last_name | append: customer.email | append: "shopify"  %}
+    {% assign servv_signature = servv_strint_to_sign | hmac_sha256: "b45ac2d4-e88e-44c7-975b-19c0653e5337" %}
+    <input type="hidden" value="{{ servv_signature }}" id="servv_calendar_signature">
+
+    {%if product %}
+        {% for tag in product.tags %}
+            {% if tag contains '#svv_default_filter_' %}
+                <input type="hidden" value="{{ tag }}" id="servv_calendar_default_filter_params">
+            {% endif %}
+        {% endfor %}
+    {% endif; %}
+
+    <div id="svv-wgt-app"></div>
+    <script
+            src="https://web.servv.io/client-shop-widget/svv.widget.config.js"
+    ></script>
+    <script
+            src="https://web.servv.io/client-shop-widget/js/servv-widget.js"
+            async="async"
+    ></script>
+</div>

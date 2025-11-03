@@ -1,0 +1,262 @@
+{% case section.settings.type %}
+{% when 'default' %}
+<section class="mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}}" id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="video-banner-section">
+    <div class="container{% unless section.settings.has_container %}-fluid{% endunless %}">
+        <div class="row">
+            <div class="col-lg-5 d-flex align-items-center">
+                <div class="banner-content mb-5">
+                    <h3 class="banner-title font-secondary font-weight-slight-bold fs-custom lh-custom mb-4 fs-mobile-4" style="--fs:{{ section.settings.fs_title }}rem;--lh:1.1">{{ section.settings.title }}
+                    </h3>
+                    <p class="mb-4 font-primary ls-m fs-2p25 fs-custom lh-custom" style="--fs:{{ section.settings.fs_description }}rem;--lh:1.8">{{ section.settings.description }}</p>
+                    {% if section.settings.button_text != blank %}
+                    <a href="{{ section.settings.button_url | javascript: 'javascript:void(0);' }}" class="btn btn-primary btn-shadow-lg btn-ellipse text-normal">{{ section.settings.button_text }}</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="rt-banner banner-1 banner-fixed content-center content-middle">
+                    {% render 'img-figure', _img: section.settings.image_bg, _wrapper_class: 'd-flex align-items-center h-100 appear-animate fadeInLeftShorter appear-animation-visible', _width: '820', _height: '354', _alt: 'banner' %}
+                    <div class="banner-content video-banner">
+                        <a class="btn-play btn-iframe text-white" href="{{ section.settings.video_url }}"><i class="la la-play ml-0"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if section.settings.has_bottom_separate %}
+        <hr class="mt-5 mt-lg-18 mb-0">
+        {% endif %}
+    </div>
+</section>
+{% when 'floating' %}
+<section class="mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}} video-banner--floating" id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="video-banner-section">
+    <div class="row">
+        <div class="texting-part">
+            <div class="container{% unless section.settings.has_container %}-fluid{% endunless %}">
+                <div class="banner-wrapper d-flex align-items-center">
+                    <div class="banner-content mb-5 mb-lg-0">
+                        <h3 class="banner-title font-secondary mb-4 font-weight-slight-bold fs-custom lh-custom fs-mobile-4" style="--fs:{{ section.settings.fs_title }}rem;--lh:1.1">{{ section.settings.title }}
+                        </h3>
+                        <p class="mb-7 font-primary ls-m fs-2p25 fs-custom" style="--fs:{{ section.settings.fs_description }}rem;--lh:1.8">{{ section.settings.description }}</p>
+                        {% if section.settings.button_text != blank %}
+                        <a href="{{ section.settings.button_url | javascript: 'javascript:void(0);' }}" class="btn btn-primary btn-shadow-lg btn-ellipse text-normal">{{ section.settings.button_text }}</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bg-part">
+        </div>
+        <div class="img-part">
+            <div class="rt-banner banner-1 video-part banner-fixed content-center content-middle">
+                {% render 'img-figure', _img: section.settings.image_bg, _wrapper_class: 'd-flex align-items-center h-100 appear-animate fadeInLeftShorter appear-animation-visible', _width: '820', _height: '354', _alt: 'banner' %}
+                <div class="banner-content video-banner">
+                    <a class="btn-play btn-iframe text-white" href="{{ section.settings.video_url }}"><i class="la la-play ml-0"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if section.settings.has_bottom_separate %}
+    <hr class="mt-5 mt-lg-18 mb-0">
+    {% endif %}
+</section>
+{% endcase %}
+
+{% schema %}
+{
+    "name": "Video Banner",
+    "class": "index-section index-section--video-banner",
+    "settings": [
+        {
+            "type": "header",
+            "content": "Layout"
+        },
+        {
+            "type": "checkbox",
+            "id": "has_container",
+            "label": "Within container",
+            "default": false
+        },
+        {
+            "type": "select",
+            "id": "type",
+            "label": "Type",
+            "options": [
+                {
+                    "value": "default",
+                    "label": "Default"
+                },
+                {
+                    "value": "floating",
+                    "label": "Foating"
+                }
+            ],
+            "default": "default"
+        },
+        {
+            "type": "checkbox",
+            "id": "has_bottom_separate",
+            "label": "Has bottom separator",
+            "default": true
+        },
+        {
+            "type": "header",
+            "content": "Content"
+        },
+        {
+            "id": "video_url",
+            "type": "url",
+            "label": "Video URL"
+        },
+        {
+            "type": "image_picker",
+            "id": "image_bg",
+            "label": "Background image"
+        },
+        {
+            "type": "textarea",
+            "id": "title",
+            "label": "Title",
+            "default": "Banner title"
+        },
+        {
+            "type": "textarea",
+            "id": "sub_title",
+            "label": "Sub title"
+        },
+        {
+            "type": "textarea",
+            "id": "description",
+            "label": "Description"
+        },
+        {
+            "type": "text",
+            "id": "button_text",
+            "label": "Button text",
+            "default": "Read more"
+        },
+        {
+            "type": "url",
+            "id": "button_url",
+            "label": "Button URL"
+        },
+        {
+            "type": "header",
+            "content": "Font size"
+        },
+        {
+            "type": "range",
+            "id": "fs_title",
+            "label": "Title",
+            "unit": "x",
+            "min": 1,
+            "max": 6,
+            "step": 0.1,
+            "default": 5.5
+        },
+        {
+            "type": "range",
+            "id": "fs_description",
+            "label": "Description",
+            "unit": "x",
+            "min": 1,
+            "max": 6,
+            "step": 0.1,
+            "default": 2.2
+        },
+        {
+            "type": "header",
+            "content": "Spacing (large screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt_lg",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 8
+        },
+        {
+            "type": "range",
+            "id": "pt_lg",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb_lg",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb_lg",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "header",
+            "content": "Spacing (mobile screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "pt",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        }
+    ],
+    "presets": [
+        {
+            "name": "Video Banner",
+            "category": "Fastor"
+        }
+    ]
+}
+{% endschema %}

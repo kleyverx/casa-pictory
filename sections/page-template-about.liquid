@@ -1,0 +1,1108 @@
+<div id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="page-about-template">
+    <div class="container">
+        {%- include "breadcrumb" -%}
+    </div>
+    <div class="page-about-sections">
+        {% for block in section.blocks %}
+        {% case block.type %}
+        {% when "text_benefits" %}
+        <div class="container page-about-block page-about-text-benefits text-center pb-4 pt-4" {{ block.shopify_atrributes }}>
+            <h2 class="title fs-5p5">{{ block.settings.heading }}</h2>
+            <div class="subtitle fs-2p2 mb-4">{{ block.settings.subheading }}</div>
+            <div class="description fs-1p5">{{ block.settings.description }}</div>
+            <div class="owl-carousel owl-theme row cols-md-3 cols-sm-2 cols-1 border-top pt-4 mt-8" data-owl-options="{
+                'nav': false,
+                'dots': true,
+                'loop': false,
+                'margin': 20,
+                'responsive': {
+                    '0': {
+                        'items': 1
+                    },
+                    '576': {
+                        'items': 2
+                    },
+                    '768': {
+                        'items': 3
+                    },
+                    '992': {
+                        'items': 3,
+                        'dots': false
+                    }
+                }
+            }">
+                {% for i in (1..3) %}
+                {% assign s_svg = "svg_html" | append: i %}
+                {% assign s_title = "title" | append: i %}
+                {% assign s_description = "description" | append: i %}
+                {% if block.settings[s_svg] != blank %}
+                <div class="icon-box icon-box-side">
+                    <span class="icon-box-icon">
+                        {{ block.settings[s_svg] }}
+                    </span>
+                    <div class="icon-box-content">
+                        {% if block.settings[s_title] != blank %}
+                        <h4 class="icon-box-title">{{ block.settings[s_title] }}</h4>
+                        {% endif %}
+                        <p>{{  block.settings[s_description] }}</p>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="border-bottom container mt-lg-18"></div>
+        {% when "video" %}
+        <div class="container page-about-block page-about-video pb-10 pb-lg-18 pt-10 border-bottom" {{ block.shopify_atrributes }}>
+            <div class="row">
+                <div class="col-lg-6 d-flex align-items-center">
+                    <div class="banner-content mb-5">
+                        <h4 class="banner-subtitle font-weight-bold ls-s text-primary text-uppercase mb-3">
+                            {{ block.settings.sub_title }}</h4>
+                        <h3 class="banner-title font-secondary font-weight-normal fs-5p5 lh-1p3">{{ block.settings.title }}
+                        </h3>
+                        <p class="mb-7 font-primary font-weight-normal ls-m fs-2p2 lh-1p8">{{ block.settings.description }}</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="rt-banner banner-1 banner-fixed content-center content-middle">
+                        {% render 'img-figure', _img: block.settings.image_bg, _wrapper_class: 'd-flex align-items-center h-100 appear-animate fadeInLeftShorter appear-animation-visible', _width: '820', _height: '354', _alt: 'banner' %}
+                        <div class="banner-content video-banner">
+                            <a class="btn-play btn-iframe text-white" href="{{ block.settings.video_url }}"><i class="la la-play ml-0"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% when  "parallax_video" %}
+        <section class="rt-banner parallax mt-{{ block.settings.mt}} mb-{{ block.settings.mb}} pt-{{ block.settings.pt}} pb-{{ block.settings.pb}} mt-lg-{{ block.settings.mt_lg}} mb-lg-{{ block.settings.mb_lg}} pt-lg-{{ block.settings.pt_lg}} pb-lg-{{ block.settings.pb_lg}}"{% if block.settings.video != blank %} data-video-src="{{ block.settings.video }}"{% endif %}{% if block.settings.image %} data-image-src="{{ block.settings.image | img_url: 'master' }}"{% endif %} data-option="{'offset': 0}" id="{{ block.id }}" data-section-id="{{ block.id }}" data-section-type="parallax-banner-section"
+        style="background-color:{{ block.settings.color_bg }}">
+        <div class="container banner-content appear-animate text-{{ block.settings.content_hori_align }} pt-10 pb-10"
+            data-animation-options="{
+                            'name': 'blurIn',
+                            'delay': '.3s'
+                        }">
+            <h2 class="banner-title font-weight-slight-bold text-{{ block.settings.color_text }} fs-custom fs-mobile-4 ls-m mb-4 lh-custom" style="--fs:{{ block.settings.fs_title | append: 'rem' }};--lh:1.1">{{ block.settings.title }}
+            </h2>
+            {% if block.settings.description != blank %}
+            <p class="font-primary text-{{ block.settings.color_text }} fs-custom mb-4 font-weight-normal lh-custom" style="--fs:{{ block.settings.fs_description | append: 'rem' }};--lh:1.8">{{ block.settings.description }}</p>
+            {% endif %}
+            {% if block.settings.button_text != blank %}
+            <a class="btn btn-primary btn-shadow-lg btn-ellipse text-normal" href="{{ block.settings.button_url | default: 'javascript:void(0);' }}">{{ block.settings.button_text }}</a>
+            {% endif %}
+        </div>
+        </section>
+        {% when "banner" %}
+
+        <div class="page-about-block page-about-banner pb-4 pt-4" {{ block.shopify_atrributes }}>
+            <div class="row">
+                <div class="col-lg-{{ block.settings.width_destop}} col-md-{{ block.settings.width_tablet}} col-{{ block.settings.width_mobile}} mb-4 appear-animate" data-animation-options="{
+                    'name': '{% cycle "fadeInRightShorter", "fadeInLeftShorter" %}',
+                    'delay': '.2s'
+                }" >
+                    <div class="rt-banner banner-fixed banner_2 content-{{ block.settings.content_hori_align }} hover-zoom hover-gloom appear-animate">
+                        {% if block.settings.image != blank %}
+                        <figure>
+                            <img src="{{ block.settings.image | img_url: 'master' }}" alt="banner" />
+                        </figure>
+                        {% else %}
+                        <figure style="min-height:400px;background-color:#ccc;"></figure>
+                        {% endif %}
+                        <div class="container banner-content {{ block.settings.content_vert_align }}">
+                            <div class="appear-animate" data-animation-options="{
+                                'name': 'fadeInUpShorter',
+                                'delay': '.2s'
+                            }">
+                                <h3 class="banner-title font-weight-slight-bold ls-m text-{{ block.settings.color_text }} fs-{{ block.settings.fs_title | replace: '.', 'p' }}">{{ block.settings.title }}</h3>
+                                <p class="text-{{ block.settings.color_text }} fs-{{ block.settings.fs_description | replace: '.', 'p' }}">{{ block.settings.description }}</p>
+                                {% if block.settings.button_text != blank %}
+                                <a href="{{ block.settings.button_url | default: 'javascript:void(0);' }}" class="btn btn-primary btn-shadow-lg btn-ellipse text-normal">{{ block.settings.button_text }}</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% when "text_blocks" %}
+        <div class="container page-about-block page-about-text-blocks pb-4 pt-10 pt-lg-18" {{ block.shopify_atrributes }}>
+            <div class="row">
+                {% for i in (1..2) %}
+                {% assign s_title = "title" | append: i  %}
+                {% assign s_description = "description" | append: i  %}
+                {% if block.settings[s_title] != blank and block.settings[s_description] != blank %}
+                <div class="col-sm-6">
+                    <div class=" text-block">
+                        <div class="text-block-title fs-4 lh-1p3 font-weight-slight-bold mb-4">
+                            {{ block.settings[s_title] }}
+                        </div>
+                        <div class="text-block-desc">
+                            {{ block.settings[s_description] }}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% when "promotions" %}
+        <div class="container page-about-block page-about-promitions pb-4 pt-4 pt-lg-18 pb-lg-18">
+            <h2 class="title fs-5p5 lh-1p3 font-weight-slight-bold pb-lg-18 mb-lg-0">{{ block.settings.heading }}</h2>
+                <div class="owl-carousel owl-theme row cols-md-3 cols-sm-2 cols-1" data-owl-options="{
+                'nav': false,
+                'dots': true,
+                'loop': false,
+                'margin': 20,
+                'responsive': {
+                    '0': {
+                        'items': 1
+                    },
+                    '576': {
+                        'items': 2
+                    },
+                    '768': {
+                        'items': 3
+                    },
+                    '992': {
+                        'items':3,
+                        'dots': false
+                    }
+                }
+            }">
+                {% for i in (1..3) %}
+                {% assign s_svg = "svg_html" | append : i %}
+                {% assign s_title = "title" | append : i %}
+                {% assign s_description = "description" | append : i %}
+                {% if block.settings[s_svg] != blank and block.settings[s_description] != blank and block.settings[s_title] != blank %}
+                <div class="icon-box text-center about-promotion">
+                    <span class="icon-box-icon mb-6">
+                        {{ block.settings[s_svg] }}
+                    </span>
+                    <div class="icon-box-content pl-4 pr-4">
+                        {% if block.settings[s_title] != blank %}
+                        <h4 class="icon-box-title mb-4 fs-2 lh-1p3 font-weight-slight-bold text-normal mb-6">{{ block.settings[s_title] }}</h4>
+                        {% endif %}
+                        <p class="text-center fs-1p7 lh-1p6 text-dark">{{ block.settings[s_description] }}</p>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% when "banners" %}
+        <div class="container page-about-block page-about-banners" {{ block.shopify_attributes }}>
+            <div class="row gutter-lg">
+                <div class="col-12 col-md-6 appear-animate" data-animation-options="{
+                    'name': '{% cycle "fadeInRightShorter", "fadeInLeftShorter" %}',
+                    'delay': '.2s'
+                }" {{ block.shopify_atrributes }}>
+                    <div class="rt-banner banner-fixed banner_1 hover-zoom ani-wrapper-fadeInRight">
+                        <a href="{{ block.settings.url1 | default: 'javascript:void(0);' }}">
+                        {% if block.settings.image1 != blank %}
+                        {% assign _container_width = 1220 %}
+                        {% assign _img_width = _container_width | divided_by: 2 %}
+                        {% assign _img_height = _img_width | divided_by: block.settings.image1.aspect_ratio | round %}
+                        {% assign _img_url = _img_width | append: 'x' | append: _img_height %}
+                        <figure>
+                            <img src="{{ block.settings.image1 | img_url: _img_url, scale: 2 }}" alt="banner" width="{{ _img_width }}" height="{{ _img_height }}"/>
+                        </figure>
+                        {% else %}
+                        <figure style="min-height:400px;background-color:#ccc;"></figure>
+                        {% endif %}
+                        </a>
+                        <div class="banner-content x-left pl-8 y-top pt-8 appear-animate pe-none fadeIn appear-animation-visible" style="animation-duration: 1.2s; animation-delay: 0.2s;">
+                            <h3 class="banner-title ls-m mb-1 text-white font-weight-normal fs-3p5 fs-mobile-2 lh-1p3 mb-6">{{ block.settings.title1 }}</h3>
+                            <a href="{{ block.settings.url1 | default: 'javascript:void(0);' }}" class="text-white btn-arrow ani-el">
+                                <svg width="24" height="9" viewBox="0 0 24 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22.9786 4.85355C23.1738 4.65829 23.1738 4.34171 22.9786 4.14645L19.7966 0.964466C19.6013 0.769204 19.2847 0.769204 19.0895 0.964466C18.8942 1.15973 18.8942 1.47631 19.0895 1.67157L21.9179 4.5L19.0895 7.32843C18.8942 7.52369 18.8942 7.84027 19.0895 8.03553C19.2847 8.2308 19.6013 8.2308 19.7966 8.03553L22.9786 4.85355ZM0.625 5H22.625V4H0.625V5Z" fill="white"></path>
+                                </svg>    
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 appear-animate" data-animation-options="{
+                    'name': '{% cycle "fadeInRightShorter", "fadeInLeftShorter" %}',
+                    'delay': '.2s'
+                }" {{ block.shopify_atrributes }}>
+                    <div class="rt-banner banner-fixed banner_1 hover-zoom ani-wrapper-fadeInRight">
+                        <a href="{{ block.settings.url2 | default: 'javascript:void(0);' }}">
+                        {% if block.settings.image2 != blank %}
+                        {% assign _container_width = 1220 %}
+                        {% assign _img_width = _container_width | divided_by: 2 %}
+                        {% assign _img_height = _img_width | divided_by: block.settings.image2.aspect_ratio | round %}
+                        {% assign _img_url = _img_width | append: 'x' | append: _img_height %}
+                        <figure>
+                            <img src="{{ block.settings.image2 | img_url: _img_url, scale: 2 }}" alt="banner" width="{{ _img_width }}" height="{{ _img_height }}"/>
+                        </figure>
+                        {% else %}
+                        <figure style="min-height:400px;background-color:#ccc;"></figure>
+                        {% endif %}
+                        </a>
+                        <div class="banner-content x-left pl-8 y-top pt-8 appear-animate pe-none fadeIn appear-animation-visible" style="animation-duration: 1.2s; animation-delay: 0.2s;">
+                            <h3 class="banner-title ls-m mb-1 text-white font-weight-normal fs-3p5 fs-mobile-2 lh-1p3 mb-6">{{ block.settings.title2 }}</h3>
+                            <a href="{{ block.settings.url2 | default: 'javascript:void(0);' }}" class="text-white btn-arrow ani-el">
+                                <svg width="24" height="9" viewBox="0 0 24 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22.9786 4.85355C23.1738 4.65829 23.1738 4.34171 22.9786 4.14645L19.7966 0.964466C19.6013 0.769204 19.2847 0.769204 19.0895 0.964466C18.8942 1.15973 18.8942 1.47631 19.0895 1.67157L21.9179 4.5L19.0895 7.32843C18.8942 7.52369 18.8942 7.84027 19.0895 8.03553C19.2847 8.2308 19.6013 8.2308 19.7966 8.03553L22.9786 4.85355ZM0.625 5H22.625V4H0.625V5Z" fill="white"></path>
+                                </svg>    
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 mt-6 appear-animate" data-animation-options="{
+                    'name': '{% cycle "fadeInRightShorter", "fadeInLeftShorter" %}',
+                    'delay': '.2s'
+                }" {{ block.shopify_atrributes }}>
+                    <div class="rt-banner banner-fixed banner_1 hover-zoom ani-wrapper-fadeInRight">
+                        <a href="{{ block.settings.url3 | default: 'javascript:void(0);' }}">
+                        {% if block.settings.image3 != blank %}
+
+                        {% assign _container_width = 1220 %}
+                        {% assign _img_width = _container_width %}
+                        {% assign _img_height = _img_width | divided_by: block.settings.image3.aspect_ratio | round %}
+                        {% assign _img_url = _img_width | append: 'x' | append: _img_height %}
+                        <figure>
+                            <img src="{{ block.settings.image3 | img_url: _img_url, scale: 2 }}" alt="banner" width="{{ _img_width }}" height="{{ _img_height }}"/>
+                        </figure>
+                        {% else %}
+                        <figure style="min-height:400px;background-color:#ccc;"></figure>
+                        {% endif %}
+                        </a>
+                        <div class="banner-content x-left pl-8 y-top pt-8 appear-animate pe-none fadeIn appear-animation-visible" style="animation-duration: 1.2s; animation-delay: 0.2s;">
+                            <h3 class="banner-title ls-m mb-1 text-white font-weight-normal fs-3p5 fs-mobile-2 lh-1p3 mb-6">{{ block.settings.title3 }}</h3>
+                            <a href="{{ block.settings.url3 | default: 'javascript:void(0);' }}" class="text-white btn-arrow ani-el">
+                                <svg width="24" height="9" viewBox="0 0 24 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22.9786 4.85355C23.1738 4.65829 23.1738 4.34171 22.9786 4.14645L19.7966 0.964466C19.6013 0.769204 19.2847 0.769204 19.0895 0.964466C18.8942 1.15973 18.8942 1.47631 19.0895 1.67157L21.9179 4.5L19.0895 7.32843C18.8942 7.52369 18.8942 7.84027 19.0895 8.03553C19.2847 8.2308 19.6013 8.2308 19.7966 8.03553L22.9786 4.85355ZM0.625 5H22.625V4H0.625V5Z" fill="white"></path>
+                                </svg>    
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% when "blog" %}
+        {% if block.settings.blog != blank %}
+        {% assign blog = blogs[block.settings.blog] %}
+        <div class="container page-about-block page-about-blog" {{ block.shopify_attributes }}>
+            <div class="related-articles mt-9 mb-9 mt-lg-20 pt-lg-4">
+                <h3 class="title">{{ block.settings.heading }}</h3>
+                <div class="owl-carousel owl-theme row cols-lg-3 cols-sm-2" data-owl-options="{
+                    'items': 1,
+                    'margin': 30,
+                    'loop': false,
+                    'responsive': {
+                        '576': {
+                            'items': 2
+                        },
+                        '992': {
+                            'items': {{ block.settings.visible_items }} 
+                        }
+                    }
+                }">
+                    {% for _article in blog.articles limit: block.settings.limit %}
+                    <div class="article {% if _article.metafields.info.video != blank %} article-video{% endif %}">
+                        <figure class="article-visual">
+                            {% if _article.tags.size > 0 %}
+                            <div class="article-tags tags-list d-flex">
+                            {% for tag in _article.tags limit:2 %}<a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>{% endfor %} 
+                            </div>
+                            {% endif %}
+                            <a href="{{ _article.url }}">
+                                <img src="{{ _article.image | img_url: "600x338", scale: 2, crop: "top" }}" width="600" height="338" alt="article" />
+                            </a>
+                            {% if _article.metafields.info.video != blank %}
+                            <span class="video-play"></span>
+                            <video width="380">
+                                <source src="{{ _article.metafields.info.video }}" type="video/mp4">
+                            </video>
+                            {% endif %}
+                        </figure>
+                        <div class="article-details text-center">
+                            <div class="article-title fs-2p5 font-weight-normal"><a href="{{ _article.url }}">{{ _article.title }}</a></div>
+                            <div class="article-meta">
+                            <a href="{{ _article.url }}" class="article-date">{{ _article.published_at | time_tag: format: 'date' }}</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endcase %}
+        {% endfor %}
+    </div>
+</div>
+
+{% schema %}
+{
+  "name": "About Page",
+    "settings": [
+          
+    ],
+    
+    "blocks": [
+    {
+        "type": "text_benefits",
+        "name": "Text Benefits",
+        "settings": [
+            {
+                "type": "text",
+                "id": "heading",
+                "label": "Heading",
+                "default": "Heading"
+            },
+            {
+                "type": "text",
+                "id": "subheading",
+                "label": "Sub heading"
+            },
+            {
+                "type": "textarea",
+                "id": "description",
+                "label": "Description"
+            },
+            {
+                "type": "header",
+                "content": "Block #1"
+              },
+              {
+                "type": "textarea",
+                "id": "svg_html1",
+                "label": "SVG Icon / HTML"
+              },
+              {
+                  "type": "text",
+                  "id": "title1",
+                  "label": "Title",
+                  "default": "Sample title"
+              },
+              {
+                  "type": "textarea",
+                  "id": "description1",
+                  "label": "Benefit description",
+                  "default": "This is sample description"
+              },
+              {
+                "type": "header",
+                "content": "Block #2"
+              },
+              {
+                "type": "textarea",
+                "id": "svg_html2",
+                "label": "SVG Icon / HTML"
+              },
+              {
+                  "type": "text",
+                  "id": "title2",
+                  "label": "Title",
+                  "default": "Sample title"
+              },
+              {
+                  "type": "textarea",
+                  "id": "description2",
+                  "label": "Benefit description",
+                  "default": "This is sample description"
+              },
+              {
+                "type": "header",
+                "content": "Block #3"
+              },
+              {
+                "type": "textarea",
+                "id": "svg_html3",
+                "label": "SVG Icon / HTML"
+              },
+              {
+                  "type": "text",
+                  "id": "title3",
+                  "label": "Title",
+                  "default": "Sample title"
+              },
+              {
+                  "type": "textarea",
+                  "id": "description3",
+                  "label": "Benefit description",
+                  "default": "This is sample description"
+              }
+        ]
+    },
+    {
+        "type": "video",
+        "name": "Video banner",
+        "settings": [
+            {
+                "id": "video_url",
+                "type": "url",
+                "label": "Video URL"
+            },
+            {
+                "type": "image_picker",
+                "id": "image_bg",
+                "label": "Background image"
+            },
+            {
+                "type": "textarea",
+                "id": "title",
+                "label": "Title",
+                "default": "Banner title"
+            },
+            {
+                "type": "textarea",
+                "id": "sub_title",
+                "label": "Sub title"
+            },
+            {
+                "type": "textarea",
+                "id": "description",
+                "label": "Description"
+            }
+        ]
+    },
+    {
+        "type": "text_blocks",
+        "name": "Text Blocks",
+        "settings": [
+            {
+                "type": "header",
+                "content": "Block #1"
+            },
+            {
+                "type": "text",
+                "id": "title1",
+                "label": "Title"
+            },
+            {
+                "type": "html",
+                "id": "description1",
+                "label": "Description"
+            },
+            {
+                "type": "header",
+                "content": "Block #2"
+            },
+            {
+                "type": "text",
+                "id": "title2",
+                "label": "Title"
+            },
+            {
+                "type": "html",
+                "id": "description2",
+                "label": "Description"
+            }
+        ]
+    },
+    {
+        "type": "banner",
+        "name": "Banner",
+        "settings": [
+            {
+                "type": "header",
+                "content": "Width"
+            },
+            {
+                "type": "select",
+                "id": "width_destop",
+                "label": "Width on Desktop",
+                "options": [
+                    {
+                        "value": "3",
+                        "label": "25%"
+                    },
+                    {
+                        "value": "4",
+                        "label": "One third"
+                    },
+                    {
+                        "value": "6",
+                        "label": "50%"
+                    },
+                    {
+                        "value": "8",
+                        "label": "Two thirds"
+                    },
+                    {
+                        "value": "12",
+                        "label": "100%"
+                    }
+                ],
+                "default": "6"
+            },
+            {
+                "type": "select",
+                "id": "width_tablet",
+                "label": "Width on Tablet",
+                "options": [
+                    {
+                        "value": "3",
+                        "label": "25%"
+                    },
+                    {
+                        "value": "4",
+                        "label": "One third"
+                    },
+                    {
+                        "value": "6",
+                        "label": "50%"
+                    },
+                    {
+                        "value": "8",
+                        "label": "Two thirds"
+                    },
+                    {
+                        "value": "12",
+                        "label": "100%"
+                    }
+                ],
+                "default": "12"
+            },
+            {
+                "type": "select",
+                "id": "width_mobile",
+                "label": "Width on Mobile",
+                "options": [
+                    {
+                        "value": "6",
+                        "label": "50%"
+                    },
+                    {
+                        "value": "12",
+                        "label": "100%"
+                    }
+                ],
+                "default": "12"
+            },
+            {
+                "type": "header",
+                "content": "Content"
+            },
+            {
+                "type": "image_picker",
+                "id": "image",
+                "label": "Background image"
+            },
+            {
+                "type": "textarea",
+                "id": "title",
+                "label": "Title",
+                "default": "Banner title"
+            },
+            {
+                "type": "textarea",
+                "id": "description",
+                "label": "Description"
+            },
+            {
+                "type": "text",
+                "id": "button_text",
+                "label": "Button text",
+                "default": "Shop now"
+            },
+            {
+                "type": "url",
+                "id": "button_url",
+                "label": "Button URL"
+            },
+            {
+                "type": "header",
+                "content": "Layout"
+            },
+            {
+                "type": "select",
+                "id": "content_hori_align",
+                "label": "Content alignment",
+                "options": [
+                    {
+                        "value": "left",
+                        "label": "Left"
+                    },
+                    {
+                        "value": "center",
+                        "label": "Center"
+                    },
+                    {
+                        "value": "right",
+                        "label": "Right"
+                    }
+                ],
+                "default": "left"
+            },
+            {
+                "type": "select",
+                "id": "content_vert_align",
+                "label": "Content vertical align",
+                "options": [
+                    {
+                        "value": "y-top pt-9",
+                        "label": "Top"
+                    },
+                    {
+                        "value": "y-50",
+                        "label": "Middle"
+                    },
+                    {
+                        "value": "y-bottom pb-9",
+                        "label": "Bottom"
+                    }
+                ],
+                "default": "y-50"
+            },
+            {
+                "type": "header",
+                "content": "Font size"
+            },
+            {
+                "type": "range",
+                "id": "fs_title",
+                "label": "Title",
+                "unit": "x",
+                "min": 1,
+                "max": 6,
+                "step": 0.5,
+                "default": 5.5
+            },
+            {
+                "type": "range",
+                "id": "fs_description",
+                "label": "Description",
+                "unit": "x",
+                "min": 1,
+                "max": 6,
+                "step": 0.5,
+                "default": 2.5
+            },
+            {
+                "type": "header",
+                "content": "Color"
+            },
+            {
+                "type": "select",
+                "id": "color_text",
+                "label": "Text color",
+                "options": [
+                    {
+                        "value": "white",
+                        "label": "White",
+                        "group": "Basic"
+                    },
+                    {
+                        "value": "black",
+                        "label": "Black",
+                        "group": "Basic"
+                    },
+                    {
+                        "value": "primary",
+                        "label": "Primary",
+                        "group": "From settings"
+                    },
+                    {
+                        "value": "dark",
+                        "label": "Dark",
+                        "group": "From settings"
+                    }
+                ],
+                "default": "white"
+            }
+        ]
+    },
+    {
+        "type": "promotions",
+        "name": "Promotions",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Heading"
+          },
+          {
+            "type": "header",
+            "content": "Block #1"
+          },
+          {
+            "type": "textarea",
+            "id": "svg_html1",
+            "label": "SVG Icon / HTML"
+          },
+          {
+              "type": "text",
+              "id": "title1",
+              "label": "Title",
+              "default": "Sample title"
+          },
+          {
+              "type": "textarea",
+              "id": "description1",
+              "label": "Benefit description",
+              "default": "This is sample description"
+          },
+          {
+            "type": "header",
+            "content": "Block #2"
+          },
+          {
+            "type": "textarea",
+            "id": "svg_html2",
+            "label": "SVG Icon / HTML"
+          },
+          {
+              "type": "text",
+              "id": "title2",
+              "label": "Title",
+              "default": "Sample title"
+          },
+          {
+              "type": "textarea",
+              "id": "description2",
+              "label": "Benefit description",
+              "default": "This is sample description"
+          },
+          {
+            "type": "header",
+            "content": "Block #3"
+          },
+          {
+            "type": "textarea",
+            "id": "svg_html3",
+            "label": "SVG Icon / HTML"
+          },
+          {
+              "type": "text",
+              "id": "title3",
+              "label": "Title",
+              "default": "Sample title"
+          },
+          {
+              "type": "textarea",
+              "id": "description3",
+              "label": "Benefit description",
+              "default": "This is sample description"
+          }
+        ]
+      },
+      {
+        "type" : "parallax_video",
+        "name": "Parallax Video",
+        "settings": [
+            {
+                "type": "select",
+                "id": "content_hori_align",
+                "label": "Content horizontal align",
+                "options": [
+                    {
+                        "value": "left",
+                        "label": "Left"
+                    },
+                    {
+                        "value": "center",
+                        "label": "Center"
+                    },
+                    {
+                        "value": "right",
+                        "label": "Right"
+                    }
+                ],
+                "default": "center"
+            },
+            {
+                "type": "header",
+                "content": "Background"
+            },
+            {
+                "type": "url",
+                "id": "video",
+                "label": "Video URL"
+            },
+            {
+                "type": "image_picker",
+                "id": "image",
+                "label": "Image",
+                "info": "If you are using video, the background image will be disabled."
+            },
+            {
+                "type": "color",
+                "id": "color_bg",
+                "label": "Color",
+                "default": "#44352d"
+            },
+            {
+                "type": "header",
+                "content": "Content"
+            },
+            {
+                "type": "textarea",
+                "id": "title",
+                "label": "Title",
+                "default": "Banner title"
+            },
+            {
+                "type": "textarea",
+                "id": "description",
+                "label": "Description"
+            },
+            {
+                "type": "header",
+                "content": "Button"
+            },
+            {
+                "type": "text",
+                "id": "button_text",
+                "label": "Text"
+            },
+            {
+                "type": "url",
+                "id": "button_url",
+                "label": "URL"
+            },
+            {
+                "type": "header",
+                "content": "Font size"
+            },
+            {
+                "type": "range",
+                "id": "fs_title",
+                "label": "Title",
+                "unit": "x",
+                "min": 1,
+                "max": 8,
+                "step": 0.5,
+                "default": 6
+            },
+            {
+                "type": "range",
+                "id": "fs_description",
+                "label": "Description",
+                "unit": "x",
+                "min": 1,
+                "max": 6,
+                "step": 0.5,
+                "default": 2.5
+            },
+            {
+                "type": "header",
+                "content": "Color"
+            },
+            {
+                "type": "select",
+                "id": "color_text",
+                "label": "Text color",
+                "options": [
+                    {
+                        "value": "white",
+                        "label": "White",
+                        "group": "Basic"
+                    },
+                    {
+                        "value": "black",
+                        "label": "Black",
+                        "group": "Basic"
+                    },
+                    {
+                        "value": "primary",
+                        "label": "Primary",
+                        "group": "From settings"
+                    },
+                    {
+                        "value": "dark",
+                        "label": "Dark",
+                        "group": "From settings"
+                    }
+                ],
+                "default": "white"
+            },
+            {
+                "type": "header",
+                "content": "Spacing (large screen)"
+            },
+            {
+                "type": "range",
+                "id": "mt_lg",
+                "label": "Margin top",
+                "unit": "x",
+                "min": 0,
+                "max": 20,
+                "step": 1,
+                "default": 8
+            },
+            {
+                "type": "range",
+                "id": "pt_lg",
+                "label": "Padding top",
+                "unit": "x",
+                "min": 0,
+                "max": 20,
+                "step": 1,
+                "default": 10
+            },
+            {
+                "type": "range",
+                "id": "mb_lg",
+                "label": "Margin bottom",
+                "unit": "x",
+                "min": 0,
+                "max": 20,
+                "step": 1,
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "pb_lg",
+                "label": "Padding bottom",
+                "unit": "x",
+                "min": 0,
+                "max": 20,
+                "step": 1,
+                "default": 10
+            },
+            {
+                "type": "header",
+                "content": "Spacing (mobile screen)"
+            },
+            {
+                "type": "range",
+                "id": "mt",
+                "label": "Margin top",
+                "unit": "x",
+                "min": 0,
+                "max": 20,
+                "step": 1,
+                "default": 5
+            },
+            {
+                "type": "range",
+                "id": "pt",
+                "label": "Padding top",
+                "unit": "x",
+                "min": 0,
+                "max": 20,
+                "step": 1,
+                "default": 5
+            },
+            {
+                "type": "range",
+                "id": "mb",
+                "label": "Margin bottom",
+                "unit": "x",
+                "min": 0,
+                "max": 20,
+                "step": 1,
+                "default": 0
+            },
+            {
+                "type": "range",
+                "id": "pb",
+                "label": "Padding bottom",
+                "unit": "x",
+                "min": 0,
+                "max": 20,
+                "step": 1,
+                "default": 5
+            }
+        ]
+      },
+    {
+        "type": "banners",
+        "name": "Banners",
+        "limit": 1,
+        "settings": [
+            {
+                "type": "header",
+                "content": "Banner #1"
+            },
+            {
+                "type": "image_picker",
+                "id": "image1",
+                "label": "Image"
+            },
+            {
+                "type": "url",
+                "id": "url1",
+                "label": "URL"
+            },
+            {
+                "type": "text",
+                "id": "title1",
+                "label": "Title"
+            },
+            {
+                "type": "header",
+                "content": "Banner #2"
+            },
+            {
+                "type": "image_picker",
+                "id": "image2",
+                "label": "Image"
+            },
+            {
+                "type": "url",
+                "id": "url2",
+                "label": "URL"
+            },
+            {
+                "type": "text",
+                "id": "title2",
+                "label": "Title"
+            },
+            {
+                "type": "header",
+                "content": "Banner #3"
+            },
+            {
+                "type": "image_picker",
+                "id": "image3",
+                "label": "Image"
+            },
+            {
+                "type": "url",
+                "id": "url3",
+                "label": "URL"
+            },
+            {
+                "type": "text",
+                "id": "title3",
+                "label": "Title"
+            }
+        ]
+        
+    },
+    {
+        "type": "blog",
+        "name": "Blog",
+        "limit": 1,
+        "settings": [
+            {
+                "type": "text",
+                "id": "heading",
+                "label" : "Heading"
+            },
+            {
+                "type": "blog",
+                "id": "blog",
+                "label" : "Choose a blog"
+            },
+            {
+              "type": "range",
+              "id": "visible_items",
+              "label": "Visible Items",
+              "min": 2,
+              "step": 1,
+              "max": 4,
+              "default": 2
+            },
+            {
+              "type": "range",
+              "id": "limit",
+              "label": "Limit",
+              "min": 1,
+              "step": 1,
+              "max": 12,
+              "default": 2
+            }
+        ]
+    }
+  ]
+}
+{% endschema %}

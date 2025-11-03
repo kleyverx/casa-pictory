@@ -1,0 +1,66 @@
+<div class="sticky-footer sticky-content fix-bottom cols-5 border-top d-lg-none">
+    <a class="rt_hamburger is-mainmenu rt_hamburger--slider" href="#mm-mobile-menu">
+        <span class="rt_hamburger-box">
+          <span class="rt_hamburger-inner"></span>
+        </span>
+    </a>
+    <a href="{{ shop.url }}" class="sticky-link">
+        <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip-bmmenu--home)">
+            <path d="M17.4661 7.08333V18.75H4.13281V7.08333" stroke="black" stroke-width="1.5" stroke-miterlimit="10"/>
+            <path d="M19.9661 8.75L10.7995 1.25L1.63281 8.75" stroke="black" stroke-width="1.5" stroke-miterlimit="10"/>
+            </g>
+            <defs>
+            <clipPath id="clip-bmmenu--home">
+            <rect width="20" height="20" fill="white" transform="translate(0.799805)"/>
+            </clipPath>
+            </defs>
+        </svg>
+            
+    </a>
+    {% if shop.customer_accounts_enabled %}
+    <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="sticky-link">
+        <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip-bmmenu--user)">
+            <path d="M10.7994 10.8167C13.4366 10.8167 15.5744 8.67882 15.5744 6.04166C15.5744 3.4045 13.4366 1.26666 10.7994 1.26666C8.16225 1.26666 6.02441 3.4045 6.02441 6.04166C6.02441 8.67882 8.16225 10.8167 10.7994 10.8167Z" stroke="#191919" stroke-width="1.5" stroke-miterlimit="10"/>
+            <path d="M2.0498 19.5667L2.35814 17.8583C2.72239 15.8854 3.76625 14.1024 5.3084 12.819C6.85054 11.5357 8.79352 10.8331 10.7998 10.8333V10.8333C12.8085 10.8338 14.7534 11.5388 16.2958 12.8254C17.8383 14.1121 18.8807 15.899 19.2415 17.875L19.5498 19.5833" stroke="#191919" stroke-width="1.5" stroke-miterlimit="10"/>
+            </g>
+            <defs>
+            <clipPath id="clip-bmmenu--user">
+            <rect width="20" height="20" fill="white" transform="translate(0.799805)"/>
+            </clipPath>
+            </defs>
+        </svg>
+    </a>
+    {% endif %}
+    <a href="/pages/wishlist" class="sticky-link">
+        <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip-bmmenu--wishlist)">
+            <path d="M3.64149 10.8333L3.36649 10.5583C2.94681 10.1403 2.61357 9.64369 2.38581 9.09686C2.15806 8.55004 2.04023 7.96371 2.03907 7.37135C2.03673 6.17502 2.50972 5.02676 3.35399 4.17917C4.19826 3.33159 5.34466 2.8541 6.54099 2.85176C7.73731 2.84941 8.88557 3.3224 9.73316 4.16667L10.7998 5.25001L11.8665 4.16667C12.2806 3.73383 12.777 3.38803 13.3266 3.14956C13.8761 2.91109 14.4678 2.78475 15.0668 2.77794C15.6658 2.77113 16.2602 2.884 16.815 3.10992C17.3698 3.33584 17.8739 3.67026 18.2978 4.09359C18.7217 4.51691 19.0568 5.0206 19.2834 5.57513C19.5101 6.12966 19.6237 6.72386 19.6177 7.32289C19.6117 7.92192 19.4861 8.51372 19.2484 9.06358C19.0106 9.61344 18.6655 10.1103 18.2332 10.525L17.9582 10.8L10.7998 17.975L5.85816 13.0333L3.64149 10.8333Z" stroke="#191919" stroke-width="1.5" stroke-miterlimit="10"/>
+            </g>
+            <defs>
+            <clipPath id="clip-bmmenu--wishlist">
+            <rect width="20" height="20" fill="white" transform="translate(0.799805)"/>
+            </clipPath>
+            </defs>
+        </svg>
+    </a>
+    <div class="dropdown cart-dropdown dir-up is__mobile_menu_item cart-offcanvas">
+        <a href="javascript:void(0);" class="sticky-link cart-toggle">
+            <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip-bmmenu--cart)">
+                <path d="M6.80781 13.1833L19.5328 10.8V3.63333H4.25781" stroke="#191919" stroke-width="1.5" stroke-miterlimit="10"/>
+                <path d="M1.2334 1.25H3.62506L6.80006 13.1833L5.41673 15.2583C5.28434 15.4615 5.21477 15.6992 5.21673 15.9417V15.9417C5.21673 16.2643 5.34492 16.5738 5.57308 16.802C5.80125 17.0302 6.11072 17.1583 6.4334 17.1583H16.3501" stroke="#191919" stroke-width="1.5" stroke-miterlimit="10"/>
+                <path d="M16.3503 18.75C16.7875 18.75 17.1419 18.3955 17.1419 17.9583C17.1419 17.5211 16.7875 17.1667 16.3503 17.1667C15.913 17.1667 15.5586 17.5211 15.5586 17.9583C15.5586 18.3955 15.913 18.75 16.3503 18.75Z" stroke="#191919" stroke-width="1.5" stroke-miterlimit="10"/>
+                <path d="M8.39128 18.75C8.8285 18.75 9.18294 18.3955 9.18294 17.9583C9.18294 17.5211 8.8285 17.1667 8.39128 17.1667C7.95405 17.1667 7.59961 17.5211 7.59961 17.9583C7.59961 18.3955 7.95405 18.75 8.39128 18.75Z" stroke="#191919" stroke-width="1.5" stroke-miterlimit="10"/>
+                </g>
+                <defs>
+                <clipPath id="clip-bmmenu--cart">
+                <rect width="20" height="20" fill="white" transform="translate(0.799805)"/>
+                </clipPath>
+                </defs>
+            </svg>    
+            <span class="x-50"><i class="cart-count-mobile-bottom fs-1p3">{{- cart.item_count -}}</i></span>
+        </a>
+    </div>
+</div>

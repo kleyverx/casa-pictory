@@ -1,0 +1,556 @@
+<div id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="article-template">
+  <div class="container">
+    {%- include "breadcrumb" -%}
+      <div class="row gutter-lg mt-4">
+          <div class="col-lg-12">
+            <div class="article-single">
+              <div class="article-single-wrapper prologue">
+
+                {% if article.tags.size > 0 %}
+                <div class="article-tags mb-6">
+                    {% for tag in article.tags %}<a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>{% endfor %} 
+                </div>
+                {% endif %}
+                <h1 class="fs-5p5 font-weight-slight-bold lh-1">{{ article.title }}</h1>
+                {% if section.settings.blog_show_author %}
+                <div class="article-author d-none">{{ 'blogs.article.by_author' | t: author: article.author }}</div>
+                {% endif %}
+                {% if section.settings.blog_show_date %}
+                <div class="article-date">{{ article.published_at | time_tag: format: 'date' }}</div>
+                {% endif %}
+              </div>
+
+              <article class="mt-8 mb-8 article-single{% if article.metafields.info.video != blank %} article-video{% endif %}">
+                  <figure class="article-visual">
+                    <img src="{{ article.image | img_url: "870x420", scale: 2 }}" width="870" height="420" alt="article" />
+                    {% if article.metafields.info.video != blank %}
+                    <span class="video-play"></span>
+                    <video width="380">
+                        <source src="{{ article.metafields.info.video }}" type="video/mp4">
+                    </video>
+                    {% endif %}
+                  </figure>
+              </article>
+
+              <div class="article-single-wrapper">
+                <div class="article-body">
+                  {{ article.content }}
+                </div>
+                
+                  {% comment %}
+                <nav class="page-nav">
+
+                  {%- if blog.previous_article != blank -%}
+                  <a class="pager-link pager-link-prev" href="{{ blog.previous_article.url }}">
+                      {{ "blogs.article.previous_post" | t }}
+                      <span class="pager-link-title">{{ blog.previous_article.title }}</span>
+                  </a>
+                  {%- endif -%}
+
+                  {%- if blog.next_article != blank -%}
+                  <a class="pager-link pager-link-next" href="{{ blog.next_article.url }}">
+                      {{ "blogs.article.next_post" | t }}
+                      <span class="pager-link-title">{{ blog.next_article.title }}</span>
+                  </a>
+                  {%- endif -%}
+                </nav>
+
+                  {% endcomment %}
+              </div>
+            </div>
+            {% if section.blocks.size > 0 %}
+            <div class="article-single-sections">
+              {% for block in section.blocks %}
+                  {% case block.type %}
+                  {% when "Promotions" %}
+                  <div class="article-banner-block article-promitions pb-5 pt-5 pt-lg-12 pb-lg-12 mt-5 mt-lg-8 border-bottom border-top">
+                    <h2 class="title">{{ block.settings.heading }}</h2>
+                      <div class="owl-carousel owl-theme row cols-md-3 cols-sm-2 cols-1" data-owl-options="{
+                        'nav': false,
+                        'dots': true,
+                        'loop': false,
+                        'margin': 20,
+                        'responsive': {
+                            '0': {
+                                'items': 1
+                            },
+                            '576': {
+                                'items': 2
+                            },
+                            '768': {
+                                'items': 3
+                            },
+                            '992': {
+                                'items':3,
+                                'dots': false
+                            }
+                        }
+                    }">
+                      {% for i in (1..3) %}
+                      {% assign s_svg = "svg_html" | append : i %}
+                      {% assign s_title = "title" | append : i %}
+                      {% assign s_description = "description" | append : i %}
+                      {% if block.settings[s_svg] != blank and block.settings[s_description] != blank and block.settings[s_title] != blank %}
+                      <div class="icon-box text-center article-promotion">
+                          <span class="icon-box-icon mb-6">
+                            {{ block.settings[s_svg] }}
+                        </span>
+                        <div class="icon-box-content pl-4 pr-4">
+                            {% if block.settings[s_title] != blank %}
+                            <h4 class="icon-box-title mb-4 fs-2 lh-1p3 font-weight-slight-bold text-normal mb-6">{{ block.settings[s_title] }}</h4>
+                            {% endif %}
+                            <p class="text-center fs-1p7 lh-1p6 text-dark">{{ block.settings[s_description] }}</p>
+                        </div>
+                      </div>
+                      {% endif %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                  {% when "collection" %}
+                  <section class="mt-5 mb-0 mt-lg-12 pb-3 pb-lg-8 border-bottom">
+                      <h2 class="title">{{- block.settings.heading -}}</h2>
+                      {% if block.settings.collection != blank %}
+                      {% assign _collection = collections[block.settings.collection]  %}
+                      <div class="owl-carousel owl-theme row cols-2 cols-md-3 cols-lg-4"
+                            data-owl-options="{
+                                              'items': 4,
+                                              'nav': false,
+                                              'loop': false,
+                                              'dots': true,
+                                              'margin': 20,
+                                              'responsive': {
+                                              '0': {
+                                              'items': 2
+                                              },
+                                              '768': {
+                                              'items': 3
+                                              },
+                                              '992': {
+                                              'items': 4,
+                                              'dots': false,
+                                              'nav': true
+                                              }
+                                              }
+                                              }">
+                      {% if _collection != blank %}
+                        {% for _product in _collection.products limit:block.settings.items_limit %}
+                          {% render 'product-item', product:_product, style:'default', sign: section.id %}
+                        {% endfor %}
+                      {% endif %}
+                      </div>
+                      {% endif %}
+                  </section>
+                  {% when "banner" %}
+                    <div class="article-banner-block article-banner appear-animate pt-5 pt-lg-12" data-animation-options="{
+                      'name': '{% cycle "fadeInRightShorter", "fadeInLeftShorter" %}',
+                      'delay': '.2s'
+                  }" {{ block.shopify_atrributes }}>
+                      <div class="rt-banner banner-fixed banner_1 hover-zoom ani-wrapper-fadeInRight">
+                        <a href="{{ block.settings.url | default: 'javascript:void(0);' }}">
+                          {% if block.settings.image != blank %}
+                          {% assign _container_width = 1220 %}
+                          {% assign _img_width = _container_width | divided_by: 2 %}
+                          {% assign _img_height = _img_width | divided_by: block.settings.image.aspect_ratio | round %}
+                          {% assign _img_url = _img_width | append: 'x' | append: _img_height %}
+                          <figure>
+                              <img src="{{ block.settings.image | img_url: _img_url, scale: 2 }}" alt="banner" width="{{ _img_width }}" height="{{ _img_height }}"/>
+                          </figure>
+                          {% else %}
+                          <figure style="min-height:400px;background-color:#ccc;"></figure>
+                          {% endif %}
+                        </a>
+                        <div class="banner-content x-left pl-8 y-top pt-8 appear-animate pe-none fadeIn appear-animation-visible" style="animation-duration: 1.2s; animation-delay: 0.2s;">
+                            <h3 class="banner-title ls-m mb-1 text-white font-weight-slight-bold fs-3p5 fs-mobile-2 lh-1p3 mb-6">{{ block.settings.heading }}</h3>
+                            <a href="{{ block.settings.url | default: 'javascript:void(0);' }}" class="text-white btn-arrow ani-el">
+                                <svg width="24" height="9" viewBox="0 0 24 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22.9786 4.85355C23.1738 4.65829 23.1738 4.34171 22.9786 4.14645L19.7966 0.964466C19.6013 0.769204 19.2847 0.769204 19.0895 0.964466C18.8942 1.15973 18.8942 1.47631 19.0895 1.67157L21.9179 4.5L19.0895 7.32843C18.8942 7.52369 18.8942 7.84027 19.0895 8.03553C19.2847 8.2308 19.6013 8.2308 19.7966 8.03553L22.9786 4.85355ZM0.625 5H22.625V4H0.625V5Z" fill="white"></path>
+                                </svg>    
+                            </a>
+                        </div>
+                      </div>
+                    </div>
+                    {%- if section.settings.show_share_buttons -%}
+                        {%- include 'social-sharing', share_title: article.title, share_permalink: article.url, share_image: article.image, class: "inline-links col-sm-12 justify-content-center d-flex mt-5 mt-lg-12 mb-0 pb-5 pb-lg-12 border-bottom" -%}
+                    {%- endif -%}
+                  {% endcase %}
+              {% endfor %}
+            </div>
+            {% endif %}
+              <!-- End Page Navigation -->
+              <div class="related-articles mt-5 pb-5 mt-lg-12 pb-lg-12">
+                  <h3 class="title">{{ "blogs.article.related_posts" | t }}</h3>
+                  <div class="owl-carousel owl-theme row cols-lg-3 cols-sm-2" data-owl-options="{
+                      'items': 1,
+                      'margin': 20,
+                      'loop': false,
+                      'responsive': {
+                          '576': {
+                              'items': 2
+                          },
+                          '992': {
+                              'items': {{ section.settings.related_posts_visible }} 
+                          }
+                      }
+                  }">
+                      {% for _article in blog.articles limit: section.settings.related_posts_limit %}
+                      <div class="article {% if _article.metafields.info.video != blank %} article-video{% endif %}">
+                        <figure class="article-visual">
+                            {% if _article.tags.size > 0 %}
+                            <div class="article-tags tags-list d-flex">
+                              {% for tag in _article.tags limit:2 %}<a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>{% endfor %} 
+                            </div>
+                            {% endif %}
+                            <a href="{{ _article.url }}">
+                                <img src="{{ _article.image | img_url: "600x338", scale: 2, crop: "top" }}" width="600" height="338" alt="article" />
+                            </a>
+                            {% if _article.metafields.info.video != blank %}
+                            <span class="video-play"></span>
+                            <video width="380">
+                                <source src="{{ _article.metafields.info.video }}" type="video/mp4">
+                            </video>
+                            {% endif %}
+                        </figure>
+                        <div class="article-details text-center">
+                            <div class="article-title fs-2p5 font-weight-normal"><a href="{{ _article.url }}">{{ _article.title }}</a></div>
+                            <div class="article-meta">
+                              {% if section.settings.blog_show_date %}
+                              <a href="{{ _article.url }}" class="article-date">{{ _article.published_at | time_tag: format: 'date' }}</a>
+                              {% endif %}
+                            </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+                  </div>
+              </div>
+
+
+            {% if blog.comments_enabled? %}
+            {%- if comment.status == 'pending' -%}
+              {%- assign number_of_comments = article.comments_count | plus: 1 -%}
+            {%- else -%}
+              {%- assign number_of_comments = article.comments_count -%}
+            {%- endif -%}
+              <div class="comments mb-8 pt-5 pt-lg-18">
+                {% if number_of_comments > 0 %}
+                  <h3 class="title mb-4">{{ 'blogs.comments.comments' | t }}</h3>
+                  <div class="comments-info d-flex justify-content-center" style="">
+                    <span class="text-normal">{{ 'blogs.comments.comments_with_count' | t: count: number_of_comments }}</span>
+                    <a class="comments--post-comment  ml-3 pl-3" href="#article_post_comment">{{ 'blogs.comments.post' | t }}</a>
+                  </div>
+                  <ul>
+                    {% paginate article.comments by 5 %}
+
+                    {% comment %}
+                      #comments is required, it is used as an anchor link by Shopify.
+                    {% endcomment %}
+                    <div id="comments">
+                      <ul class="comments">
+                        {% comment %}
+                          If a comment was just submitted with no blank field, show it.
+                        {% endcomment %}
+                        {% if comment.status == 'pending' %}
+                          <li id="{{ comment.id }}" class="comment">
+                            {% include 'comment', comment: comment %}
+                          </li>
+                        {% endif %}
+
+                        {% for comment in article.comments %}
+                          <li id="{{ comment.id }}" class="comment">
+                              {% include 'comment', comment: comment %}
+                          </li>
+                        {% endfor %}
+                      </ul>
+
+                      {%- if paginate.pages > 1 -%}
+                        {% include 'pagination', paginate: paginate %}
+                      {%- endif -%}
+
+                    </div>
+                  {% endpaginate %}
+
+                      
+                  </ul>
+              {% endif %}
+              </div>
+              <!-- End Comments -->
+              <div class="reply pl-0 pr-0 border-top" id="article_post_comment">
+                  <div class="title-wrapper text-left">
+                      <h3 class="title title-simple text-left text-normal">{{ 'blogs.comments.title' | t }}</h3>
+                      <p>{{ 'blogs.comments.subtitle' | t }}</p>
+                  </div>
+                  {% form 'new_comment', article, class: "contact-form-wrapper" %}
+                  {%- assign formId = 'CommentForm' -%}
+
+                    <textarea placeholder="{{ 'blogs.comments.message' | t }} *" name="comment[body]" id="{{ formId }}-body" cols="30" rows="4" class="form-control mb-4{% if form.errors contains 'body' %} input--error{% endif %}"{% if form.errors contains 'body' %} aria-invalid="true" aria-describedby="{{ formId}}-body-error"{% endif %}>{{ form.body }}</textarea>
+                    {% if form.errors contains 'body' %}
+                      <span id="{{ formId}}-body-error" class="input-error-message">
+                        <span class="visually-hidden">{{ 'general.accessibility.error' | t }} </span>
+                        {% include 'icon-error' %}
+                        <span>{{ 'blogs.comments.message' | t }} {{ form.errors.messages['body'] }}.</span>
+                      </span>
+                    {% endif %}
+
+                      <div class="row">
+                          <div class="col-md-6 mb-5">
+                            <input placeholder="{{ 'blogs.comments.name' | t }}*" type="text" name="comment[author]" id="{{ formId }}-author" class="form-control{% if form.errors contains 'author' %} input--error{% endif %}" value="{{ form.author }}"{% if form.errors contains 'author' %} aria-invalid="true" aria-describedby="{{ formId}}-author-error"{% endif %}>
+                            {% if form.errors contains 'author' %} 
+                              <span id="{{ formId}}-author-error" class="input-error-message">
+                                <span class="visually-hidden">{{ 'general.accessibility.error' | t }} </span>
+                                {% include 'icon-error' %}
+                                <span>{{ 'blogs.comments.name' | t }} {{ form.errors.messages['author'] }}.</span>
+                              </span>
+                            {% endif %}
+                          </div>
+                          <div class="col-md-6 mb-5">
+                            <input placeholder="{{ 'blogs.comments.email' | t }} *" type="email" name="comment[email]" id="{{ formId }}-email" class="form-control{% if form.errors contains 'email' %} input--error{% endif %}" value="{{ form.email }}" autocorrect="off" autocapitalize="off" {% if form.errors contains 'email' %} aria-invalid="true" aria-describedby="{{ formId}}-email-error"{% endif %}>
+                            {% if form.errors contains 'email' %}
+                              <span id="{{ formId}}-email-error" class="input-error-message">
+                                <span class="visually-hidden">{{ 'general.accessibility.error' | t }} </span>
+                                {% include 'icon-error' %}
+                                <span>{{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}.</span>
+                              </span>
+                            {% endif %}
+                          </div>
+                      </div>
+                      
+                      {% if blog.moderated? %}
+                        <p class="fine-print">{{ 'blogs.comments.moderated' | t }}</p>
+                      {% endif %}
+                      <button type="submit" class="btn btn-primary btn-shadow-lg btn-ellipse">{{ 'blogs.comments.post' | t }}</button>
+                    {% endform %}
+                  </form>
+              </div>
+              <!-- End Reply -->
+              {% endif %}
+          </div>
+      </div>
+  </div>
+</div>
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "articleBody": {{ article.content | strip_html | json }},
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": {{ shop.url | append: page.url | json }}
+  },
+  "headline": {{ article.title | json }},
+  {% if article.excerpt != blank %}
+    "description": {{ article.excerpt | strip_html | json }},
+  {% endif %}
+  {% if article.image %}
+    {% assign image_size = article.image.width | append: 'x' %}
+    "image": [
+      {{ article | img_url: image_size | prepend: "https:" | json }}
+    ],
+  {% endif %}
+  "datePublished": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+  "dateCreated": {{ article.created_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+  "author": {
+    "@type": "Person",
+    "name": {{ article.author | json }}
+  },
+  "publisher": {
+    "@type": "Organization",
+    {% if page_image %}
+      {% assign image_size = page_image.width | append: 'x' %}
+      "logo": {
+        "@type": "ImageObject",
+        "height": {{ page_image.height | json }},
+        "url": {{ page_image | img_url: image_size | prepend: "https:" | json }},
+        "width": {{ page_image.width | json }}
+      },
+    {% endif %}
+    "name": {{ shop.name | json }}
+  }
+}
+</script>
+  
+{% schema %}
+{
+  "name": "Blog Post",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "blog_show_author",
+      "label":"Show author",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "blog_show_date",
+      "label": "Show date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share_buttons",
+      "label": "Show sharing buttons",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Related Posts"
+    },
+    {
+      "type": "range",
+      "id": "related_posts_visible",
+      "label": "Visible Items",
+      "min": 2,
+      "step": 1,
+      "max": 4,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "related_posts_limit",
+      "label": "Limit",
+      "min": 1,
+      "step": 1,
+      "max": 12,
+      "default": 4
+    }
+  ],
+  "blocks": [
+    {
+      "type": "Promotions",
+      "name": "Promotions",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Heading"
+        },
+        {
+          "type": "header",
+          "content": "Block #1"
+        },
+        {
+          "type": "textarea",
+          "id": "svg_html1",
+          "label": "SVG Icon / HTML"
+        },
+        {
+            "type": "text",
+            "id": "title1",
+            "label": "Title",
+            "default": "Sample title"
+        },
+        {
+            "type": "textarea",
+            "id": "description1",
+            "label": "Benefit description",
+            "default": "This is sample description"
+        },
+        {
+          "type": "header",
+          "content": "Block #2"
+        },
+        {
+          "type": "textarea",
+          "id": "svg_html2",
+          "label": "SVG Icon / HTML"
+        },
+        {
+            "type": "text",
+            "id": "title2",
+            "label": "Title",
+            "default": "Sample title"
+        },
+        {
+            "type": "textarea",
+            "id": "description2",
+            "label": "Benefit description",
+            "default": "This is sample description"
+        },
+        {
+          "type": "header",
+          "content": "Block #3"
+        },
+        {
+          "type": "textarea",
+          "id": "svg_html3",
+          "label": "SVG Icon / HTML"
+        },
+        {
+            "type": "text",
+            "id": "title3",
+            "label": "Title",
+            "default": "Sample title"
+        },
+        {
+            "type": "textarea",
+            "id": "description3",
+            "label": "Benefit description",
+            "default": "This is sample description"
+        }
+      ]
+    },
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Heading"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Choose a collection"
+        },
+        {
+          "type": "range",
+          "id": "items_limit",
+          "label": "Limit",
+          "min": 1,
+          "step": 1,
+          "max": 12,
+          "default": 4
+        }
+      ]
+    },
+    {
+      "type": "banner",
+      "name": "Banner",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Heading"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "URL"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "Promotions"
+      },
+      {
+        "type": "collection"
+      },
+      {
+        "type": "banner"
+      }
+    ]
+  }
+}
+{% endschema %}

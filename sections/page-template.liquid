@@ -1,0 +1,19 @@
+
+<div class="container mt-4 mb-4">
+    {% include "breadcrumb" %}
+    <div class="row main-content-wrap gutter-lg mt-4">
+        <div class="col-lg-12 main-content">
+        <h1>{{ page.title}}</h1>
+        {{page.content}}
+        </div>
+    </div>
+</div>
+
+{% schema %}
+{
+    "name": "Page",
+    "class": "pt-10 pb-10"
+}
+{% endschema %}
+  
+  

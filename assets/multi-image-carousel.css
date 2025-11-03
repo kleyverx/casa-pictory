@@ -1,0 +1,481 @@
+/* ========================================
+   Multi-Image Carousel - Estilo Minimalista
+   ======================================== */
+
+/* Variables CSS para configuración */
+:root {
+  --carousel-image-size-desktop: 400px;
+  --carousel-image-size-tablet: 350px;
+  --carousel-image-size-mobile: 240px; /* Reducido para dar espacio a las flechas */
+  --carousel-transition-duration: 0.6s;
+  --carousel-arrow-size: 40px;
+  --carousel-arrow-color: #333;
+  --carousel-arrow-hover-color: #000;
+  --carousel-title-size: 32px;
+  --carousel-description-size: 16px;
+  --carousel-slide-title-size: 20px;
+  --carousel-slide-description-size: 15px;
+  --carousel-button-size: 16px;
+  --carousel-button-bg-color: #2c3e50;
+  --carousel-button-text-color: #ffffff;
+  --carousel-button-hover-bg-color: #34495e;
+  --carousel-button-padding: 12px;
+  --carousel-button-border-radius: 5px;
+  --carousel-button-border-color: #333333;
+  
+  /* Variables mobile por defecto */
+  --carousel-mobile-title-size: 24px;
+  --carousel-mobile-description-size: 14px;
+  --carousel-mobile-slide-title-size: 16px;
+  --carousel-mobile-slide-description-size: 12px;
+  --carousel-mobile-button-size: 14px;
+  --carousel-mobile-button-padding: 10px;
+  --carousel-mobile-button-border-radius: 3px;
+  --carousel-mobile-button-border-color: #333333;
+  --carousel-mobile-button-bg-color: #333333;
+  --carousel-mobile-button-text-color: #ffffff;
+  --carousel-mobile-button-hover-bg-color: #555555;
+}
+
+/* Contenedor principal de la sección */
+.multi-image-carousel-section {
+  padding: 2rem 0;
+  overflow: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Header de la sección */
+.carousel-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.carousel-title {
+  font-size: var(--carousel-title-size);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--carousel-title-color, #2c3e50);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.multi-image-carousel-section .carousel-description {
+  font-size: var(--carousel-description-size, 16px);
+  color: var(--carousel-description-color, #5a6c7d);
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  margin: 0;
+}
+
+.multi-image-carousel-section .section-title {
+  font-size: var(--carousel-title-size, 32px);
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #333;
+}
+
+.multi-image-carousel-section .section-description {
+  font-size: var(--carousel-description-size, 16px);
+  text-align: center;
+  margin-bottom: 20px;
+  color: #666;
+}
+
+/* Wrapper principal del carrusel */
+.multi-image-carousel-wrapper {
+  position: relative;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Contenedor del carrusel */
+.multi-image-carousel {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3.5rem; /* Aumentado para dar más espacio a las flechas */
+}
+
+/* Contenedor del track */
+.carousel-track-container {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Track de slides */
+.carousel-track {
+  display: flex;
+  transition: transform var(--carousel-transition-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+  width: 100%;
+}
+
+/* Slides individuales */
+.carousel-slide {
+  flex: 0 0 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Wrapper de imagen */
+.slide-image-wrapper {
+  width: var(--carousel-image-size-desktop);
+  height: var(--carousel-image-size-desktop);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.slide-image-wrapper:hover {
+  transform: translateY(-5px);
+}
+
+/* Imagen del slide */
+.slide-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Contenido de texto */
+.slide-text-content {
+  text-align: center;
+  margin-top: 1rem;
+  max-width: var(--carousel-image-size-desktop);
+}
+
+.slide-title {
+  font-size: var(--carousel-slide-title-size);
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: var(--carousel-slide-title-color, #333333);
+}
+
+.slide-description {
+  font-size: var(--carousel-slide-description-size);
+  color: var(--carousel-slide-description-color, #666666);
+  line-height: 1.4;
+  margin: 15px 0;
+}
+
+.slide-button {
+  display: inline-block;
+  padding: var(--carousel-button-padding, 12px) calc(var(--carousel-button-padding, 12px) * 2);
+  background-color: var(--carousel-button-bg-color, #333333);
+  color: var(--carousel-button-text-color, #ffffff);
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: var(--carousel-button-size, 16px);
+  transition: all 0.3s ease;
+  margin-top: 5px;
+  border-radius: var(--carousel-button-border-radius, 5px);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.slide-button:hover {
+  background-color: var(--carousel-button-hover-bg-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Botones de navegación */
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: var(--carousel-arrow-size);
+  height: var(--carousel-arrow-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  min-width: 60px;
+  min-height: 60px;
+}
+
+.carousel-nav:hover {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.carousel-nav:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+.carousel-nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: translateY(-50%);
+}
+
+.carousel-nav-prev {
+  left: 1rem; /* Más separación de la imagen */
+}
+
+.carousel-nav-next {
+  right: 1rem; /* Más separación de la imagen */
+}
+
+.carousel-nav svg {
+  width: 80px;
+  height: 75px;
+  fill: #0c2c67;
+  transition: all 0.3s ease;
+}
+
+.carousel-nav:hover svg {
+  fill: #0a2454;
+  transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .multi-image-carousel-section .section-title {
+    font-size: var(--carousel-mobile-title-size, 24px);
+  }
+
+  .multi-image-carousel-section .section-description {
+    font-size: var(--carousel-mobile-description-size, 14px);
+  }
+
+  .multi-image-carousel {
+    padding: 0 4rem; /* Menos espacio en tablet */
+  }
+  
+  .slide-image-wrapper {
+    width: var(--carousel-image-size-tablet);
+    height: var(--carousel-image-size-tablet);
+  }
+  
+  .slide-text-content {
+    max-width: var(--carousel-image-size-tablet);
+  }
+  
+  .carousel-nav svg {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .carousel-nav-prev {
+    left: 0.5rem; /* Separación intermedia para tablet */
+  }
+  
+  .carousel-nav-next {
+    right: 0.5rem; /* Separación intermedia para tablet */
+  }
+  
+  .carousel-title {
+    font-size: 1.8rem;
+    color: var(--carousel-title-color, #2c3e50);
+    margin-bottom: 0.8rem;
+  }
+  
+  .multi-image-carousel-section .carousel-description {
+    font-size: var(--carousel-description-size, 16px);
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
+  }
+  
+  .slide-title {
+    font-size: var(--carousel-mobile-slide-title-size, 16px);
+    color: var(--carousel-slide-title-color, #333333);
+    margin-bottom: 15px;
+  }
+
+  .slide-description {
+    font-size: var(--carousel-mobile-slide-description-size, 12px);
+    color: var(--carousel-slide-description-color, #666666);
+    margin: 15px 0;
+  }
+  
+  .slide-button {
+    padding: var(--carousel-mobile-button-padding, 10px) calc(var(--carousel-mobile-button-padding, 10px) * 2);
+    font-size: var(--carousel-mobile-button-size, 14px);
+    margin-top: 15px;
+    border-radius: var(--carousel-mobile-button-border-radius, 3px);
+  }
+}
+
+@media (max-width: 480px) {
+  .multi-image-carousel-section {
+    padding: 1.5rem 0;
+  }
+  
+  .multi-image-carousel {
+    padding: 0 3.5rem; /* Aumentado para dar más espacio a las flechas */
+  }
+  
+  .slide-image-wrapper {
+    width: var(--carousel-image-size-mobile);
+    height: var(--carousel-image-size-mobile);
+  }
+  
+  .slide-text-content {
+    max-width: var(--carousel-image-size-mobile);
+  }
+  
+  .carousel-nav svg {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .carousel-nav-prev {
+    left: 0.3rem; /* Separación optimizada para móvil */
+  }
+  
+  .carousel-nav-next {
+    right: 0.3rem; /* Separación optimizada para móvil */
+  }
+  
+  .carousel-title {
+    font-size: var(--carousel-mobile-title-size, 1.4rem);
+    color: var(--carousel-mobile-title-color, #333333);
+    margin-bottom: 0.6rem;
+    line-height: 1.3;
+  }
+  
+  .multi-image-carousel-section .carousel-description {
+    font-size: var(--carousel-mobile-description-size, 0.95rem);
+    color: var(--carousel-mobile-description-color, #5a6c7d);
+    margin-bottom: 0.3rem;
+    line-height: 1.4;
+  }
+  
+  .slide-title {
+    font-size: var(--carousel-mobile-slide-title-size, 1.1rem);
+    color: var(--carousel-mobile-slide-title-color, #333333);
+    margin-bottom: 15px;
+  }
+
+  .slide-description {
+    font-size: var(--carousel-mobile-slide-description-size, 0.9rem);
+    color: var(--carousel-mobile-slide-description-color, #666666);
+    line-height: 1.4;
+    margin: 15px 0;
+  }
+  
+  .slide-button {
+    padding: var(--carousel-mobile-button-padding, 8px) calc(var(--carousel-mobile-button-padding, 8px) * 2);
+    font-size: var(--carousel-mobile-button-size, 12px);
+    margin-top: 15px;
+    border-radius: var(--carousel-mobile-button-border-radius, 4px);
+    letter-spacing: 0.3px;
+    background-color: var(--carousel-mobile-button-bg-color, #333333);
+    color: var(--carousel-mobile-button-text-color, #ffffff);
+  }
+  
+  .slide-button:hover {
+    background-color: var(--carousel-mobile-button-hover-bg-color, #555555);
+  }
+  
+  /* Mejorar área táctil en móvil */
+  .carousel-nav {
+    padding: 12px;
+    min-width: 60px;
+    min-height: 60px;
+  }
+}
+
+/* Configuración de tamaños personalizables */
+.multi-image-carousel-section[data-image-size="300"] {
+  --carousel-image-size-desktop: 300px;
+  --carousel-image-size-tablet: 280px;
+  --carousel-image-size-mobile: 220px; /* Reducido para móvil */
+}
+
+.multi-image-carousel-section[data-image-size="350"] {
+  --carousel-image-size-desktop: 350px;
+  --carousel-image-size-tablet: 320px;
+  --carousel-image-size-mobile: 230px; /* Reducido para móvil */
+}
+
+.multi-image-carousel-section[data-image-size="400"] {
+  --carousel-image-size-desktop: 400px;
+  --carousel-image-size-tablet: 350px;
+  --carousel-image-size-mobile: 240px; /* Reducido para móvil */
+}
+
+.multi-image-carousel-section[data-image-size="450"] {
+  --carousel-image-size-desktop: 450px;
+  --carousel-image-size-tablet: 380px;
+  --carousel-image-size-mobile: 250px; /* Reducido para móvil */
+}
+
+.multi-image-carousel-section[data-image-size="500"] {
+  --carousel-image-size-desktop: 500px;
+  --carousel-image-size-tablet: 400px;
+  --carousel-image-size-mobile: 260px; /* Reducido para móvil */
+}
+
+/* Configuración de texto personalizable - Se aplicará via JavaScript */
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .multi-image-carousel-section .carousel-track,
+  .multi-image-carousel-section .slide-image,
+  .multi-image-carousel-section .carousel-nav {
+    transition: none;
+  }
+}
+
+.multi-image-carousel-section .carousel-nav:focus {
+  outline: 2px solid #007acc;
+  outline-offset: 2px;
+}
+
+/* Estados de carga */
+.multi-image-carousel-section .carousel-slide.loading .slide-image {
+  opacity: 0.5;
+  background: #f0f0f0;
+}
+
+/* Configuraciones de accesibilidad */
+.carousel-slide[aria-hidden="true"] {
+  visibility: hidden;
+}
+
+.carousel-slide[aria-hidden="false"] {
+  visibility: visible;
+}
+
+/* Optimizaciones de rendimiento */
+.carousel-track {
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.slide-image {
+  backface-visibility: hidden;
+}

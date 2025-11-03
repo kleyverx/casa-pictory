@@ -1,0 +1,96 @@
+{% if _off_canvas == nil %}
+{% assign _off_canvas = true %}
+{% endif %}
+
+{% if _style == blank %}
+{% assign _style = 'with_icon' %}
+{% endif %}
+
+{% if _has_label == nil %}
+{% assign _has_label = true %}
+{% endif %}
+
+<div class="dropdown cart-dropdown{% if _off_canvas == true %} cart-offcanvas{% endif %}{% if _style == 'with_icon' %} with-icon{% endif %}{% if _style == 'button' %} has-button{% endif %} {{ _wrapper_class }}">
+    {% case _style %}
+    {% when 'with_icon' %}
+    <a href="javascript:void(0);" class="cart-toggle label-block link p-0">
+        {% if _has_label == true %}
+        <span class="cart-label d-lg-show">
+            <span class="cart-name">{{- "cart.general.my_cart" | t -}}</span>
+            <span class="cart-price">{{- cart.total_price | money -}}</span>
+        </span>
+        {% endif %}
+        <div class="lh-custom" style="--lh:0;">
+            {% include 'icon-cart' %}
+            <span class="cart-count">{{- cart.item_count -}}</span>
+        </div>
+    </a>
+    {% when 'without_icon' %}
+    <a href="javascript:void(0);" class="cart-toggle">
+        <span class="cart-label d-lg-show">
+            <span class="cart-name">{{- "cart.general.my_cart" | t -}}</span>
+            <span class="cart-name-delimiter">/</span>
+            <span class="cart-price">{{- cart.total_price | money -}}</span>
+        </span>
+        <span class="cart-count">({{- 'cart.popup.cart_count' | t: count: cart.item_count -}})</span>
+    </a>
+    {% when 'button' %}
+    <a href="#" class="cart-toggle">
+        {% include 'icon-cart' %}
+        {{- "cart.general.my_cart" | t -}}
+    </a>
+    {% endcase %}
+
+    <div class="cart-overlay"></div>
+    <div class="dropdown-box">
+        {% if _off_canvas == true %}
+        <div class="cart-header">
+            <h4 class="cart-title">{{ 'cart.general.shopping_cart' | t }}</h4>
+            <a href="#" class="btn btn-dark btn-link btn-icon-right btn-close">{{ 'cart.general.close_offcanvas_cart' | t }}
+                <i class="la la-arrow-right"></i>
+            </a>
+        </div>
+        {% endif %}
+        {% if cart.items.size > 0  %}
+        <div class="products scrollable">
+            {%- for item in cart.items -%}
+            <div class="product product-cart" data-cart-item data-cart-item-key="{{ item.key }}" data-cart-item-url="{{ item.url }}" data-cart-item-title="{{ item.title }}" data-cart-item-index="{{ forloop.index }}" data-cart-item-quantity="{{ item.quantity }}">
+                <figure class="product-media">
+                    <a href="{{item.url}}">
+                        <img class="cart__image{% if item.image == null %} hide{% endif %}" src="{{ item | img_url: 'x180' }}" alt="{{ item.image.alt | escape }}" data-cart-item-image>
+                    </a>
+                    <button href="/cart/change?line={{ forloop.index }}&amp;quantity=0" class="btn btn-link btn-close cart__remove">
+                        <i class="la la-times"></i>
+                    </button>
+                </figure>
+                <div class="product-detail">
+                    <a href="{{ item.url }}" class="product-name" data-cart-item-title>
+                        {{- item.title -}}
+                    </a>
+                    <div class="price-box">
+                        <span class="product-quantity">{{- item.quantity -}}</span>
+                        <span class="product-price">{{- item.final_price | money -}}</span>
+                    </div>
+                </div>
+            </div>
+            {%- endfor -%}
+          <!-- End of Cart Product -->
+        </div>
+        <!-- End of Products  -->
+        <div class="cart-total">
+            <label>{{- "cart.general.subtotal" | t -}}</label>
+            <span class="price">{{- cart.total_price | money -}}</span>
+        </div>
+        <!-- End of Cart Total -->
+        <div class="cart-action">
+            <a href="/cart" class="btn btn-dark btn-link">{{- "cart.general.cart_view" | t -}}</a>
+            <a href="/checkout" class="btn btn-dark">{{- "cart.general.checkout" | t -}}</a>
+        </div>
+        <!-- End of Cart Action -->
+        {% else %}
+        <div class="products no-cart-items text-center mt-4">
+            {{- "cart.general.empty" | t -}}
+        </div>
+        {% endif %}
+    </div>
+</div>

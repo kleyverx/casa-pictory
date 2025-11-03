@@ -1,0 +1,46 @@
+{%- include "page-header" -%}
+<section class="page-content mt-3 pt-10 pb-8">
+    <div class="container">
+    {% if section.blocks.size > 0 %}
+    <div class="accordion accordion-card-bg accordion-primary accordion-boxed accordion-plus accordion-gutter-md">
+    {% for block in section.blocks %}
+    <div class="card">
+        <div class="card-header">
+            <a href="#{{ block.id }}" class="collapse">{{ block.settings.question }}</a>
+        </div>
+        <div id="{{ block.id }}" class="expanded">
+            <div class="card-body">
+                <p class="mb-0">{{ block.settings.answer }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    </div>
+</section>
+{% schema %}
+{
+  "name": "FAQs Page",
+    "settings": [],
+    "blocks": [
+    {
+        "type": "faq",
+        "name": "FAQ",
+        "settings": [
+            {
+                "type": "text",
+                "id": "question",
+                "label": "Question"
+            },
+            {
+                "type": "html",
+                "id": "answer",
+                "label": "Answer"
+            }
+        ]
+        
+    }
+  ]
+}
+{% endschema %}

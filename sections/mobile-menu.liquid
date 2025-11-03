@@ -1,0 +1,165 @@
+<section id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="mobile-menu" class="d-none">
+  <nav id="mm-{{ section.id }}">
+    {% assign mmenu = linklists[section.settings.menu_linklist] %}
+    {% if mmenu != blank %}
+    <ul class="mm-el">
+      {% for link in mmenu.links %}
+      <li class="mm-el">
+        {% assign _parts = link.title | remove: '|megamenu' | remove: '| megamenu' | split: '|' %}
+        {% assign _text_part = _parts[0] | strip %}
+        {% assign _remain_part = _parts[1] | replace: '| icon', '|icon' | split: '|icon' %}
+        {% assign _label_part = _remain_part[0] | strip %}
+        {% assign _icon_part = _remain_part[1] | remove: ':' | strip %}
+        <a class="mm-el" href="{{ link.url }}">{% if _icon_part != blank %}<i class="la la-{{ _icon_part }}"></i>{% endif %}{{ _text_part }}{% if _label_part != blank %}<span class="tip tip-new">{{ _label_part }}</span>{% endif %}</a>
+        {% if link.links.size > 0 %}
+        <ul class="mm-el">
+          {% for sub_link in link.links %}
+          <li class="mm-el">
+            {% assign _parts = sub_link.title | split: '|' %}
+            {% assign _text_part = _parts[0] | strip %}
+            {% assign _remain_part = _parts[1] | replace: '| icon', '|icon' | split: '|icon' %}
+            {% assign _label_part = _remain_part[0] | strip %}
+            {% assign _icon_part = _remain_part[1] | remove: ':' | strip %}
+            <a class="mm-el" href="{{ sub_link.url }}">{% if _icon_part != blank %}<i class="la la-{{ _icon_part }}"></i>{% endif %}{{ _text_part }}{% if _label_part != blank %}<span class="tip tip-new">{{ _label_part }}</span>{% endif %}</a>
+            {% if sub_link.links.size > 0 %}
+            <ul class="mm-el">
+              {% for sub_sub_link in sub_link.links %}
+              <li class="mm-el">
+                {% assign _parts = sub_sub_link.title | split: '|' %}
+                {% assign _text_part = _parts[0] | strip %}
+                {% assign _remain_part = _parts[1] | replace: '| icon', '|icon' | split: '|icon' %}
+                {% assign _label_part = _remain_part[0] | strip %}
+                {% assign _icon_part = _remain_part[1] | remove: ':' | strip %}
+                <a class="mm-el" href="{{ sub_sub_link.url }}">{% if _icon_part != blank %}<i class="la la-{{ _icon_part }}"></i>{% endif %}{{ _text_part }}{% if _label_part != blank %}<span class="tip tip-new">{{ _label_part }}</span>{% endif %}</a>
+              </li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </li>
+      {% endfor %}
+      <li class="mm-search--wrapper border-top mt-5 pt-8">
+        <form id="SearchMobile" action="/search" class="input-wrapper input-wrapper-round search-bar drawer drawer--mobile drawer--top" data-predictive-search-mobile-start>
+          <input
+              type="text"
+              name="q"
+              placeholder="{{ 'general.search.placeholder' | t }}"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-owns="predictive-search-results"
+              aria-expanded="false"
+              aria-label="{{ 'general.search.placeholder' | t }}"
+              aria-haspopup="listbox"
+              class="search-form__input search-bar__input form-control bg-light border-none"
+              data-predictive-search-mobile-drawer-input
+          />
+          <input type="hidden" name="options[prefix]" value="last" aria-hidden="true" />
+          <div class="predictive-search-wrapper predictive-search-wrapper--drawer" data-predictive-search-mobile-mount="drawer"></div>
+          <button class="btn btn-search" type="submit" data-search-mobile-form-submit>
+              <i class="icon-search-3"></i>
+          </button>
+        </form>
+      </li>
+      <li class="mm-region--wrapper border-top mt-8 pt-5">
+        <div class="dropdown d-inline-block mr-5">
+            <a href="#currency">{{ cart.currency.iso_code | upcase }}</a>
+            <ul class="dropdown-box">
+                {%- for currency in shop.enabled_currencies -%}
+                    <li>
+                        <a href="{{ shop.url }}?currency={{ currency.iso_code }}">{{ currency.iso_code | upcase }}</a>
+                    </li>
+                {%- endfor -%}
+            </ul>
+        </div>
+        {%- if shop.published_locales.size > 1 -%}
+        {%- form 'localization' -%}
+        <div class="dropdown d-inline-block">
+            <a href="#language"><img src="{{ form.current_locale.iso_code | append: '.png' | asset_url }}" alt="USA Flag" class="dropdown-image"/>{{ form.current_locale.endonym_name }}</a>
+            <ul class="dropdown-box">
+                {%- for locale in form.available_locales -%}
+                    <li>
+                        <a href="{{ locale.root_url }}">
+                            <img src="{{ locale.iso_code | append: '.png' | asset_url }}" alt="{{ locale.iso_code }} Flag" class="dropdown-image"/>{{ locale.endonym_name }}
+                        </a>
+                    </li>
+                {%- endfor -%}
+            </ul>
+        </div>
+        {%- endform -%}
+        {%- endif -%}
+      </li>
+    </ul>
+    {% endif %}
+  </nav>
+</section>
+
+<style>
+  :root {
+    --mm-ocd-width: 100%;
+    --mm-ocd-max-width: 991px;
+  }
+  .mm-ocd {
+      bottom:calc(4.4rem + 1px);
+      pointer-events: none;
+  }
+  .mm-ocd-opened .mm-ocd {
+    pointer-events:all;
+  }
+  .mm-spn.mm-spn--light {
+    background: #fff;
+  }
+  .mm-spn.mm-spn--navbar ul.mm-el:before {
+    width:calc(100% - (var(--mm-spn-item-indent) * 2));
+    left:var(--mm-spn-item-indent);
+  }
+  .mm-spn {
+    margin-left:1.5rem;
+    width: calc(100% - 3rem);
+  }
+  .mm-spn li.mm-el:after,
+  .mm-spn a.mm-el:not(:last-child):after,
+  .mm-spn.mm-spn--main.mm-spn--navbar ul.mm-el:before {
+    display: none;
+  }
+  .mm-spn .mm-search--wrapper,
+  .mm-spn .mm-region--wrapper {
+    width:calc(100% - (var(--mm-spn-item-indent) * 2));
+    margin-left:var(--mm-spn-item-indent);
+    list-style: none;
+  }
+  .mm-spn .mm-search--wrapper .btn-search {
+    position: absolute;
+    height:4rem;
+    border:none;
+    background-color:transparent;
+    padding-right:1.5rem;
+    top:0;
+    right:0;
+  }
+  .mm-spn .mm-search--wrapper .predictive-search__list {
+    padding-top:1.5rem;
+  }
+  .mm-spn .mm-search--wrapper .predictive-search-title {
+    display:none;
+  }
+</style>
+{% schema %}
+  {
+    "name": "Mobile Menu",
+	  "class": "section--mobile-menu",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Menu"
+      },
+      {
+        "type": "link_list",
+        "id": "menu_linklist",
+        "label": "Choose a menu"
+      }
+    ]
+  }
+{% endschema %}

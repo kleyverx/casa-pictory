@@ -1,0 +1,195 @@
+<section class="home-section mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}} appear-animate" id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="vertical-menus-section">
+    <div class="container{% unless section.settings.has_container %}-fluid{% endunless %}">
+        <div class="row">
+            {% for block in section.blocks %}
+            <div class="col-lg-4 col-md-6">
+                <div class="widget ml-lg-4">
+                    {% assign _menu = linklists[block.settings.menu_linklist] %}
+                    {% if _menu != blank %}
+                    {% assign _limit = _menu.links.size | divided_by: 2 %}
+                    {% assign _mod = _menu.links.size | modulo: 2 %}
+                    {% if _mod > 0 %}{% assign _limit = _limit | plus: 1 %}{% endif %}
+                    <h4 class="widget-title border-none text-normal text-grey fs-1p4 font-weight-normal">{{ block.settings.custom_heading | default: _menu.title }}</h4>
+                    <div class="row">
+                        <div class="col-6">
+                            <ul class="widget-body">
+                                {% for link in _menu.links limit: _limit %}
+                                <li class="fs-1p7 mb-2"><a href="{{ link.url }}">{{ link.title }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <ul class="widget-body">
+                                {% for link in _menu.links offset: _limit %}
+                                <li class="fs-1p7 mb-2"><a href="{{ link.url }}">{{ link.title }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% else %}
+                    <h4 class="widget-title border-none text-normal text-grey fs-1p4 font-weight-normal">Sample menu</h4>
+                    <div class="row">
+                        <div class="col-6">
+                            <ul class="widget-body">
+                                {% for i in (1..6) %}
+                                <li class="fs-1p7 mb-2"><a href="#">Menu item</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <ul class="widget-body">
+                                {% for i in (1..6) %}
+                                <li class="fs-1p7 mb-2"><a href="#">Menu item</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <!-- End of Widget -->
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row pt-10">
+            <hr>
+        </div>
+    </div>
+</section>
+
+{% schema %}
+{
+    "name": "Vertical Menus",
+    "class": "index-section index-section--vertical-menus",
+    "settings": [
+        {
+            "type": "checkbox",
+            "id": "has_container",
+            "label": "Within container",
+            "default": true
+        },
+        {
+            "type": "header",
+            "content": "Spacing (large screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt_lg",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 8
+        },
+        {
+            "type": "range",
+            "id": "pt_lg",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb_lg",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb_lg",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "header",
+            "content": "Spacing (mobile screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "pt",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        }
+    ],
+    "blocks": [
+        {
+            "type": "menu",
+            "name": "Menu",
+            "settings": [
+                {
+                    "type": "link_list",
+                    "id": "menu_linklist",
+                    "label": "Your menu"
+                },
+                {
+                    "type": "text",
+                    "id": "custom_heading",
+                    "label": "Custom title"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Vertical Menus",
+            "category": "Fastor",
+            "blocks": [
+                {
+                    "type": "menu"
+                },
+                {
+                    "type": "menu"
+                },
+                {
+                    "type": "menu"
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

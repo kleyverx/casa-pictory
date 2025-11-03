@@ -1,0 +1,410 @@
+{{ 'timeline-steps.css' | asset_url | stylesheet_tag }}
+
+<section class="timeline-steps-section mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}}" 
+         id="{{ section.id }}" 
+         data-section-id="{{ section.id }}" 
+         data-section-type="timeline-steps-section"
+         data-step-duration="{{ section.settings.step_duration | times: 1000 }}"
+         style="background-color: {{ section.settings.background_color }};">
+    
+    <div class="container{% unless section.settings.has_container %}-fluid{% endunless %}">
+        
+        {% if section.settings.title != blank %}
+        <div class="timeline-header">
+            <h2 class="timeline-title" 
+                style="color: {{ section.settings.title_color }}; font-size: {{ section.settings.title_size }}px;">
+                {{ section.settings.title }}
+            </h2>
+            {% if section.settings.subtitle != blank %}
+            <p class="timeline-subtitle" 
+               style="color: {{ section.settings.subtitle_color }}; font-size: {{ section.settings.subtitle_size }}px;">
+                {{ section.settings.subtitle }}
+            </p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="timeline-content">
+            <!-- Steps List - Lado Izquierdo -->
+            <div class="timeline-steps steps-container">
+                {% for block in section.blocks %}
+                <div class="step-item{% if forloop.first %} active{% endif %}" 
+                     data-step="{{ forloop.index0 }}"
+                     tabindex="0"
+                     role="button"
+                     aria-label="Paso {{ forloop.index }}: {{ block.settings.title }}"
+                     style="--step-bg-color: {{ section.settings.step_background_color }}; --progress-line-color: {{ section.settings.progress_line_color }};"
+                     {{ block.shopify_attributes }}>
+                    
+                    <div class="step-number">
+                        <span>{{ forloop.index }}</span>
+                    </div>
+                    
+                    <!-- Línea de progreso vertical única -->
+                    <div class="step-progress-line"></div>
+                    
+                    <div class="step-content">
+                        <h3 class="step-title" 
+                            style="color: {{ section.settings.step_title_color }}; font-size: {{ section.settings.step_title_size }}px;">
+                            {{ block.settings.title }}
+                        </h3>
+                        
+                        {% if block.settings.description != blank %}
+                        <p class="step-description" 
+                           style="color: {{ section.settings.step_description_color }}; font-size: {{ section.settings.step_description_size }}px;">
+                            {{ block.settings.description }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Images Container - Lado Derecho -->
+            <div class="timeline-images">
+                {% for block in section.blocks %}
+                <div class="step-image{% if forloop.first %} active{% endif %}" 
+                     data-step="{{ forloop.index0 }}">
+                    {% if block.settings.image != blank %}
+                        <img src="{{ block.settings.image | image_url: width: 600 }}" 
+                             alt="{{ block.settings.title | escape }}"
+                             loading="lazy"
+                             width="600"
+                             height="400">
+                    {% else %}
+                        <div class="placeholder-image">
+                            <svg width="600" height="400" viewBox="0 0 600 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="600" height="400" fill="#f8f9fa"/>
+                                <path d="M250 150L300 200L350 150L400 200V250H200V200L250 150Z" fill="#dee2e6"/>
+                                <circle cx="275" cy="175" r="15" fill="#dee2e6"/>
+                                <text x="300" y="320" text-anchor="middle" fill="#6c757d" font-size="16">Imagen del Paso {{ forloop.index }}</text>
+                            </svg>
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Buttons -->
+        <div class="mobile-navigation" style="--mobile-btn-color: {{ section.settings.mobile_button_color }};">
+            <button class="mobile-nav-btn mobile-prev-btn" aria-label="Paso anterior">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+            </button>
+            <div class="mobile-step-indicator">
+                <span class="current-step">1</span> / <span class="total-steps">{{ section.blocks.size }}</span>
+            </div>
+            <button class="mobile-nav-btn mobile-next-btn" aria-label="Siguiente paso">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Controls (Optional) -->
+        {% if section.settings.show_controls %}
+        <div class="timeline-controls">
+            <button class="timeline-control timeline-play" aria-label="Reproducir">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+            </button>
+            <button class="timeline-control timeline-pause" aria-label="Pausar">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                </svg>
+            </button>
+            <button class="timeline-control timeline-reset" aria-label="Reiniciar">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+                </svg>
+            </button>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+<script src="{{ 'timeline-steps.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+    "name": "Timeline Steps",
+    "class": "index-section index-section--timeline-steps",
+    "settings": [
+        {
+            "type": "header",
+            "content": "General"
+        },
+        {
+            "type": "text",
+            "id": "title",
+            "label": "Título principal",
+            "default": "¿Cómo funciona?"
+        },
+        {
+            "type": "textarea",
+            "id": "subtitle",
+            "label": "Subtítulo",
+            "default": "Sigue estos sencillos pasos"
+        },
+        {
+            "type": "checkbox",
+            "id": "has_container",
+            "label": "Dentro del contenedor",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "show_controls",
+            "label": "Mostrar controles de reproducción",
+            "default": false
+        },
+        {
+            "type": "range",
+            "id": "step_duration",
+            "label": "Duración de cada paso (segundos)",
+            "min": 3,
+            "max": 15,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "header",
+            "content": "Colores y Estilos"
+        },
+        {
+            "type": "color",
+            "id": "background_color",
+            "label": "Color de fondo",
+            "default": "#ffffff"
+        },
+        {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color del título",
+            "default": "#333333"
+        },
+        {
+            "type": "range",
+            "id": "title_size",
+            "label": "Tamaño del título",
+            "unit": "px",
+            "min": 24,
+            "max": 48,
+            "step": 2,
+            "default": 36
+        },
+        {
+            "type": "color",
+            "id": "subtitle_color",
+            "label": "Color del subtítulo",
+            "default": "#666666"
+        },
+        {
+            "type": "range",
+            "id": "subtitle_size",
+            "label": "Tamaño del subtítulo",
+            "unit": "px",
+            "min": 14,
+            "max": 24,
+            "step": 1,
+            "default": 18
+        },
+        {
+            "type": "color",
+            "id": "step_title_color",
+            "label": "Color del título de paso",
+            "default": "#333333"
+        },
+        {
+            "type": "range",
+            "id": "step_title_size",
+            "label": "Tamaño del título de paso",
+            "unit": "px",
+            "min": 16,
+            "max": 32,
+            "step": 1,
+            "default": 22
+        },
+        {
+            "type": "color",
+            "id": "step_description_color",
+            "label": "Color de la descripción",
+            "default": "#666666"
+        },
+        {
+            "type": "range",
+            "id": "step_description_size",
+            "label": "Tamaño de la descripción",
+            "unit": "px",
+            "min": 12,
+            "max": 20,
+            "step": 1,
+            "default": 16
+        },
+        {
+            "type": "color",
+            "id": "step_background_color",
+            "label": "Color de fondo del círculo del número",
+            "default": "#2c5aa0"
+        },
+        {
+            "type": "color",
+            "id": "progress_line_color",
+            "label": "Color de la línea de progreso",
+            "default": "#2c5aa0"
+        },
+        {
+            "type": "color",
+            "id": "mobile_button_color",
+            "label": "Color de los botones móviles",
+            "default": "#2c5aa0"
+        },
+        {
+            "type": "header",
+            "content": "Espaciado (pantalla grande)"
+        },
+        {
+            "type": "range",
+            "id": "mt_lg",
+            "label": "Margen superior",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 8
+        },
+        {
+            "type": "range",
+            "id": "pt_lg",
+            "label": "Padding superior",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 4
+        },
+        {
+            "type": "range",
+            "id": "mb_lg",
+            "label": "Margen inferior",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 8
+        },
+        {
+            "type": "range",
+            "id": "pb_lg",
+            "label": "Padding inferior",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 4
+        },
+        {
+            "type": "header",
+            "content": "Espaciado (pantalla móvil)"
+        },
+        {
+            "type": "range",
+            "id": "mt",
+            "label": "Margen superior",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 6
+        },
+        {
+            "type": "range",
+            "id": "pt",
+            "label": "Padding superior",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 3
+        },
+        {
+            "type": "range",
+            "id": "mb",
+            "label": "Margin inferior",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 6
+        },
+        {
+            "type": "range",
+            "id": "pb",
+            "label": "Padding inferior",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 3
+        }
+    ],
+    "blocks": [
+        {
+            "type": "step",
+            "name": "Paso",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "title",
+                    "label": "Título del paso",
+                    "default": "Selecciona tus fotos"
+                },
+                {
+                    "type": "textarea",
+                    "id": "description",
+                    "label": "Descripción del paso",
+                    "default": "Elige las mejores fotos de tu galería para crear tu producto personalizado."
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Imagen del paso"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Timeline Steps",
+            "category": "Fastor",
+            "blocks": [
+                {
+                    "type": "step",
+                    "settings": {
+                        "title": "Selecciona tus fotos",
+                        "description": "Elige las mejores fotos de tu galería para crear tu producto personalizado."
+                    }
+                },
+                {
+                    "type": "step",
+                    "settings": {
+                        "title": "Envíanos tus fotos",
+                        "description": "Sube tus imágenes de forma segura a través de nuestra plataforma."
+                    }
+                },
+                {
+                    "type": "step",
+                    "settings": {
+                        "title": "Recibe tu pedido",
+                        "description": "Te enviamos tu producto personalizado directamente a tu hogar."
+                    }
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

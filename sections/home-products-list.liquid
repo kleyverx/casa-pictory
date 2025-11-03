@@ -1,0 +1,177 @@
+<section class="container{% unless section.settings.has_container %}-fluid{% endunless %} mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}}" id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="products-list-section">
+    <h2 class="title title-simple text-normal font-weight-slight-bold">{{ section.settings.title }}</h2>
+    {% assign _collection = collections[section.settings.collection] %}
+    
+    <div class="product-wrapper row cols-lg-{{ section.settings.items_per_row }} cols-md-3 cols-2 gutter-lg">
+    {% if _collection != blank %}
+        {% for _product in _collection.products limit:section.settings.items_limit %}
+        <div>
+        {% render 'product-item', product:_product, sign: section.id %}
+        </div>
+        {% endfor %}
+    {% else %}
+        {% for i in (1..section.settings.items_limit) %}
+        <div>
+        {% render 'product-item-dummy' %}
+        </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+    {% if section.settings.has_bottom_separate == true %}<hr class="mb-0 mt-5 mt-lg-14">{% endif %}
+</section>
+
+{% schema %}
+{
+    "name": "Products List",
+    "class": "index-section index-section--products-list",
+    "settings": [
+        {
+            "type": "header",
+            "content": "General"
+        },
+        {
+            "type": "checkbox",
+            "id": "has_container",
+            "label": "Within container",
+            "default": true
+        },
+        {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Products list"
+        },
+        {
+            "type": "range",
+            "id": "items_limit",
+            "label": "Limit",
+            "min": 3,
+            "max": 24,
+            "step": 1,
+            "default": 8
+        },
+        {
+            "type": "range",
+            "id": "items_per_row",
+            "label": "Items per row",
+            "min": 3,
+            "max": 6,
+            "step": 1,
+            "default": 4
+        },
+        {
+            "type": "header",
+            "content": "Products"
+        },
+        {
+            "type": "collection",
+            "id": "collection",
+            "label": "Your collection"
+        },
+        {
+            "type": "header",
+            "content": "Separators"
+        },
+        {
+            "type": "checkbox",
+            "id": "has_bottom_separate",
+            "label": "Has bottom separator",
+            "default": false
+        },
+        {
+            "type": "header",
+            "content": "Spacing (large screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt_lg",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 8
+        },
+        {
+            "type": "range",
+            "id": "pt_lg",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb_lg",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb_lg",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "header",
+            "content": "Spacing (mobile screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "pt",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        }
+    ],
+    "presets": [
+        {
+            "name": "Products List",
+            "category": "Fastor"
+        }
+    ]
+}
+{% endschema %}

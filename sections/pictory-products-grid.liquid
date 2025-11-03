@@ -1,0 +1,455 @@
+{{ 'pictory-products-grid.css' | asset_url | stylesheet_tag }}
+
+<div class="pictory-products-grid-section"
+  data-section-id="{{ section.id }}"
+  data-title-size="{{ section.settings.title_size }}"
+  data-title-color="{{ section.settings.title_color }}"
+  data-background-color="{{ section.settings.background_color }}"
+  data-padding-top="{{ section.settings.section_padding_top }}"
+  data-padding-bottom="{{ section.settings.section_padding_bottom }}"
+  data-product-title-size="{{ section.settings.product_title_size }}"
+  data-product-title-color="{{ section.settings.product_title_color }}"
+  data-description-size="{{ section.settings.description_size }}"
+  data-description-color="{{ section.settings.description_color }}"
+  data-button-size="{{ section.settings.button_size }}"
+  data-button-padding="{{ section.settings.button_padding }}"
+  data-button-border-radius="{{ section.settings.button_border_radius }}"
+  data-button-bg-color="{{ section.settings.button_bg_color }}"
+  data-button-text-color="{{ section.settings.button_text_color }}"
+  data-button-hover-bg-color="{{ section.settings.button_hover_bg_color }}"
+  data-mobile-title-size="{{ section.settings.mobile_title_size }}"
+  data-mobile-title-color="{{ section.settings.mobile_title_color }}"
+  data-mobile-product-title-size="{{ section.settings.mobile_product_title_size }}"
+  data-mobile-product-title-color="{{ section.settings.mobile_product_title_color }}"
+  data-mobile-description-size="{{ section.settings.mobile_description_size }}"
+  data-mobile-description-color="{{ section.settings.mobile_description_color }}"
+  data-mobile-button-size="{{ section.settings.mobile_button_size }}"
+  data-mobile-button-padding="{{ section.settings.mobile_button_padding }}"
+  data-mobile-button-border-radius="{{ section.settings.mobile_button_border_radius }}"
+  data-mobile-button-bg-color="{{ section.settings.mobile_button_bg_color }}"
+  data-mobile-button-text-color="{{ section.settings.mobile_button_text_color }}"
+  data-mobile-button-hover-bg-color="{{ section.settings.mobile_button_hover_bg_color }}"
+  style="background-color: {{ section.settings.background_color }}; padding: {{ section.settings.section_padding_top }}px 0 {{ section.settings.section_padding_bottom }}px 0;">
+  
+  <div class="container">
+    {% if section.settings.title != blank %}
+      <h2 class="section-title">{{ section.settings.title }}</h2>
+    {% endif %}
+    
+    <div class="products-grid">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'product_item' %}
+            <div class="product-item" {{ block.shopify_attributes }}>
+              {% if block.settings.product_image != blank %}
+                <div class="product-image">
+                  <a href="{{ block.settings.button_link | default: '#' }}" class="product-link">
+                    <img src="{{ block.settings.product_image | image_url: width: 600 }}" 
+                         alt="{{ block.settings.product_title | escape }}"
+                         loading="lazy">
+                    <div class="product-overlay">
+                      {% if block.settings.product_title != blank %}
+                        <h3 class="product-title">{{ block.settings.product_title }}</h3>
+                      {% endif %}
+                      {% if block.settings.product_description != blank %}
+                        <p class="product-description">{{ block.settings.product_description }}</p>
+                      {% endif %}
+                    </div>
+                  </a>
+                </div>
+              {% endif %}
+              
+              <!-- Mobile version - separate structure -->
+              <div class="mobile-content">
+                {% if block.settings.product_image != blank %}
+                  <div class="mobile-image">
+                    <img src="{{ block.settings.product_image | image_url: width: 400 }}" 
+                         alt="{{ block.settings.product_title | escape }}"
+                         loading="lazy">
+                  </div>
+                {% endif %}
+                
+                <div class="mobile-text-content">
+                  {% if block.settings.product_title != blank %}
+                    <h3 class="product-title">{{ block.settings.product_title }}</h3>
+                  {% endif %}
+                  
+                  {% if block.settings.product_description != blank %}
+                    <p class="product-description">{{ block.settings.product_description }}</p>
+                  {% endif %}
+                  
+                  {% if block.settings.button_text != blank %}
+                    <a href="{{ block.settings.button_link | default: '#' }}" 
+                       class="product-button">
+                      {{ block.settings.button_text }}
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+        {% endcase %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script src="{{ 'pictory-products-grid.js' | asset_url }}" defer></script>
+
+<script>
+// Ensure live preview works in Shopify theme editor
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize immediately for theme editor
+  if (window.Shopify && window.Shopify.designMode) {
+    setTimeout(function() {
+      const sections = document.querySelectorAll('.pictory-products-grid-section');
+      sections.forEach(section => {
+        if (!section.pictoryInitialized) {
+          new PictoryProductsGrid(section);
+          section.pictoryInitialized = true;
+        }
+      });
+    }, 100);
+  }
+});
+
+// Handle theme editor events for live preview
+if (window.Shopify && window.Shopify.designMode) {
+  document.addEventListener('shopify:section:select', function(event) {
+    if (event.target.classList.contains('pictory-products-grid-section')) {
+      const section = event.target;
+      if (!section.pictoryInitialized) {
+        new PictoryProductsGrid(section);
+        section.pictoryInitialized = true;
+      }
+    }
+  });
+}
+</script>
+
+{% schema %}
+{
+  "name": "Pictory Products Grid",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Configuración General"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título de la sección",
+      "default": "Lleva cuantos pictorys tu desees"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Color de fondo",
+      "default": "#4a6fa5"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Espaciado superior",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Espaciado inferior",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Configuración de Texto"
+    },
+    {
+      "type": "paragraph",
+      "content": "Configuración para desktop con diseño overlay que aparece al hacer hover sobre las imágenes. Los botones no son visibles en desktop ya que se usa el overlay interactivo."
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Tamaño del título principal",
+      "min": 16,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 36,
+      "info": "Título principal para desktop con overlay"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Color del título principal",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "product_title_size",
+      "label": "Tamaño del título del producto",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 22,
+      "info": "Título del producto en overlay desktop"
+    },
+    {
+      "type": "color",
+      "id": "product_title_color",
+      "label": "Color del título del producto",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Tamaño de la descripción",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14,
+      "info": "Descripción en overlay desktop con efectos hover"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Color de la descripción",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Configuración de Botones"
+    },
+    {
+      "type": "paragraph",
+      "content": "Los botones están configurados para móvil únicamente. En desktop se utiliza el sistema de overlay interactivo al hacer hover, por lo que estas configuraciones de botón no son visibles en pantallas grandes."
+    },
+    {
+      "type": "range",
+      "id": "button_size",
+      "label": "Tamaño del texto del botón",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_padding",
+      "label": "Espaciado interno del botón",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Borde redondeado del botón",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Color de fondo del botón",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Color del texto del botón",
+      "default": "#4a6fa5"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Color de fondo del botón (hover)",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "header",
+      "content": "Configuración Mobile"
+    },
+    {
+      "type": "paragraph",
+      "content": "Configuración optimizada para dispositivos móviles con diseño minimalista y imágenes 1:1"
+    },
+    {
+      "type": "range",
+      "id": "mobile_title_size",
+      "label": "Tamaño del título principal (móvil)",
+      "min": 16,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 28,
+      "info": "Título optimizado para pantallas móviles"
+    },
+    {
+      "type": "color",
+      "id": "mobile_title_color",
+      "label": "Color del título principal (móvil)",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "mobile_product_title_size",
+      "label": "Tamaño del título del producto (móvil)",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 20,
+      "info": "Título del producto para layout vertical móvil"
+    },
+    {
+      "type": "color",
+      "id": "mobile_product_title_color",
+      "label": "Color del título del producto (móvil)",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "mobile_description_size",
+      "label": "Tamaño de la descripción (móvil)",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15,
+      "info": "Descripción optimizada para lectura móvil"
+    },
+    {
+      "type": "color",
+      "id": "mobile_description_color",
+      "label": "Color de la descripción (móvil)",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "mobile_button_size",
+      "label": "Tamaño del texto del botón (móvil)",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "mobile_button_padding",
+      "label": "Espaciado interno del botón (móvil)",
+      "min": 6,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "mobile_button_border_radius",
+      "label": "Borde redondeado del botón (móvil)",
+      "min": 0,
+      "max": 25,
+      "step": 1,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "color",
+      "id": "mobile_button_bg_color",
+      "label": "Color de fondo del botón (móvil)",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "mobile_button_text_color",
+      "label": "Color del texto del botón (móvil)",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "mobile_button_hover_bg_color",
+      "label": "Color de fondo del botón hover (móvil)",
+      "default": "#333333"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product_item",
+      "name": "Producto",
+      "settings": [
+        {
+          "type": "text",
+          "id": "product_title",
+          "label": "Título del producto",
+          "default": "Combos con cuadro negro"
+        },
+        {
+          "type": "image_picker",
+          "id": "product_image",
+          "label": "Imagen del producto"
+        },
+        {
+          "type": "textarea",
+          "id": "product_description",
+          "label": "Descripción del producto",
+          "default": "Diseño optimizado para móvil con layout vertical",
+          "info": "Descripción visible en móvil debajo de la imagen y en overlay desktop"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Texto del botón",
+          "default": "Ver más"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Enlace del botón"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pictory Products Grid",
+      "blocks": [
+        {
+          "type": "product_item",
+          "settings": {
+            "product_title": "Combos con cuadro negro",
+            "product_description": "Diseño minimalista con imágenes 1:1 optimizado para móvil",
+            "button_text": "Ver más"
+          }
+        },
+        {
+          "type": "product_item",
+          "settings": {
+            "product_title": "Combos cuadro con lienzo",
+            "product_description": "Layout vertical con botón funcional para dispositivos móviles",
+            "button_text": "Ver más"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

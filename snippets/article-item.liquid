@@ -1,0 +1,64 @@
+{% if article != blank %}
+{% if article_type == nil %}
+{% assign article_type = 'default' %}
+{% endif %}
+{% case article_type %}
+{% when 'default' %}
+<div class="article article-sm hover-gloom"{% if is_block == true %} {{ block.shopify_attributes }}{% endif %}>
+    <figure class="article-visual hover-zoom">
+        <a href="{{ article.url }}">
+            {% if article.image == blank and custom_image == blank %}
+            {{ 'image' | placeholder_svg_tag }}
+            {% elsif custom_image != blank %}
+            <img src="{{ custom_image | img_url: '380x200', scale: 2 }}" width="380" height="200" alt="article">
+            {% else %}
+            <img src="{{ article.image | img_url: '380x200', scale: 2 }}" width="380" height="200" alt="article">
+            {% endif %}
+        </a>
+        <div class="tags-cloud">
+            {% for tag in article.tags %}
+            {% assign tag_handle = tag | handle %}
+            {% assign _tag_url = article.url | replace: article.handle, 'tagged/' | append: tag_handle %}
+            <a class="btn btn-ellipse pl-1 pr-1 pt-0 pb-0 font-weight-normal fs-1p2 text-normal mr-1" href="{{ _tag_url }}">{{ tag }}</a>
+            {% endfor %}
+        </div>
+    </figure>
+    <div class="article-details">
+        <h4 class="article-title text-center pl-4 pr-4 fs-3 font-weight-normal ws-pre-wrap lh-1p3 ls-normal"><a href="{{ article.url }}">{{ article.title }}</a></h4>
+        <div class="article-meta text-center">
+            <span href="#" class="article-date fs-1p3 lh-custom font-weight-normal text-black" style="--lh:1.46">{{ article.published_at | date: format: 'abbreviated_date' }}</span>
+        </div>
+    </div>
+</div>
+{% when 'landscape' %}
+<div class="article article-sm hover-gloom d-block d-lg-flex"{% if is_block == true %} {{ block.shopify_attributes }}{% endif %}>
+    <figure class="article-visual hover-zoom">
+        <a href="{{ article.url }}">
+            {% if article.image == blank and custom_image == blank %}
+            {{ 'image' | placeholder_svg_tag }}
+            {% elsif custom_image != blank %}
+            <img src="{{ custom_image | img_url: '380x200', scale: 2 }}" width="380" height="200" alt="article">
+            {% else %}
+            <img src="{{ article.image | img_url: '380x200', scale: 2 }}" width="380" height="200" alt="article">
+            {% endif %}
+        </a>
+        <div class="tags-cloud">
+            {% for tag in article.tags %}
+            {% assign tag_handle = tag | handle %}
+            {% assign _tag_url = article.url | replace: article.handle, 'tagged/' | append: tag_handle %}
+            <a class="btn btn-ellipse pl-1 pr-1 pt-0 pb-0 font-weight-normal fs-1p2 text-normal mr-1" href="{{ _tag_url }}">{{ tag }}</a>
+            {% endfor %}
+        </div>
+    </figure>
+    <div class="article-details pl-lg-10">
+        <h4 class="article-title text-left fs-4 font-weight-slight-bold ws-pre-wrap lh-1p3 ls-normal"><a href="{{ article.url }}">{{ article.title }}</a></h4>
+        <div class="article-meta text-left">
+            <span href="#" class="article-date fs-1p3 lh-custom font-weight-normal text-black" style="--lh:1.46">{{ article.published_at | date: format: 'abbreviated_date' }}</span>
+        </div>
+        <a href="{{ article.url }}" class="btn btn-link btn-underline btn-underline font-weight-normal text-normal mt-lg-5">{{ 'blogs.article.read_more' | t }}</a>
+    </div>
+</div>
+{% endcase %}
+{% else %}
+{% include 'article-item-dummie' %}
+{% endif %}

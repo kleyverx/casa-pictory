@@ -1,0 +1,208 @@
+{% comment %}
+    Renders a list of menu items
+    Accepts:
+    - linklist: {Object} Linklist Liquid object (required)
+    - wrapper_class: {String} CSS wrapper class for the navigation (optional)
+
+    Usage:
+    {% include 'site-nav', linklist: section.settings.main_linklist, wrapper_class: 'site-nav--centered' %}
+{% endcomment %}
+{% assign megamenu_number = 1 %}
+{% if is_mainmenu == nil %}{% assign is_mainmenu = true %}{% endif %}
+<nav class="{% if custom_class != blank %}{{ custom_class }}{% else %}main-nav{% endif%}{% if wrapper_class != blank %} {{ wrapper_class }}{% endif %}">
+  <ul class="menu{% if menu_wrapper_class != blank %} {{ menu_wrapper_class }}{% endif %}">
+    {% for link in linklists[linklist].links %}
+    <li class="{% if link.active %}active{% endif %}{% if link.title contains '|megamenu' or link.title contains '| megamenu' %} megamenu-wrapper{% endif %}">
+        {% assign item_title = link.title | remove: '|megamenu' | remove: '| megamenu' | split: '|' | first | escape %}
+        <a href="{{ link.url }}">{{ item_title }}</a>
+        {% if link.title contains '|megamenu' or link.title contains '| megamenu' %}
+        {% assign linklist_width_settings_name = 'megamenu_linklist_width_' | append: megamenu_number %}
+        {% assign linklist_cols_settings_name = 'megamenu_linklist_cols_' | append: megamenu_number %}
+        {% assign bg_image_name = 'megamenu_bg_image_' | append: megamenu_number %}
+        
+        {% assign linklist_width = settings[linklist_width_settings_name] %}
+        {% assign linklist_cols = settings[linklist_cols_settings_name] | plus: 0 %}
+        {% assign bg_image = settings[bg_image_name] %}
+        <div class="megamenu flex-wrap pl-0 pr-0 pb-0"{% if bg_image != blank %} style="background-image:url({{ bg_image | img_url: 'master' }})"{% endif %}>
+            <div class="w-100 pb-6">
+                <div class="container">
+                    <div class="row">
+                        {% for childlink in link.links %}
+                        {% assign _order = forloop.index %}
+                        <div class="col-6 col-sm-4 col-md-3 col-lg-{{ linklist_width }} pl-0" style="order:{{ _order }}">
+                            <h4 class="menu-title pl-0 text-grey text-normal font-weight-normal"><a class="pt=0 pl-0 pb-0" href="{{ childlink.url }}">{{ childlink.title | split: '|' | first | escape }}</a></h4>
+                            {% if childlink.links != blank %}
+                            {% assign _limit = childlink.links.size | divided_by: linklist_cols %}
+                            {% assign _mod = childlink.links.size | modulo: linklist_cols %}
+                            {% if _mod > 0 %}{% assign _limit = _limit | plus: 1 %}{% endif %}
+                            <div class="row pl-0">
+                                {% assign _col_suffix_arrs = '0,12,6,4' | split: ',' %}
+                                {% assign _col_suffix_val = _col_suffix_arrs[linklist_cols] %}
+                                {% assign _offset = 0 %}
+                                {% for i in (1..linklist_cols) %}
+                                <div class="col-{{ _col_suffix_val }} pl-0">
+                                    <ul class="widget-body">
+                                        {% for grandchildlink in childlink.links offset: _offset limit: _limit %}
+                                        <li><a href="{{ grandchildlink.url }}">{{ grandchildlink.title | split: '|' | first | escape }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% assign _offset = _offset | plus: _limit %}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        {% for block in section.blocks %}
+                            {% assign _title = item_title | downcase | strip %}
+                            {% assign _hook = block.settings.hook | downcase | strip %}
+                            {% if _title == _hook %}
+                                {% case block.type %}
+                                    {% when 'banner1' %}
+                                    <div class="col-lg-{{ block.settings.width_destop}}" style="order:{{ block.settings.order | minus: 1 }}">
+                                        <div class="rt-banner banner-fixed banner_1 hover-gloom ani-wrapper-fadeInRight">
+                                            <a class="d-block pt-0 pr-0 pb-0 pl-0" href="{{ block.settings.button_url | default: "javascript:void(0);"}}">
+                                                {% if block.settings.image != blank %}
+                                                {% assign _container_width = 1220 %}
+                                                {% case block.settings.width_destop %}
+                                                    {% when '3' %}
+                                                    {% assign _img_width = _container_width | divided_by: 4 %}
+                                                    {% when '4' %}
+                                                    {% assign _img_width = _container_width | divided_by: 3 %}
+                                                    {% when '6' %}
+                                                    {% assign _img_width = _container_width | divided_by: 2 %}
+                                                    {% when '8' %}
+                                                    {% assign _img_width = _container_width | divided_by: 3 | plus: 2 %}
+                                                    {% when '12' %}
+                                                    {% assign _img_width = _container_width %}
+                                                {% endcase %}
+                                                {% assign _img_height = _img_width | divided_by: block.settings.image.aspect_ratio | round %}
+                                                {% assign _img_url = _img_width | append: 'x' | append: _img_height %}
+                                                <figure>
+                                                    <img src="{{ block.settings.image | img_url: _img_url, scale: 2 }}" alt="banner" width="{{ _img_width }}" height="{{ _img_height }}"/>
+                                                </figure>
+                                                {% else %}
+                                                <figure style="background-color:#ccc;height:240px"></figure>
+                                                {% endif %}
+                                            </a>
+                                            <div class="banner-content {{ block.settings.content_hori_align }} {{ block.settings.content_vert_align }} pe-none">
+                                                {% if block.settings.sub_title %}
+                                                <h4 class="banner-subtitle text-{{ block.settings.color_text }} font-weight-light fs-{{ block.settings.fs_subtitle | replace: '.', 'p' }} mb-2">{{ block.settings.sub_title }}</h4>
+                                                {% endif %}
+                                                {% if block.settings.title %}
+                                                <h3 class="banner-title ls-m mb-1 lh-1p3 text-{{ block.settings.color_text }} font-weight-normal fs-{{ block.settings.fs_title | replace: '.', 'p' }}">{{ block.settings.title }}</h3>
+                                                {% endif %}
+                                                <a href="{{ block.settings.button_url | default: "javascript:void(0);"}}" class="text-{{ block.settings.color_text }} btn-arrow ani-el pl-0 mt-2">
+                                                    {% render 'icon-arrow-right' %}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% when 'product' %}
+                                    <div class="col-lg-{{ block.settings.width_destop}}" style="order:{{ block.settings.order | minus: 1 }}">
+                                        {% assign _product = all_products[block.settings.product] %}
+                                        {% if _product != blank %}
+                                        {% render 'product-item', product:_product, sign: section.id %}
+                                        {% else %}
+                                        {% render 'product-item-dummy' %}
+                                        {% endif %}
+                                    </div>
+                                    {% when 'circle_collection' %}
+                                    <div class="col-lg-{{ block.settings.width_destop}}" style="order:{{ block.settings.order | minus: 1 }}">
+                                        {% assign _collection = collections[block.settings.collection] %}
+                                        {% if _collection != blank %}
+                                        <div class="category category-circled pl-2 pr-2" {{ block.shopify_attributes }}>
+                                            <a href="{{ _collection.url }}">
+                                                {% if block.settings.bk_image == blank and _collection.image == blank %}
+                                                <figure class="category-media" style="background-color: transparent;">
+                                                    COLLECTION IMAGE
+                                                </figure>
+                                                {% else %}
+                                                {% if block.settings.bk_image %}
+                                                {% assign _image = block.settings.bk_image %}
+                                                {% else %}
+                                                {% assign _image = _collection.image %}
+                                                {% endif %}
+                                                <figure class="category-media">
+                                                    <img alt="category" height="196" src="{{ _image | img_url: '196x196', scale: 2 }}" width="196"/>
+                                                </figure>
+                                                {% endif %}
+                                            </a>
+                                            <div class="category-content">
+                                                <h4 class="category-name text-normal fs-1p7 font-weight-normal"><a href="{{ _collection.url }}">{% if block.settings.bk_title != blank %}{{ block.settings.bk_title }}{% else %}{{ _collection.title }}{% endif %}</a></h4>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <div class="category category-circled  pl-2 pr-2">
+                                            <a href="#">
+                                                <figure class="category-media" style="background-color: transparent;">
+                                                    COLLECTION IMAGE
+                                                </figure>
+                                            </a>
+                                            <div class="category-content">
+                                                <h4 class="category-name"><a href="javascript:void(0);">Collection Name</a></h4>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                {% endcase %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="w-100">
+                {% for block in section.blocks %}
+                {% assign _title = item_title | downcase | strip %}
+                {% assign _hook = block.settings.hook | downcase | strip %}
+                {% if _title == _hook %}
+                {% case block.type %}
+                {% when 'banner2' %}
+                <div class="col-lg-12 banner-mass">
+                    <div class="rt-banner banner-fixed banner_2 content-{{ block.settings.content_hori_align }} hover-gloom">
+                        {% if block.settings.image != blank %}
+                        <figure class="d-flex">
+                            <img src="{{ block.settings.image | img_url: 'master' }}" alt="banner" />
+                        </figure>
+                        {% else %}
+                        <figure style="min-height:400px;background-color:#ccc;"></figure>
+                        {% endif %}
+                        <div class="banner-content {{ block.settings.content_vert_align }}">
+                            <div>
+                                <h3 class="banner-title font-weight-slight-bold ls-m text-{{ block.settings.color_text }} fs-{{ block.settings.fs_title | replace: '.', 'p' }}">{{ block.settings.title }}</h3>
+                                <p class="text-{{ block.settings.color_text }} fs-{{ block.settings.fs_description | replace: '.', 'p' }}">{{ block.settings.description }}</p>
+                                {% if block.settings.button_text != blank %}
+                                <a href="{{ block.settings.button_url | default: 'javascript:void(0);' }}" class="btn btn-primary btn-shadow-lg btn-ellipse text-normal pt-2 pb-2 pl-4 pr-4 font-weight-slight-bold">{{ block.settings.button_text }}</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endcase %}
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% if is_mainmenu == true %}{% assign megamenu_number = megamenu_number | plus: 1 %}{% endif %}
+        {% else %}
+        {% if link.links.size > 0 %}
+        <ul>
+            {% for childlink in link.links %}
+            <li>
+            <a href="{{ childlink.url }}">{{ childlink.title | split: '|' | first | escape }}</a>
+            {% if childlink.links != blank %}
+            <ul>
+                {% for grandchildlink in childlink.links %}
+                <li><a href="{{ grandchildlink.url }}">{{ grandchildlink.title | split: '|' | first | escape }}</a></li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</nav>

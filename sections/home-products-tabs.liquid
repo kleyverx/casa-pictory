@@ -1,0 +1,214 @@
+<section class="products-wrapper container{% unless section.settings.has_container %}-fluid{% endunless %} mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}} appear-animate" id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="products-tabs-section">
+    <div class="tab tab-nav-simple tab-nav-center">
+        <ul class="nav nav-tabs border-none" role="tablist">
+            {% for block in section.blocks %}
+            <li class="nav-item" {{ block.shopify_attributes }}>
+                <a class="nav-link pb-2 mb-0 fs-3 text-normal lh-1p3 {% if forloop.first == true %} active{% endif %}" href="#{{ block.id }}">
+                    {% if block.settings.title != blank %}
+                    {{ block.settings.title }}
+                    {% endif %}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="tab-content">
+            {% for block in section.blocks %}
+            <div class="tab-pane{% if forloop.first == true %} active{% endif %}" id="{{ block.id }}" {{ block.shopify_attributes }}>
+                <div class="owl-carousel owl-theme row cols-lg-4 cols-md-3 cols-2" data-owl-options="{
+                    'nav': false,
+                    'dots': false,
+                    'margin': 20,
+                    'autoplay': false,
+                    'responsive': {
+                        '0': {
+                            'items': 2
+                        },
+                        '576': {
+                            'items': 2
+                        },
+                        '768': {
+                            'items': 3
+                        },
+                        '992': {
+                            'items': {{ block.settings.visible_items }}
+                        }
+                    }
+                }">
+                {% assign _collection = collections[block.settings.collection] %}
+                {% if _collection != blank %}
+                {% for product in _collection.products limit: block.settings.limit %}
+                {% include 'product-item' %}
+                {% endfor %}
+                {% else %}
+                {% for i in (1..6) %}
+                {% include 'product-item-dummy' %}
+                {% endfor %}
+                {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% schema %}
+{
+    "name": "Products Tabs",
+    "class": "index-section index-section--products-tabs",
+    "settings": [
+        {
+            "type": "header",
+            "content": "General"
+        },
+        {
+            "type": "checkbox",
+            "id": "has_container",
+            "label": "Within container",
+            "default": true
+        },
+        {
+            "type": "header",
+            "content": "Spacing (large screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt_lg",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 8
+        },
+        {
+            "type": "range",
+            "id": "pt_lg",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb_lg",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb_lg",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "header",
+            "content": "Spacing (mobile screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "pt",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        }
+    ],
+    "blocks": [
+        {
+            "type": "collection",
+            "name": "Collection",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "title",
+                    "default": "Tab Title",
+                    "label": "Tab Title"
+                },
+                {
+                    "type": "collection",
+                    "id": "collection",
+                    "label": "Your collection"
+                },
+                {
+                    "type": "range",
+                    "id": "visible_items",
+                    "label": "Visible items",
+                    "min": 3,
+                    "max": 6,
+                    "step": 1,
+                    "default": 4
+                },
+                {
+                    "type": "range",
+                    "id": "limit",
+                    "label": "Limit",
+                    "min": 3,
+                    "max": 12,
+                    "step": 1,
+                    "default": 4
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Products Tabs",
+            "category": "Fastor",
+            "settings": {
+            },
+            "blocks": [
+              {
+                "type": "collection"
+              },
+              {
+                "type": "collection"
+              },
+              {
+                "type": "collection"
+              }
+            ]
+        }
+    ]
+}
+{% endschema %}

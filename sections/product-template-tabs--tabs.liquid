@@ -1,0 +1,168 @@
+<div class="container{%-if section.settings.product_fullwidth-%}-fluid{%-endif-%}">
+  {%- if section.blocks.size > 0 -%}
+  <div class="border-bottom">
+    {% include 'product-single-tabs' %}
+  </div>
+  {%- else -%}
+  Please add some blocks under <strong>Product - Tabs</strong>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Product - Tabs",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "product_fullwidth",
+      "label": "Full Width",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Featured image"
+        },
+        {
+          "type": "image_picker",
+          "id": "featured_image",
+          "label": "Image",
+          "info": "An image included in the description"
+        },
+        {
+          "type": "header",
+          "content": "Promotions"
+        },
+        {
+          "type": "checkbox",
+          "label": "Enable",
+          "id": "product_promotions"
+        },
+        {
+          "type": "header",
+          "content": "Promotion #1"
+        },
+        {
+          "type": "html",
+          "label": "SVG HTML",
+          "id": "product_promotion_icon_1"
+        },
+        {
+          "type": "text",
+          "label": "Text",
+          "id": "product_promotion_text_1"
+        },
+        {
+          "type": "header",
+          "content": "Promotion #2"
+        },
+        {
+          "type": "html",
+          "label": "SVG HTML",
+          "id": "product_promotion_icon_2"
+        },
+        {
+          "type": "text",
+          "label": "Text",
+          "id": "product_promotion_text_2"
+        },
+        {
+          "type": "header",
+          "content": "Promotion #3"
+        },
+        {
+          "type": "html",
+          "label": "SVG HTML",
+          "id": "product_promotion_icon_3"
+        },
+        {
+          "type": "text",
+          "label": "Text",
+          "id": "product_promotion_text_3"
+        },
+        {
+          "type": "header",
+          "content": "Promotion #4"
+        },
+        {
+          "type": "html",
+          "label": "SVG HTML",
+          "id": "product_promotion_icon_4"
+        },
+        {
+          "type": "text",
+          "label": "Text",
+          "id": "product_promotion_text_4"
+        }
+      ]
+    },
+    {
+      "type": "gallery",
+      "name": "Gallery",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "label": "Title",
+          "id": "gallery_title",
+          "default": "Gallery"
+        },
+        {
+          "type": "image_picker",
+          "label": "Image #1",
+          "id": "product_image_1"
+        },
+        {
+          "type": "image_picker",
+          "label": "Image #2",
+          "id": "product_image_2"
+        },
+        {
+          "type": "image_picker",
+          "label": "Image #3",
+          "id": "product_image_3"
+        },
+        {
+          "type": "image_picker",
+          "label": "Image #4",
+          "id": "product_image_4"
+        },
+        {
+          "type": "image_picker",
+          "label": "Image #5",
+          "id": "product_image_5"
+        }
+      ]
+    },
+    {
+      "type": "review",
+      "name": "Review",
+      "limit": 1
+    },
+    {
+      "type": "custom",
+      "name": "Custom tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_title",
+          "label": "Tab title",
+          "default": "Custom tab"
+        },
+        {
+          "type": "page",
+          "id": "tab_content",
+          "label": "Tab Content"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,120 @@
+
+{%- assign featured_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media -%}
+<div class="product-gallery{% if section.settings.tabs_position == "right" %} product-gallery-sticky{% endif %}{% if section.settings.thumbnails_position == "left" %} pg-vertical{% endif %}" data-product-single-media-group >
+  <div class="product-single-carousel owl-carousel owl-theme owl-nav-inner row cols-1" data-product-single-image-carousel>
+    {% if featured_media.media_type == "image" %}
+    {% assign photoswipe_index = 0 %}
+    {% else %}
+    {% assign photoswipe_index = -1 %}
+    {% endif %}
+    {% include 'featured-media', media: media, featured_media: featured_media, height: height, enable_image_zoom: enable_image_zoom, image_zoom_size: product_image_zoom_size, image_scale: product_image_scale, photoswipe_index: photoswipe_index, current_variant: current_variant %}
+    {%- for media in product.media -%}
+      {% unless media == featured_media %} 
+        {% if media.media_type == "image" %}
+        {% assign photoswipe_index = photoswipe_index | plus : 1 %}
+        {% endif %}
+        {% include 'media', media: media, featured_media: featured_media, height: height, enable_image_zoom: enable_image_zoom, image_zoom_size: product_image_zoom_size, image_scale: product_image_scale, photoswipe_index: photoswipe_index, current_variant: current_variant %}
+      {% endunless %}
+    {%- endfor -%}
+
+  </div>
+
+    {% assign first_3d_model = product.media | where: "media_type", "model" | first %}
+
+    {%- if first_3d_model -%}
+      <button
+        aria-label="{{ 'products.product.view_in_space_label' | t }}"
+        class="product-single__view-in-space"
+        data-shopify-xr
+        data-shopify-model3d-id="{{ first_3d_model.id }}"
+        data-shopify-title="{{ product.title | escape }}"
+        data-shopify-xr-hidden
+      >
+        {% include 'icon-3d-badge-full-color' %}<span class='product-single__view-in-space-text'>{{ 'products.product.view_in_space' | t }}</span>
+      </button>
+    {%- endif -%}
+  {% if product.media.size > 1 %}
+    {% if product.media.size > 4 %}
+      {%- assign enable_thumbnail_slides = true -%}
+    {% endif %}
+    <div class="product-thumbs-wrap{% if enable_thumbnail_slides == true %} slider-active{% endif %}" data-slider>
+    
+        <div class="product-thumbs product-single__thumbnails-{{ section.id }}" data-slider-container>
+          
+          <div class="active product-thumb product-single__thumbnails-item product-single__thumbnails-item--{{ section.settings.media_size }} {% if enable_thumbnail_slides == true %} product-single__thumbnails-item-slide{% endif %}"{% if enable_thumbnail_slides == true %} data-slider-slide-index="{{ forloop.index0 }}" data-slider-item{% endif %}>
+            <a href="{{ featured_media.preview_image | img_url: product_image_zoom_size, scale: product_image_scale }}"
+              class="text-link product-single__thumbnail product-single__thumbnail--{{ section.id }}"
+              data-thumbnail-id="{{ section.id }}-{{ featured_media.id }}"
+              {% if enable_thumbnail_slides == true %} data-slider-item-link{% endif %}
+              {% if enable_image_zoom %}data-zoom="{{ featured_media.preview_image | img_url: product_image_zoom_size, scale: product_image_scale }}"{% endif %}>
+
+                {%- capture thumbnailAlt -%}
+                  {%- if featured_media.media_type == 'video' or featured_media.media_type == 'external_video' -%}
+                    {{ 'sections.featured_product.video_thumbnail_alt' | t: imageAlt: featured_media.alt | strip_html | escape }}
+                  {%- elsif featured_media.media_type == 'model' -%}
+                    {{ 'sections.featured_product.model_thumbnail_alt' | t: imageAlt: featured_media.alt | strip_html | escape }}
+                  {%- else -%}
+                    {{ 'sections.featured_product.gallery_thumbnail_alt' | t: imageAlt: featured_media.alt | strip_html | escape }}
+                  {%- endif -%}
+                {%- endcapture -%}
+
+                <img class="product-single__thumbnail-image" src="{{ featured_media.preview_image | img_url: '110x110', scale: 2 }}" alt="{{ thumbnailAlt }}">
+                {%- if featured_media.media_type == 'video' or featured_media.media_type =='external_video' -%}
+                  <div class="product-single__thumbnail-badge">
+                    {% include 'icon-video-badge-full-color' %}
+                  </div>
+                {%- endif -%}
+                {%- if featured_media.media_type == 'model' -%}
+                  <div class="product-single__thumbnail-badge">
+                    {% include 'icon-3d-badge-full-color' %}
+                  </div>
+                {%- endif -%}
+            </a>
+          </div>
+
+        {% for media in product.media %}
+          {% unless media == featured_media %}
+            <div class="product-thumb product-single__thumbnails-item product-single__thumbnails-item--{{ section.settings.media_size }} {% if enable_thumbnail_slides == true %} product-single__thumbnails-item-slide{% endif %}"{% if enable_thumbnail_slides == true %} data-slider-slide-index="{{ forloop.index0 }}" data-slider-item{% endif %}>
+              <a href="{{ media.preview_image | img_url: product_image_zoom_size, scale: product_image_scale }}"
+                class="text-link product-single__thumbnail product-single__thumbnail--{{ section.id }}"
+                data-thumbnail-id="{{ section.id }}-{{ media.id }}"
+                {% if enable_thumbnail_slides == true %} data-slider-item-link{% endif %}
+                {% if enable_image_zoom %}data-zoom="{{ media.preview_image | img_url: product_image_zoom_size, scale: product_image_scale }}"{% endif %}>
+
+                  {%- capture thumbnailAlt -%}
+                    {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
+                      {{ 'sections.featured_product.video_thumbnail_alt' | t: imageAlt: media.alt | strip_html | escape }}
+                    {%- elsif media.media_type == 'model' -%}
+                      {{ 'sections.featured_product.model_thumbnail_alt' | t: imageAlt: media.alt | strip_html | escape }}
+                    {%- else -%}
+                      {{ 'sections.featured_product.gallery_thumbnail_alt' | t: imageAlt: media.alt | strip_html | escape }}
+                    {%- endif -%}
+                  {%- endcapture -%}
+
+                  <img class="product-single__thumbnail-image" src="{{ media.preview_image | img_url: '110x110', scale: 2 }}" alt="{{ thumbnailAlt }}">
+                  {%- if media.media_type == 'video' or media.media_type =='external_video' -%}
+                    <div class="product-single__thumbnail-badge">
+                      {% include 'icon-video-badge-full-color' %}
+                    </div>
+                  {%- endif -%}
+                  {%- if media.media_type == 'model' -%}
+                    <div class="product-single__thumbnail-badge">
+                      {% include 'icon-3d-badge-full-color' %}
+                    </div>
+                  {%- endif -%}
+              </a>
+            </div>
+          {% endunless %}
+        {% endfor %}
+
+        </div>
+        {% if enable_thumbnail_slides == true %}
+        <button class="thumb-up disabled thumbnails-slider__prev--{{ section.id }}" data-slider-button><i class="fas fa-chevron-left"></i></button>
+        <button class="thumb-down disabled thumbnails-slider__next--{{ section.id }}" data-slider-button data-slider-button-next><i class="fas fa-chevron-right"></i></button>
+        {% endif %}
+
+    </div>
+  {% endif %}
+</div>
+
+

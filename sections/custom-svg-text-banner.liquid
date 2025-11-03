@@ -1,0 +1,800 @@
+{% comment %}
+  Custom SVG Text Banner Section
+  Sección personalizable con SVG, texto y fondo configurable
+  Compatible con móvil y desktop - Organizada por bloques
+{% endcomment %}
+
+{% comment %} Variables para almacenar configuraciones de fondo {% endcomment %}
+{% assign background_color = '' %}
+{% assign background_image = '' %}
+{% assign background_size = 'cover' %}
+{% assign background_position = 'center center' %}
+{% assign background_repeat = 'no-repeat' %}
+
+{% comment %} Buscar bloque de fondo {% endcomment %}
+{% for block in section.blocks %}
+  {% if block.type == 'background' %}
+    {% assign background_color = block.settings.background_color %}
+    {% assign background_image = block.settings.background_image %}
+    {% assign background_size = block.settings.background_size %}
+    {% assign background_position = block.settings.background_position %}
+    {% assign background_repeat = block.settings.background_repeat %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+<section class="custom-svg-text-banner mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}}" 
+         id="{{ section.id }}" 
+         data-section-id="{{ section.id }}" 
+         data-section-type="custom-svg-text-banner"
+         data-enable-autoplay="{{ section.settings.enable_autoplay }}"
+         data-autoplay-interval="{{ section.settings.autoplay_interval }}"
+         style="{% if background_color != blank %}background-color: {{ background_color }};{% endif %}
+                {% if background_image != blank %}background-image: url('{{ background_image | img_url: '1920x' }}'); background-size: {{ background_size }}; background-position: {{ background_position }}; background-repeat: {{ background_repeat }};{% endif %}">
+    
+    <div class="{% if section.settings.has_container %}container{% else %}container-fluid{% endif %}">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-12">
+                
+                {% comment %} Desktop Layout - Bloques horizontales {% endcomment %}
+                <div class="custom-svg-text-content-desktop d-none d-lg-block">
+                    <div class="blocks-horizontal-container d-flex align-items-center justify-content-center flex-wrap">
+                        {% for block in section.blocks %}
+                            {% if block.type == 'content_block' %}
+                            <div class="block-item text-{{ section.settings.text_alignment }}" {{ block.shopify_attributes }}>
+                                
+                                {% comment %} SVG/Imagen {% endcomment %}
+                                <div class="svg-container mb-{{ block.settings.svg_margin_bottom }}">
+                                    {% if block.settings.svg_code != blank %}
+                                        <div class="svg-custom-code" style="width: {{ block.settings.svg_width }}px; height: {{ block.settings.svg_height }}px; margin: 0 auto;">
+                                            {{ block.settings.svg_code }}
+                                        </div>
+                                    {% elsif block.settings.svg_image != blank %}
+                                        <div class="svg-image-wrapper" style="width: {{ block.settings.svg_width }}px; height: {{ block.settings.svg_height }}px; margin: 0 auto;">
+                                            {% assign svg_size = block.settings.svg_width | append: 'x' | append: block.settings.svg_height %}
+                                            <img src="{{ block.settings.svg_image | img_url: svg_size }}" 
+                                                 alt="{{ block.settings.svg_alt_text | default: 'SVG Icon' }}"
+                                                 class="svg-image"
+                                                 style="width: 100%; height: 100%; object-fit: contain;">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                {% comment %} Título Principal {% endcomment %}
+                                {% if block.settings.title != blank %}
+                                <h2 class="custom-title mb-{{ block.settings.title_margin_bottom }} text-{{ block.settings.title_color }}" 
+                                    style="font-size: {{ block.settings.title_font_size }}rem; 
+                                           font-weight: {{ block.settings.title_font_weight }}; 
+                                           line-height: {{ block.settings.title_line_height }};">
+                                    {{ block.settings.title }}
+                                </h2>
+                                {% endif %}
+                                {% if block.settings.subtitle != blank %}
+                                <h3 class="custom-subtitle mb-{{ block.settings.subtitle_margin_bottom }} text-{{ block.settings.subtitle_color }}" 
+                                    style="font-size: {{ block.settings.subtitle_font_size }}rem; 
+                                           font-weight: {{ block.settings.subtitle_font_weight }}; 
+                                           line-height: {{ block.settings.subtitle_line_height }}; 
+                                           font-family: inherit !important;">
+                                    {{ block.settings.subtitle }}
+                                </h3>
+                                {% endif %}
+                                
+                                {% comment %} Descripción {% endcomment %}
+                                {% if block.settings.description != blank %}
+                                <div class="custom-description mb-{{ block.settings.description_margin_bottom }} text-{{ block.settings.description_color }}" 
+                                     style="font-size: {{ block.settings.description_font_size }}rem; 
+                                            line-height: {{ block.settings.description_line_height }};">
+                                    {{ block.settings.description }}
+                                </div>
+                                {% endif %}
+                                
+                                {% comment %} Botón del bloque {% endcomment %}
+                                {% if block.settings.button_text != blank %}
+                                <div class="custom-button-wrapper mt-{{ block.settings.button_margin_top }}">
+                                    <a href="{{ block.settings.button_url | default: 'javascript:void(0);' }}" 
+                                       class="btn btn-{{ block.settings.button_style }} btn-{{ block.settings.button_size }}"
+                                       {% if block.settings.button_url == blank %}onclick="return false;"{% endif %}>
+                                        {{ block.settings.button_text }}
+                                    </a>
+                                </div>
+                                {% endif %}
+                                
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                {% comment %} Mobile Layout - Carrusel {% endcomment %}
+                <div class="custom-svg-text-content-mobile d-block d-lg-none">
+                    <div class="blocks-carousel-container" id="blocks-carousel-{{ section.id }}">
+                        <div class="carousel-wrapper">
+                            <div class="carousel-track">
+                                {% for block in section.blocks %}
+                                    {% if block.type == 'content_block' %}
+                                    <div class="carousel-slide text-{{ section.settings.text_alignment }}" {{ block.shopify_attributes }}>
+                                        
+                                        {% comment %} SVG/Imagen {% endcomment %}
+                                        <div class="svg-container mb-{{ block.settings.svg_margin_bottom }}">
+                                            {% if block.settings.svg_code != blank %}
+                                                <div class="svg-custom-code" style="width: {{ block.settings.svg_width_mobile }}px; height: {{ block.settings.svg_height_mobile }}px; margin: 0 auto;">
+                                                    {{ block.settings.svg_code }}
+                                                </div>
+                                            {% elsif block.settings.svg_image != blank %}
+                                                <div class="svg-image-wrapper" style="width: {{ block.settings.svg_width_mobile }}px; height: {{ block.settings.svg_height_mobile }}px; margin: 0 auto;">
+                                                    {% assign svg_size_mobile = block.settings.svg_width_mobile | append: 'x' | append: block.settings.svg_height_mobile %}
+                                                    <img src="{{ block.settings.svg_image | img_url: svg_size_mobile }}" 
+                                                         alt="{{ block.settings.svg_alt_text | default: 'SVG Icon' }}"
+                                                         class="svg-image"
+                                                         style="width: 100%; height: 100%; object-fit: contain;">
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        {% comment %} Título Principal {% endcomment %}
+                                        {% if block.settings.title != blank %}
+                                        <h2 class="custom-title mb-{{ block.settings.title_margin_bottom }} text-{{ block.settings.title_color }}" 
+                                            style="font-size: {{ block.settings.title_font_size_mobile }}rem; 
+                                                   font-weight: {{ block.settings.title_font_weight }}; 
+                                                   line-height: {{ block.settings.title_line_height }};">
+                                            {{ block.settings.title }}
+                                        </h2>
+                                        {% endif %}
+                                        {% if block.settings.subtitle != blank %}
+                                        <h3 class="custom-subtitle mb-{{ block.settings.subtitle_margin_bottom }} text-{{ block.settings.subtitle_color }}" 
+                                            style="font-size: {{ block.settings.subtitle_font_size_mobile }}rem; 
+                                                   font-weight: {{ block.settings.subtitle_font_weight }}; 
+                                                   line-height: {{ block.settings.subtitle_line_height }}; 
+                                                   font-family: inherit !important;">
+                                            {{ block.settings.subtitle }}
+                                        </h3>
+                                        {% endif %}
+                                        
+                                        {% comment %} Descripción {% endcomment %}
+                                        {% if block.settings.description != blank %}
+                                        <div class="custom-description mb-{{ block.settings.description_margin_bottom }} text-{{ block.settings.description_color }}" 
+                                             style="font-size: {{ block.settings.description_font_size_mobile }}rem; 
+                                                    line-height: {{ block.settings.description_line_height }};">
+                                            {{ block.settings.description }}
+                                        </div>
+                                        {% endif %}
+                                        
+                                        {% comment %} Botón del bloque {% endcomment %}
+                                        {% if block.settings.button_text != blank %}
+                                        <div class="custom-button-wrapper mt-{{ block.settings.button_margin_top }}">
+                                            <a href="{{ block.settings.button_url | default: 'javascript:void(0);' }}" 
+                                               class="btn btn-{{ block.settings.button_style }} btn-{{ block.settings.button_size }}"
+                                               {% if block.settings.button_url == blank %}onclick="return false;"{% endif %}>
+                                                {{ block.settings.button_text }}
+                                            </a>
+                                        </div>
+                                        {% endif %}
+                                        
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        {% comment %} Controles del carrusel {% endcomment %}
+                        {% assign visible_blocks_count = 0 %}
+                        {% for block in section.blocks %}
+                            {% if block.type == 'content_block' %}
+                                {% assign visible_blocks_count = visible_blocks_count | plus: 1 %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if visible_blocks_count > 1 %}
+                        <div class="owl-dots">
+                            {% for i in (1..visible_blocks_count) %}
+                            <button role="button" class="owl-dot {% if forloop.first %}active{% endif %}" onclick="goToSlide('{{ section.id }}', {{ forloop.index0 }})">
+                                <span></span>
+                            </button>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                    
+                </div>
+            </div>
+        </div>
+</section>
+
+{% comment %} Load external CSS {% endcomment %}
+{{ 'custom-svg-text-banner.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'custom-svg-text-banner.js' | asset_url }}" defer></script>
+
+{% comment %} Dynamic CSS variables for responsive design {% endcomment %}
+<style>
+.custom-svg-text-banner {
+    --svg-width-mobile: {{ section.settings.svg_width_mobile | default: section.settings.svg_width | times: 0.7 }}px;
+    --svg-height-mobile: {{ section.settings.svg_height_mobile | default: section.settings.svg_height | times: 0.7 }}px;
+    --svg-width-mobile-small: {{ section.settings.svg_width_mobile | default: section.settings.svg_width | times: 0.6 }}px;
+    --svg-height-mobile-small: {{ section.settings.svg_height_mobile | default: section.settings.svg_height | times: 0.6 }}px;
+    --title-font-size-mobile: {{ section.settings.title_font_size_mobile | default: section.settings.title_font_size | times: 0.8 }}rem;
+    --subtitle-font-size-mobile: {{ section.settings.subtitle_font_size_mobile | default: section.settings.subtitle_font_size | times: 0.8 }}rem;
+    --description-font-size-mobile: {{ section.settings.description_font_size_mobile | default: section.settings.description_font_size | times: 0.9 }}rem;
+}
+</style>
+
+{% schema %}
+{
+    "name": "Custom SVG Text Banner",
+    "tag": "section",
+    "class": "custom-svg-text-banner-section",
+    "settings": [
+        {
+            "type": "header",
+            "content": "Layout Settings"
+        },
+        {
+            "type": "checkbox",
+            "id": "has_container",
+            "label": "Enable container",
+            "default": true
+        },
+        {
+            "type": "select",
+            "id": "text_alignment",
+            "label": "Text alignment",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "right",
+                    "label": "Right"
+                }
+            ],
+            "default": "center"
+        },
+        {
+            "type": "header",
+            "content": "Spacing Settings"
+        },
+        {
+            "type": "range",
+            "id": "mt_lg",
+            "label": "Margin top (Desktop)",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb_lg",
+            "label": "Margin bottom (Desktop)",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pt_lg",
+            "label": "Padding top (Desktop)",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "pb_lg",
+            "label": "Padding bottom (Desktop)",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "mt",
+            "label": "Margin top (Mobile)",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb",
+            "label": "Margin bottom (Mobile)",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pt",
+            "label": "Padding top (Mobile)",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 3
+        },
+        {
+            "type": "range",
+            "id": "pb",
+            "label": "Padding bottom (Mobile)",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 3
+        },
+        {
+            "type": "header",
+            "content": "Autoplay Settings (Mobile)"
+        },
+        {
+            "type": "checkbox",
+            "id": "enable_autoplay",
+            "label": "Activar autoplay en móvil",
+            "default": false,
+            "info": "El carrusel se moverá automáticamente en dispositivos móviles"
+        },
+        {
+            "type": "range",
+            "id": "autoplay_interval",
+            "label": "Intervalo de autoplay",
+            "unit": "s",
+            "min": 2,
+            "max": 10,
+            "step": 0.5,
+            "default": 4,
+            "info": "Tiempo en segundos entre cada cambio automático"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "content_block",
+            "name": "Contenido Completo",
+            "settings": [
+                {
+                    "type": "header",
+                    "content": "SVG / Imagen"
+                },
+                {
+                    "type": "html",
+                    "id": "svg_code",
+                    "label": "Código SVG",
+                    "info": "Pega tu código SVG aquí. Esto anulará la imagen SVG si se proporcionan ambos."
+                },
+                {
+                    "type": "image_picker",
+                    "id": "svg_image",
+                    "label": "Imagen SVG",
+                    "info": "Sube un archivo SVG. Se usará si no se proporciona código SVG."
+                },
+                {
+                    "type": "text",
+                    "id": "svg_alt_text",
+                    "label": "Texto alternativo para la imagen",
+                    "default": "SVG Icon"
+                },
+                {
+                    "type": "range",
+                    "id": "svg_width",
+                    "label": "Ancho SVG (Escritorio)",
+                    "unit": "px",
+                    "min": 50,
+                    "max": 500,
+                    "step": 10,
+                    "default": 200
+                },
+                {
+                    "type": "range",
+                    "id": "svg_height",
+                    "label": "Alto SVG (Escritorio)",
+                    "unit": "px",
+                    "min": 50,
+                    "max": 500,
+                    "step": 10,
+                    "default": 200
+                },
+                {
+                    "type": "range",
+                    "id": "svg_width_mobile",
+                    "label": "Ancho SVG (Móvil)",
+                    "unit": "px",
+                    "min": 30,
+                    "max": 300,
+                    "step": 10,
+                    "default": 100
+                },
+                {
+                    "type": "range",
+                    "id": "svg_height_mobile",
+                    "label": "Alto SVG (Móvil)",
+                    "unit": "px",
+                    "min": 30,
+                    "max": 300,
+                    "step": 10,
+                    "default": 100
+                },
+                {
+                    "type": "range",
+                    "id": "svg_margin_bottom",
+                    "label": "Margen inferior del SVG",
+                    "unit": "rem",
+                    "min": 0,
+                    "max": 5,
+                    "step": 0.5,
+                    "default": 2
+                },
+                {
+                    "type": "header",
+                    "content": "Título Principal"
+                },
+                {
+                    "type": "text",
+                    "id": "title",
+                    "label": "Título principal"
+                },
+                {
+                    "type": "select",
+                    "id": "title_color",
+                    "label": "Color del título",
+                    "options": [
+                        {
+                            "value": "white",
+                            "label": "Blanco"
+                        },
+                        {
+                            "value": "black",
+                            "label": "Negro"
+                        },
+                        {
+                            "value": "primary",
+                            "label": "Primario"
+                        },
+                        {
+                            "value": "dark",
+                            "label": "Oscuro"
+                        }
+                    ],
+                    "default": "dark"
+                },
+                {
+                    "type": "range",
+                    "id": "title_font_size",
+                    "label": "Tamaño de fuente del título (Escritorio)",
+                    "unit": "rem",
+                    "min": 1.5,
+                    "max": 6,
+                    "step": 0.1,
+                    "default": 3
+                },
+                {
+                    "type": "range",
+                    "id": "title_font_size_mobile",
+                    "label": "Tamaño de fuente del título (Móvil)",
+                    "unit": "rem",
+                    "min": 1.2,
+                    "max": 4,
+                    "step": 0.1,
+                    "default": 2.2
+                },
+                {
+                    "type": "select",
+                    "id": "title_font_weight",
+                    "label": "Peso de fuente del título",
+                    "options": [
+                        {
+                            "value": "300",
+                            "label": "Ligero"
+                        },
+                        {
+                            "value": "400",
+                            "label": "Normal"
+                        },
+                        {
+                            "value": "500",
+                            "label": "Medio"
+                        },
+                        {
+                            "value": "600",
+                            "label": "Semi Negrita"
+                        },
+                        {
+                            "value": "700",
+                            "label": "Negrita"
+                        }
+                    ],
+                    "default": "600"
+                },
+                {
+                    "type": "range",
+                    "id": "title_line_height",
+                    "label": "Altura de línea del título",
+                    "min": 1,
+                    "max": 2,
+                    "step": 0.1,
+                    "default": 1.2
+                },
+                {
+                    "type": "range",
+                    "id": "title_margin_bottom",
+                    "label": "Margen inferior del título",
+                    "unit": "rem",
+                    "min": 0,
+                    "max": 5,
+                    "step": 0.5,
+                    "default": 1
+                },
+                {
+                    "type": "text",
+                    "id": "subtitle",
+                    "label": "Subtítulo"
+                },
+                {
+                    "type": "select",
+                    "id": "subtitle_color",
+                    "label": "Color del subtítulo",
+                    "options": [
+                        {
+                            "value": "white",
+                            "label": "Blanco"
+                        },
+                        {
+                            "value": "black",
+                            "label": "Negro"
+                        },
+                        {
+                            "value": "primary",
+                            "label": "Primario"
+                        },
+                        {
+                            "value": "dark",
+                            "label": "Oscuro"
+                        }
+                    ],
+                    "default": "dark"
+                },
+                {
+                    "type": "range",
+                    "id": "subtitle_font_size",
+                    "label": "Tamaño de fuente del subtítulo (Escritorio)",
+                    "unit": "rem",
+                    "min": 1,
+                    "max": 4,
+                    "step": 0.1,
+                    "default": 1.8
+                },
+                {
+                    "type": "range",
+                    "id": "subtitle_font_size_mobile",
+                    "label": "Tamaño de fuente del subtítulo (Móvil)",
+                    "unit": "rem",
+                    "min": 1,
+                    "max": 3,
+                    "step": 0.1,
+                    "default": 1.4
+                },
+                {
+                    "type": "select",
+                    "id": "subtitle_font_weight",
+                    "label": "Peso de fuente del subtítulo",
+                    "options": [
+                        {
+                            "value": "300",
+                            "label": "Ligero"
+                        },
+                        {
+                            "value": "400",
+                            "label": "Normal"
+                        },
+                        {
+                            "value": "500",
+                            "label": "Medio"
+                        },
+                        {
+                            "value": "600",
+                            "label": "Semi Negrita"
+                        },
+                        {
+                            "value": "700",
+                            "label": "Negrita"
+                        }
+                    ],
+                    "default": "400"
+                },
+                {
+                    "type": "range",
+                    "id": "subtitle_line_height",
+                    "label": "Altura de línea del subtítulo",
+                    "min": 1,
+                    "max": 2,
+                    "step": 0.1,
+                    "default": 1.3
+                },
+                {
+                    "type": "range",
+                    "id": "subtitle_margin_bottom",
+                    "label": "Margen inferior del subtítulo",
+                    "unit": "rem",
+                    "min": 0,
+                    "max": 5,
+                    "step": 0.5,
+                    "default": 1
+                },
+                {
+                    "type": "header",
+                    "content": "Descripción"
+                },
+                {
+                    "type": "richtext",
+                    "id": "description",
+                    "label": "Descripción"
+                },
+                {
+                    "type": "select",
+                    "id": "description_color",
+                    "label": "Color de la descripción",
+                    "options": [
+                        {
+                            "value": "white",
+                            "label": "Blanco"
+                        },
+                        {
+                            "value": "black",
+                            "label": "Negro"
+                        },
+                        {
+                            "value": "primary",
+                            "label": "Primario"
+                        },
+                        {
+                            "value": "dark",
+                            "label": "Oscuro"
+                        }
+                    ],
+                    "default": "dark"
+                },
+                {
+                    "type": "range",
+                    "id": "description_font_size",
+                    "label": "Tamaño de fuente de la descripción (Escritorio)",
+                    "unit": "rem",
+                    "min": 0.8,
+                    "max": 2.5,
+                    "step": 0.1,
+                    "default": 1.1
+                },
+                {
+                    "type": "range",
+                    "id": "description_font_size_mobile",
+                    "label": "Tamaño de fuente de la descripción (Móvil)",
+                    "unit": "rem",
+                    "min": 0.8,
+                    "max": 2,
+                    "step": 0.1,
+                    "default": 1
+                },
+                {
+                    "type": "range",
+                    "id": "description_line_height",
+                    "label": "Altura de línea de la descripción",
+                    "min": 1,
+                    "max": 2.5,
+                    "step": 0.1,
+                    "default": 1.5
+                },
+                {
+                    "type": "range",
+                    "id": "description_margin_bottom",
+                    "label": "Margen inferior de la descripción",
+                    "unit": "rem",
+                    "min": 0,
+                    "max": 5,
+                    "step": 0.5,
+                    "default": 2
+                },
+                {
+                    "type": "header",
+                    "content": "Botón"
+                },
+                {
+                    "type": "text",
+                    "id": "button_text",
+                    "label": "Texto del botón"
+                },
+                {
+                    "type": "url",
+                    "id": "button_url",
+                    "label": "URL del botón"
+                },
+                {
+                    "type": "select",
+                    "id": "button_style",
+                    "label": "Estilo del botón",
+                    "options": [
+                        {
+                            "value": "primary",
+                            "label": "Primario"
+                        },
+                        {
+                            "value": "secondary",
+                            "label": "Secundario"
+                        },
+                        {
+                            "value": "dark",
+                            "label": "Oscuro"
+                        },
+                        {
+                            "value": "light",
+                            "label": "Claro"
+                        },
+                        {
+                            "value": "outline-primary",
+                            "label": "Contorno Primario"
+                        },
+                        {
+                            "value": "outline-dark",
+                            "label": "Contorno Oscuro"
+                        }
+                    ],
+                    "default": "primary"
+                },
+                {
+                    "type": "select",
+                    "id": "button_size",
+                    "label": "Tamaño del botón",
+                    "options": [
+                        {
+                            "value": "sm",
+                            "label": "Pequeño"
+                        },
+                        {
+                            "value": "md",
+                            "label": "Mediano"
+                        },
+                        {
+                            "value": "lg",
+                            "label": "Grande"
+                        }
+                    ],
+                    "default": "md"
+                },
+                {
+                    "type": "range",
+                    "id": "button_margin_top",
+                    "label": "Margen superior del botón",
+                    "unit": "rem",
+                    "min": 0,
+                    "max": 5,
+                    "step": 0.5,
+                    "default": 2
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Custom SVG Text Banner",
+            "category": "Custom",
+            "blocks": [
+                {
+                    "type": "content_block"
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

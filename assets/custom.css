@@ -1,0 +1,104 @@
+/* Adobe Typekit Bree Font Import - Global */
+@import url("https://use.typekit.net/ywh8lxe.css");
+
+/* Global Bree Font Application ONLY for Headings/Titles */
+h1, h2, h3, h4, h5, h6,
+.timeline-title,
+.step-title,
+.carousel-title,
+.section-title,
+.custom-title {
+  font-family: "bree", var(--font-stack-first), Arial, sans-serif !important;
+}
+
+/* Timeline subtitle uses description font (Shopify theme font) */
+.timeline-subtitle {
+  font-family: var(--font-stack-second) !important;
+  font-weight: 400 !important;
+}
+
+/* Specific font weights for Bree - Removed 800 weight */
+h1, .timeline-title, .carousel-title, .section-title, .custom-title {
+  font-weight: 700 !important;
+}
+
+h2 {
+  font-weight: 700 !important;
+}
+
+h3, .step-title {
+  font-weight: 600 !important;
+}
+
+h4, h5, h6 {
+  font-weight: 400 !important;
+}
+
+/* Ensure descriptions use default Shopify theme fonts */
+.timeline-description,
+.step-description,
+.carousel-description,
+.section-description,
+.custom-description,
+p {
+  font-family: var(--font-stack-second), Arial, sans-serif !important;
+}
+
+.instagram:hover a::before,
+.instagram:hover a::after {
+  display: none!important;
+}
+.product-item-wrapper .product-cta {
+  display: none!important;
+}
+
+
+@media (min-width: 992px) {
+  
+  .product-item-wrapper .product-form .select-box,
+  .product-item-wrapper .product-form .select-menu {
+    width: min-content;
+  }
+  .product-item-wrapper .product-form select{
+  	width: 20rem!important;
+  }
+  .product-quickview-container .product-form select {
+    width: 100%;
+  }
+}
+body.direct-add-to-cart .product-list .product__form_card{
+  display: none!important;
+
+}
+.product-label-group.badge-left {
+  left: 1rem;
+  right: auto;
+}
+
+.product-label-group.badge-right {
+  right: 1rem;
+  left: auto;
+}
+
+/* Badge overlay behavior */
+.product-label-group {
+  position: absolute;
+  top: 1rem;
+  z-index: 20;
+  pointer-events: none;
+}
+
+/* Ensure gallery is a positioning context for badges on product pages */
+.product-gallery[data-product-single-media-group] {
+  position: relative;
+}
+
+/* Ensure carousel is a positioning context so badge aligns with main image */
+.product-single-carousel[data-product-single-image-carousel] {
+  position: relative;
+}
+
+/* Make featured media wrapper a positioning context for overlay */
+.product-single__media-wrapper {
+  position: relative;
+}

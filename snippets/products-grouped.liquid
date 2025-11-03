@@ -1,0 +1,114 @@
+{%-assign active_grouped = false -%}
+{%-if product.available -%}
+{%-assign total_price = current_variant.price -%}
+{%- if current_variant.compare_at_price > 0 -%}
+{%-assign total_compare_price = current_variant.compare_at_price -%}
+{% else %}
+{%-assign total_compare_price = total_price -%}
+{%- endif -%}
+{%-else-%}
+{%-assign total_price = 0 -%}
+{%-assign total_compare_price = 0 -%}
+{%-endif -%}
+{%-for link in linklists[settings.product_grouped].links -%}
+{%-if link.type == "product_link" -%}
+{%-assign _product = link.object  -%}
+{%-if _product.handle == my_product.handle %}
+{%-assign active_grouped = true -%}
+{%-assign _current_product = _product -%}
+{%-break-%}
+{%-endif-%}
+{%-endif-%}
+{%-endfor-%}
+{%-if active_grouped == true -%}
+<div id="products-grouped-{{section.id}}" class="product-grouped-wrapper {{ wrapper_class }}">
+    <h2 class="title">
+        {%- if custom_heading != blank -%}
+        {{ custom_heading }}
+        {%- else -%}
+        {{ settings.product_grouped_heading }}
+        {%- endif -%}
+    </h2>
+    <div class="product-grouped-content row {{ class }}">
+        <div class="col-md-7">
+            <div class="row product-grouped-row">
+                <div class="current-product grouped-product p-md-3 col-md-4 col-xs-6" id="grouped-product-{{-_current_product.id-}}" data-id="{{- _current_product.id -}}">
+                    {% assign product = _current_product %}
+                    {%-include 'product-item' -%}
+                </div>
+                {%-for link in linklists[settings.product_grouped].links -%}
+                {%-if link.type == "product_link" -%}
+                {%-assign _product = link.object  -%}
+                {%-if _product.handle != _current_product.handle %}
+                <div class="grouped-product p-md-3 col-md-4 col-xs-6" data-id="{{- _product.id -}}" id="grouped-product-{{-_product.id-}}">
+                    {% assign product = _product %}
+                    {%-include 'product-item' -%}
+                </div>
+                {%-endif-%}
+                {%-endif-%}
+                {%-endfor-%}
+            </div>
+        </div>
+
+        <div class="products-grouped-action col-md-5 product-info">
+        <div class="products-grouped-items mb-6">
+            <div class="grouped-product-item current-product"  id="grouped-product-item-{{- _current_product.id -}}"  data-id="{{- _current_product.id -}}">
+            <label class="style-checkbox"> 
+                <input data-product_id="{{- _current_product.id -}}" type="checkbox" checked="checked" class="grouped-checkbox" data-id="#grouped-product-{{-_current_product.id-}}"> 
+                <span class="checkmark"></span>
+                {{ _current_product.title }}
+            </label>
+            </div>
+            {%-for link in linklists[settings.product_grouped].links -%}
+            {%-if link.type == "product_link" -%}
+            {%-assign _product = link.object  -%}
+            {%-if _product.handle != _current_product.handle -%}
+            {%-if _product.available  -%}
+            {%- assign _current_variant = _product.selected_or_first_available_variant | default:_product.variants.first -%}
+            {%-assign total_price = total_price | plus: _current_variant.price -%}
+            {%- if _current_variant.compare_at_price > _current_variant.price -%}
+            {%-assign total_compare_price = total_compare_price | plus: _current_variant.compare_at_price -%}
+            {% else %}
+             {%-assign total_compare_price = total_compare_price | plus: _current_variant.price -%}
+            {%- endif -%}
+           
+            {%- endif -%}
+            {% assign product = _product %}
+            <div class="grouped-product-item" id="grouped-product-item-{{- _product.id -}}" data-id="{{- _product.id -}}">
+            <label class="style-checkbox"> 
+                <input data-product_id="{{- product.id -}}" type="checkbox" {% if _product.available  %}checked="checked"{% else %}disabled{% endif %} class="mr-1 grouped-checkbox" data-id="#grouped-product-{{-product.id-}}"> 
+                <span class="checkmark"></span>
+                <span class="product-title font-weight-slight-bold">{{ product.title }}</span> 
+            </label>
+            </div>
+            {%-endif-%}
+            {%-endif-%}
+            {%-endfor-%}
+        </div>
+        <div class="price-text fs-1p4 font-weight-slight-bold">{{ "products.grouped.price_text" | t }}</div>
+        <div class="product-price">
+            <span  id="grouped-price" class="amount new-price">
+                <span class="money">{{- total_price | money -}}</span>
+            </span>
+            <del id="grouped-price-old" class="amount old-price{% unless total_compare_price > 0 and total_compare_price > total_price %} hide{% endunless %}">
+                <span class="money">{{- total_compare_price | money -}}</span>
+            </del>
+        </div>
+        <div class="action">
+            <button type="button" id="grouped-add-button-{{-section.id-}}" class="grouped-button btn btn-ellipse btn-dark btn-product">
+                <i class="">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6.00833 13.1838L18.7333 10.8005V3.63379H3.45833" stroke-width="1.5" stroke-miterlimit="10"/>
+                      <path d="M0.433334 1.25H2.825L6 13.1833L4.61667 15.2583C4.48427 15.4615 4.41471 15.6992 4.41667 15.9417V15.9417C4.41667 16.2643 4.54485 16.5738 4.77302 16.802C5.00119 17.0302 5.31065 17.1583 5.63333 17.1583H15.55" stroke-width="1.5" stroke-miterlimit="10"/>
+                      <path d="M15.55 18.7503C15.9872 18.7503 16.3417 18.3959 16.3417 17.9587C16.3417 17.5214 15.9872 17.167 15.55 17.167C15.1128 17.167 14.7583 17.5214 14.7583 17.9587C14.7583 18.3959 15.1128 18.7503 15.55 18.7503Z" stroke-width="1.5" stroke-miterlimit="10"/>
+                      <path d="M7.59167 18.7503C8.02889 18.7503 8.38333 18.3959 8.38333 17.9587C8.38333 17.5214 8.02889 17.167 7.59167 17.167C7.15444 17.167 6.8 17.5214 6.8 17.9587C6.8 18.3959 7.15444 18.7503 7.59167 18.7503Z" stroke-width="1.5" stroke-miterlimit="10"/>
+                    </svg>
+                  </i>
+                  <span>{{- 'products.grouped.add_to_cart' | t | escape-}}</span>
+            </button>
+        </div>
+        </div>
+    </div>
+</div>
+{%-endif-%}
+{% assign product = my_product %}

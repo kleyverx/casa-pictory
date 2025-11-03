@@ -1,0 +1,32 @@
+<div class="svv-op-wgt-container">
+    {% if product.vendor contains "SERVV_EVENT_"  %}
+    <link
+            rel="stylesheet"
+            href="https://web.servv.io/on-product-widget/css/servv-op-widget.css"
+    />
+    <a href="https://servv.ai/" style="display: none;">Powered by servv.ai</a>
+    <input type="hidden" value="{{ product.vendor }}" id="servv_op_wgt_product_vendor">
+    <input type="hidden" value="{{ product.id }}" id="servv_op_wgt_product_id">
+    <input type="hidden" value="{{ product.handle }}" id="servv_op_wgt_product_handle">
+    <input type="hidden" value="{{ product.selected_or_first_available_variant.id }}" id="servv_op_wgt_product_selected_variant">
+    <span id="servv_op_wgt_product_description" style="display: none;">{{ product.description }}</span>
+    <input type="hidden" value="{{ customer.id }}" id="servv_op_wgt_customer_id">
+    <input type="hidden" value="{{ customer.email }}" id="servv_op_wgt_customer_email">
+    <input type="hidden" value="{{ customer.first_name }}" id="servv_op_wgt_customer_first_name">
+    <input type="hidden" value="{{ customer.last_name }}" id="servv_op_wgt_customer_last_name">
+    <input type="hidden" value="{{ shop.permanent_domain }}" id="servv_op_wgt_shop_domain">
+    <input type="hidden" value="{{ shop.currency }}" id="servv_op_wgt_shop_currency">
+    <input type="hidden" value="shopify" id="servv_op_wgt_shop_type">
+    {% assign servv_strint_to_sign = shop.permanent_domain  | append: customer.id | append: customer.first_name | append: customer.last_name | append: customer.email | append: "shopify"  %}
+    {% assign servv_signature = servv_strint_to_sign | hmac_sha256: "b45ac2d4-e88e-44c7-975b-19c0653e5337" %}
+    <input type="hidden" value="{{ servv_signature }}" id="servv_op_wgt_signature">
+    <div id="servv-op-wgt-app"></div>
+    <script
+            src="https://web.servv.io/on-product-widget/svv.op-widget.config.js"
+    ></script>
+    <script
+            src="https://web.servv.io/on-product-widget/js/servv-op-widget.js"
+            async="async"
+    ></script>
+    {% endif %}
+</div>

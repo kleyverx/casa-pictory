@@ -1,0 +1,112 @@
+{% if product_type == blank %}
+{% assign product_type = 'default' %}
+{% endif %}
+
+{% if product_class == blank %}
+{% assign product_class = 'shadow-visual' %}
+{% endif %}
+
+{% case product_type %}
+{% when 'default' %}
+<div class="product {{ product_class }}">
+    <figure class="product-visual" style="background-color:#eee">
+        <a href="javascript:void(0);">
+            {{ 'product-1' | placeholder_svg_tag }}
+        </a>
+        <div class="product-label-group">
+            <label class="product-label label-new">new</label>
+        </div>
+    </figure>
+    <div class="product-details">
+        <div class="product-cat">
+            <a href="javascript:void(0);">categories</a>
+        </div>
+        <h3 class="product-name">
+            <a href="javascript:void(0);">Sample product title</a>
+        </h3>
+        <div class="product-price">
+            <ins class="new-price">$79.00</ins><del class="old-price">$99.00</del>
+        </div>
+        <div class="ratings-wrapper">
+            <div class="ratings-full">
+                <span class="ratings" style="width:100%"></span>
+                <span class="tooltiptext tooltip-top"></span>
+            </div>
+            <a href="javascript:void(0);" class="rating-reviews">( 5 reviews )</a>
+        </div>
+    </div>
+</div>
+
+{% when 'centered' %}
+<div class="product {{ product_class }} text-center">
+    <figure class="product-visual" style="background-color:#eee">
+        <a href="javascript:void(0);">
+            {{ 'product-1' | placeholder_svg_tag }}
+        </a>
+        <div class="product-label-group">
+            <label class="product-label label-new">new</label>
+        </div>
+    </figure>
+    <div class="product-details">
+        <div class="product-cat">
+            <a href="javascript:void(0);">categories</a>
+        </div>
+        <h3 class="product-name">
+            <a href="javascript:void(0);">Sample product title</a>
+        </h3>
+        <div class="product-price">
+            <ins class="new-price">$79.00</ins><del class="old-price">$99.00</del>
+        </div>
+        <div class="ratings-wrapper">
+            <div class="ratings-full">
+                <span class="ratings" style="width:100%"></span>
+                <span class="tooltiptext tooltip-top"></span>
+            </div>
+            <a href="javascript:void(0);" class="rating-reviews">( 5 reviews )</a>
+        </div>
+    </div>
+</div>
+
+{% when 'centered-simple' %}
+<div class="product {{ product_class }} text-center">
+    <figure class="product-visual" style="background-color:#eee">
+        <a href="javascript:void(0);">
+            {{ 'product-1' | placeholder_svg_tag }}
+        </a>
+        <div class="product-label-group">
+            <label class="product-label label-new">new</label>
+        </div>
+    </figure>
+    <div class="product-details">
+        <h3 class="product-name">
+            <a href="javascript:void(0);">Sample product title</a>
+        </h3>
+        <div class="product-price">
+            <ins class="new-price">$79.00</ins><del class="old-price">$99.00</del>
+        </div>
+    </div>
+</div>
+
+{% when 'list' %}
+<div class="product product-list-sm">
+    <figure class="product-visual">
+        <a href="javascript:void(0);">
+            {{ 'product-1' | placeholder_svg_tag }}
+        </a>
+    </figure>
+    <div class="product-details">
+        <h3 class="product-name">
+            <a href="javascript:void(0);">Sample product title</a>
+        </h3>
+        <div class="product-price">
+            <span class="price">$39.00</span>
+        </div>
+        <div class="ratings-wrapper">
+            <div class="ratings-full">
+                <span class="ratings" style="width:100%"></span>
+                <span class="tooltiptext tooltip-top"></span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endcase %}

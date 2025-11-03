@@ -1,0 +1,21 @@
+{% if customer  %}
+{% assign blockCustomer =  shop.metafields.ai_block_customer | prepend: "'"  %}
+{% assign blockCustomer =  blockCustomer | append: "'"  %}
+
+<input type="hidden" name="is_customer_logged_in" value="1" class="is_customer_logged_in">
+<input type="hidden" name="referral_customer_logged_id" value="{{customer.id}}" class="referral_customer_logged_id">
+<input type="hidden" name="referral_customer_email" value="{{ customer.email }}" class="referral_customer_email">
+<input type="hidden" name="aio_lyt_blocked_customer" value="{% if blockCustomer contains customer.id %}1{% else %}0{% endif %}" class="aio_lyt_blocked_customer">
+{% else %}
+<input type="hidden" name="is_customer_logged_in" value="0" class="is_customer_logged_in">
+<input type="hidden" name="referral_customer_logged_id" value="0" class="referral_customer_logged_id">
+{% endif %}
+<input type="hidden" name="referral_shop_currency" value="{{ shop.currency | money | replace: '0.00', ' '  }}" class="referral_shop_currency">
+
+
+<div id="master-referal-div"></div>
+<div class="aaa-noti-container"></div       
+
+
+
+

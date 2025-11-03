@@ -1,0 +1,24 @@
+<div id="shipping__calculator-{{ section_id }}" class="shipping__calculator shipping-address">
+    <div class="form-group">
+      <label for="address_country-{{ section_id }}">{{ 'customer.addresses.country' | t }}*</label>
+      <div class="select-box">
+        <select class="form-control" id="address_country-{{ section_id }}" name="address[country]" data-default="{% if shop.customer_accounts_enabled and customer %}{{ customer.default_address.country }}{% elsif settings.shipping_calculator_default_country != '' %}{{ settings.shipping_calculator_default_country }}{% endif %}">{{ country_option_tags }}</select>
+      </div>
+    </div>
+    <div class="form-group" id="address_province_container-{{ section_id }}" style="display:none">
+      <label for="address_province-{{ section_id }}" id="address_province_label-{{ section_id }}">{{ 'customer.addresses.province' | t }}*</label>
+      <div class="select-box">
+        <select class="form-control" id="address_province-{{ section_id }}" name="address[province]" data-default="{% if shop.customer_accounts_enabled and customer and customer.default_address.province != '' %}{{ customer.default_address.province }}{% endif %}"></select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="address_zip-{{ section_id }}">{{ 'customer.addresses.zip' | t }}*</label>
+      <input class="form-control" type="text" id="address_zip-{{ section_id }}" name="address[zip]"{% if shop.customer_accounts_enabled and customer %} value="{{ customer.default_address.zip }}"{% endif %} autocapitalize="characters" placeholder="{{ 'customer.addresses.zip' | t | escape }}" />
+    </div>
+    <div class="form-group">
+        <div id="shipping__calculator-response-{{ section_id }}" class="shipping__calculator-response"></div>
+    </div>
+    <div class="form-group text-right">
+      <button id="shipping__calculator-btn-{{ section_id }}" type="button" class="shipping__calculator-btn btn btn-link btn-dark btn-underline btn-calc mb-3">{{ settings.shipping_calculator_submit_button_label | default: 'Calculate shipping' }}</button>
+    </div>
+</div>

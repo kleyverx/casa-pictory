@@ -1,0 +1,168 @@
+<div class="container{%-if section.settings.product_fullwidth-%}-fluid{%-endif-%}">
+    {%- include "breadcrumb" -%}
+    <section class="contact-section">
+        <div class="contact-heading mt-4 pb-8">
+            {%  if section.settings.contact_heading != blank %}
+            <h2 class="font-weight-slight-bold fs-4">{{section.settings.contact_heading}}</h2>
+            {% endif %}
+            {%  if section.settings.contact_subheading != blank %}
+            <p class="fs-1p5">{{section.settings.contact_subheading}}</p>
+            {% endif %}
+        </div>
+        <div class="row pb-6">
+            {% for block in section.blocks %}
+            <div class="col-md-3">
+                <div class="contact-store">
+                    <div class="store-name fs-1p5 font-weight-slight-bold pb-4">{{ block.settings.name }}</div>
+                    <p class="store-address pb-4"><a href="{{ block.settings.url | default: 'javascript:void(0);'}}" >{{block.settings.address}}</a></p>
+                    <div class="store-working pb-4">{{ block.settings.working_time }}</div>
+                    {%  if block.settings.phone != blank %}
+                    <a href="tel:{{block.settings.phone}}" class="d-block contact-phone font-weight-slight-bold fs-2 pr-4">{{block.settings.phone}}</a>
+                    {% endif %}
+                    {%  if block.settings.email != blank %}
+                    <a href="mailto:{{block.settings.email}}" class="d-block contact-email">{{block.settings.email}}</a><br>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row pb-6">
+            <div class="col-md-{% if section.settings.image != blank %}6{% else %}12{% endif %}">
+                <div class="contact-information ">
+                    {%  if section.settings.info_heading != blank %}
+                    <h2 class="font-weight-slight-bold fs-3">{{section.settings.info_heading}}</h2>
+                    {% endif %}
+                    {%  if section.settings.info_address != blank %}
+                    <p>{{section.settings.info_address}}</p>
+                    {% endif %}
+
+                    <div class="phone-email mb-4">
+                        {%  if section.settings.info_phone != blank %}
+                        <a href="tel:{{section.settings.info_phone}}" class="contact-phone font-weight-slight-bold fs-2p5 pr-4">{{section.settings.info_phone}}</a>
+                        {% endif %}
+                        {%  if section.settings.info_support_email != blank %}
+                        <a href="mailto:{{section.settings.info_support_email}}" class="contact-email">{{section.settings.info_support_email}}</a><br>
+                        {% endif %}
+                    </div>
+                    {% if section.settings.social_links %}
+                    {% include "social-links" %}
+                    {% endif %}
+                </div>
+            </div>
+            {% if section.settings.image != blank %}
+            <div class="col-md-6 image">
+                <img src="{{ section.settings.image | img_url: "master" }}" />
+            </div>
+            {% endif %}
+        </div>
+        <div class="page-contact-form mb-8 pt-8 border-top">{% include "contact-form" %}</div>
+    </section>
+</div>
+
+<!-- Google Maps - Go to the bottom of the page to change settings and map location. -->
+<div class="grey-section google-map" id="googlemaps">
+    {{ section.settings.map }}
+</div>
+
+{% schema %}
+{
+  "name": "Contact Page - Type 2",
+    "settings": [
+    {
+        "type": "header",
+        "content": "Contact Heading"
+    },
+    {
+        "type": "text",
+        "id": "contact_heading",
+        "label": "Heading"
+    },
+    {
+        "type": "html",
+        "id": "contact_subheading",
+        "label": "Sub heading"
+    },
+    {
+      "type": "header",
+      "content": "Contact Information"
+    },
+    {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+    },
+    {
+        "type": "text",
+        "id": "info_heading",
+        "label": "Heading"
+    },
+    {
+        "type": "text",
+        "id": "info_address",
+        "label": "Address"
+    },
+    {
+        "type": "text",
+        "id": "info_phone",
+        "label": "Phone"
+    },
+    {
+        "type": "text",
+        "id": "info_support_email",
+        "label": "Support Email"
+    },
+    {
+        "type": "checkbox",
+        "id": "social_links",
+        "label": "Social Links"
+    },
+    {
+        "type": "header",
+        "content": "Google Map"
+    },
+    {
+        "type": "html",
+        "id": "map",
+        "label": "Google Map Iframe"
+    }
+  ],
+  "blocks": [
+    {
+        "type" : "store",
+        "name": "Store",
+        "settings": [
+            {
+                "type" : "text",
+                "id": "name",
+                "label": "Name"
+            },   
+            {
+                "type": "textarea",
+                "id": "address",
+                "label": "Address"
+            },
+            {
+                "type": "url",
+                "id": "url",
+                "label": "Google map url"
+            },
+            {
+                "type": "textarea",
+                "id": "working_time",
+                "label": "Information"
+            },
+            {
+                "type": "text",
+                "id": "phone",
+                "label": "Phone"
+            },
+            {
+                "type": "text",
+                "id": "email",
+                "label": "Support Email"
+            }
+        ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,23 @@
+<div class="container{%-if section.settings.product_fullwidth-%}-fluid{%-endif-%}">
+  {%- if settings.enable_review -%}
+  <div id="product-tab-reviews" class="mt-8 mt-lg-18">
+    <div id="shopify-product-reviews" data-id="{{ product.id }}">{{ product.metafields.spr.reviews }}</div>
+  </div>
+  <hr class="product-divider mt-0 mt-lg-12 mb-0 pb-0 pb-lg-10">
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Product - Review",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "product_fullwidth",
+      "label": "Full Width",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

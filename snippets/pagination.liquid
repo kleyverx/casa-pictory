@@ -1,0 +1,86 @@
+{% comment %}
+    Renders a pagination bar
+
+    Accepts:
+    - paginate: {Object} Paginate Liquid object (required)
+
+    Usage:
+    {% include 'pagination', paginate: paginate %}
+{% endcomment %}
+{%- if paginate.pages > 1 -%}
+
+{% if pagination_align == blank %}
+{% assign pagination_align = 'default' %}
+{% endif %}
+
+{% if pagination_nostatus == blank %}
+{% assign pagination_nostatus = false %}
+{% endif %}
+
+{% assign url_suffix = '' %}
+{% if layout_type != blank %}
+{% assign url_suffix = '&lo=' | append: layout_type %}
+{% endif %}
+
+<nav class="toolbox toolbox-pagination{% if pagination_align == 'center' %} justify-content-center{% endif %}">
+  {% if pagination_nostatus == false %}
+  {% assign _current_index = paginate.current_offset | plus: 1 %}
+  {% assign _current_total = paginate.current_offset | plus: paginate.page_size %}
+  {% assign _current_count = _current_index | append: ' - ' | append: _current_total %}
+
+  {% if collection != blank and false %}
+  <p class="show-info">{{ 'general.pagination.status_html' | t: current_count: _current_count, total: collection.products_count }}</p>
+  {% elsif search.performed %}
+  <p class="show-info">{{ 'general.pagination.status_html' | t: current_count: _current_count, total: search.results_count }}</p>
+  {% endif %}
+  {% endif %}
+
+  <ul class="pagination w-100">
+    {% unless paginate.previous.is_link %}
+    <li class="page-item disabled">
+      <a class="page-link page-link-prev" href="javascript:void(0);" aria-label="Previous" tabindex="-1"
+        aria-disabled="true">
+        <i class="icon-angle-left"></i>
+      </a>
+    </li>
+    {% else %}
+    <li class="page-item">
+      <a class="page-link page-link-prev" href="{{ paginate.previous.url }}{{ url_suffix }}" aria-label="Previous">
+        <i class="icon-angle-left"></i>
+      </a>
+    </li>
+    {% endunless %}
+
+    {% assign dot_pos = -1 %}
+    {% for part in paginate.parts %}
+      {% if part.is_link %}
+        {% if forloop.index0 == dot_pos %}
+        <li class="page-item page-item-dots"><a class="page-link" href="{{ part.url }}{{ url_suffix }}">{{ part.title }}</a></li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="{{ part.url }}{{ url_suffix }}">{{ part.title }}</a></li>
+        {% endif %}
+      {% else %}
+        {% if part.title == '&hellip;' %}
+        {% assign dot_pos = forloop.index %}
+        {% else %}
+        <li class="page-item active" aria-current="page"><a class="page-link" href="javascript:void(0);">{{ part.title }}</a></li>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    {% unless paginate.next.is_link %}
+    <li class="page-item disabled">
+      <a class="page-link page-link-next" href="javascript:void(0);" aria-label="Next" tabindex="-1"
+      aria-disabled="true"><i class="icon-angle-right"></i>
+      </a>
+    </li>
+    {% else %}
+    <li class="page-item">
+      <a class="page-link page-link-next" href="{{ paginate.next.url }}{{ url_suffix }}" aria-label="Next">
+        <i class="icon-angle-right"></i>
+      </a>
+    </li>
+    {% endunless %}
+  </ul>
+</nav>
+{% endif %}

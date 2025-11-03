@@ -1,0 +1,287 @@
+<section class="banner-mass mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}}" id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="triple-floating-banner-section">
+    <div class="container{% unless section.settings.has_container %}-fluid{% endunless %}">
+        <div class="row">
+            <div class="col-md-6 col-12">
+                <div class="rt-banner mt-5 pb-5 pb-lg-18 banner_1 hover-zoom ani-wrapper-fadeInRight">
+                    <a href="{{ section.settings.button_url_1 | default: "javascript:void(0);"}}">
+                        {% if section.settings.image_1 != blank %}
+                        {% if section.settings.has_container == true %}
+                        {% assign _container_width = 1220 %}
+                        {% else %}
+                        {% assign _container_width = 1820 %}
+                        {% endif %}
+                        {% assign _img_width = _container_width | divided_by: 2 %}
+                        {% assign _img_height = _img_width | divided_by: section.settings.image_1.aspect_ratio | round %}
+                        {% assign _img_url = _img_width | append: 'x' | append: _img_height %}
+                        <figure class="overflow-hidden">
+                            <img src="{{ section.settings.image_1 | img_url: _img_url, scale: 2 }}" alt="banner" width="{{ _img_width }}" height="{{ _img_height }}"/>
+                        </figure>
+                        {% else %}
+                        <figure style="background-color:#ccc;height:240px"></figure>
+                        {% endif %}
+                    </a>
+                    <div class="banner-content pt-8 appear-animate pe-none text-center">
+                        {% if section.settings.sub_title_1 %}
+                        <h4 class="banner-subtitle font-weight-normal fs-custom lh-custom mb-2" style="--fs:2.2rem;--lh:1.45">{{ section.settings.sub_title_1 }}</h4>
+                        {% endif %}
+                        {% if section.settings.title_1 %}
+                        <h3 class="banner-title ls-m mb-4 font-weight-slight-bold fs-custom lh-custom" style="--fs:4rem;--lh:1.1">{{ section.settings.title_1 }}</h3>
+                        {% endif %}
+                        <a href="{{ section.settings.button_url_1 | default: "javascript:void(0);"}}" class="btn-arrow ani-el">
+                            {% render 'icon-arrow-right', _fill: '#000' %}
+                        </a>
+                    </div>
+                </div>
+                <div class="rt-banner pb-5 banner_2 hover-zoom ani-wrapper-fadeInRight">
+                    <a href="{{ section.settings.button_url_2 | default: "javascript:void(0);"}}">
+                        {% if section.settings.image_2 != blank %}
+                        {% if section.settings.has_container == true %}
+                        {% assign _container_width = 1220 %}
+                        {% else %}
+                        {% assign _container_width = 1820 %}
+                        {% endif %}
+                        {% assign _img_width = _container_width | divided_by: 2 %}
+                        {% assign _img_height = _img_width | divided_by: section.settings.image_2.aspect_ratio | round %}
+                        {% assign _img_url = _img_width | append: 'x' | append: _img_height %}
+                        <figure class="overflow-hidden pl-10 pr-10">
+                            <img src="{{ section.settings.image_2 | img_url: _img_url, scale: 2 }}" alt="banner" width="{{ _img_width }}" height="{{ _img_height }}"/>
+                        </figure>
+                        {% else %}
+                        <figure style="background-color:#ccc;height:240px"></figure>
+                        {% endif %}
+                    </a>
+                    <div class="banner-content pt-8 appear-animate pe-none text-center">
+                        {% if section.settings.sub_title_2 %}
+                        <h4 class="banner-subtitle font-weight-normal fs-custom lh-custom mb-2" style="--fs:2.2rem;--lh:1.45">{{ section.settings.sub_title_2 }}</h4>
+                        {% endif %}
+                        {% if section.settings.title_2 %}
+                        <h3 class="banner-title ls-m mb-4 font-weight-slight-bold fs-custom lh-custom" style="--fs:3rem;--lh:1.1">{{ section.settings.title_2 }}</h3>
+                        {% endif %}
+                        <a href="{{ section.settings.button_url_2 | default: "javascript:void(0);"}}" class="btn-arrow ani-el">
+                            {% render 'icon-arrow-right', _fill: '#000' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-12 d-flex align-items-center">
+                <div class="rt-banner w-100 banner_3 hover-zoom ani-wrapper-fadeInRight">
+                    <a href="{{ section.settings.button_url_3 | default: "javascript:void(0);"}}">
+                        {% if section.settings.image_3 != blank %}
+                        {% if section.settings.has_container == true %}
+                        {% assign _container_width = 1220 %}
+                        {% else %}
+                        {% assign _container_width = 1820 %}
+                        {% endif %}
+                        {% assign _img_width = _container_width | divided_by: 2 %}
+                        {% assign _img_height = _img_width | divided_by: section.settings.image_3.aspect_ratio | round %}
+                        {% assign _img_url = _img_width | append: 'x' | append: _img_height %}
+                        <figure class="overflow-hidden">
+                            <img src="{{ section.settings.image_3 | img_url: _img_url, scale: 2 }}" alt="banner" width="{{ _img_width }}" height="{{ _img_height }}"/>
+                        </figure>
+                        {% else %}
+                        <figure style="background-color:#ccc;height:650px"></figure>
+                        {% endif %}
+                    </a>
+                    <div class="banner-content pt-8 appear-animate pe-none text-center">
+                        {% if section.settings.sub_title_3 %}
+                        <h4 class="banner-subtitle font-weight-normal fs-custom lh-custom mb-2" style="--fs:2.2rem;--lh:1.45">{{ section.settings.sub_title_3 }}</h4>
+                        {% endif %}
+                        {% if section.settings.title_3 %}
+                        <h3 class="banner-title ls-m mb-4 font-weight-slight-bold fs-custom lh-custom" style="--fs:4rem;--lh:1.1">{{ section.settings.title_3 }}</h3>
+                        {% endif %}
+                        <a href="{{ section.settings.button_url_3 | default: "javascript:void(0);"}}" class="btn-arrow ani-el">
+                            {% render 'icon-arrow-right', _fill: '#000' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% schema %}
+{
+    "name": "Triple Floating Banner",
+    "class": "index-section index-section--triple-floating-banner",
+    "settings": [
+        {
+            "type": "header",
+            "content": "Layout"
+        },
+        {
+            "type": "checkbox",
+            "id": "has_container",
+            "label": "Within container",
+            "default": true
+        },
+        {
+            "type": "header",
+            "content": "Banner #1"
+        },
+        {
+            "type": "image_picker",
+            "id": "image_1",
+            "label": "Background image"
+        },
+        {
+            "type": "text",
+            "id": "title_1",
+            "label": "Title",
+            "default": "Banner title"
+        },
+        {
+            "type": "text",
+            "id": "sub_title_1",
+            "label": "Sub title"
+        },
+        {
+            "type": "url",
+            "id": "button_url_1",
+            "label": "Button URL"
+        },
+        {
+            "type": "header",
+            "content": "Banner #2"
+        },
+        {
+            "type": "image_picker",
+            "id": "image_2",
+            "label": "Background image"
+        },
+        {
+            "type": "text",
+            "id": "title_2",
+            "label": "Title",
+            "default": "Banner title"
+        },
+        {
+            "type": "text",
+            "id": "sub_title_2",
+            "label": "Sub title"
+        },
+        {
+            "type": "url",
+            "id": "button_url_2",
+            "label": "Button URL"
+        },
+        {
+            "type": "header",
+            "content": "Banner #3"
+        },
+        {
+            "type": "image_picker",
+            "id": "image_3",
+            "label": "Background image"
+        },
+        {
+            "type": "text",
+            "id": "title_3",
+            "label": "Title",
+            "default": "Banner title"
+        },
+        {
+            "type": "text",
+            "id": "sub_title_3",
+            "label": "Sub title"
+        },
+        {
+            "type": "url",
+            "id": "button_url_3",
+            "label": "Button URL"
+        },
+        {
+            "type": "header",
+            "content": "Spacing (large screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt_lg",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 8
+        },
+        {
+            "type": "range",
+            "id": "pt_lg",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb_lg",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb_lg",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "header",
+            "content": "Spacing (mobile screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "pt",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        }
+    ],
+    "presets": [
+        {
+            "name": "Triple Floating Banner",
+            "category": "Fastor"
+        }
+    ]
+}
+{% endschema %}

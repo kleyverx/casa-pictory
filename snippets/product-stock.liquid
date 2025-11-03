@@ -1,0 +1,26 @@
+{%- if is_external_product == false -%}
+  {%- assign current_variant = my_product.first_available_variant -%}
+  {%- if current_variant -%}
+    {%- if current_variant.available -%}
+      {%- if current_variant.inventory_management == "shopify" and current_variant.inventory_policy != "continue" -%}
+        {%- if current_variant.inventory_quantity > 0 -%}
+        <span class="stock in-stock">{{ current_variant.inventory_quantity  }} {{ 'products.product.in_stock' | t | escape }}</span>
+        {%- else -%}
+        <span class="stock out-of-stock">{{ 'products.product.sold_out' | t | escape }}</span>
+        {%- endif -%}
+      {%- else -%}
+        <span class="stock in-stock">{{ 'products.product.in_stock' | t | escape }}</span>
+      {%- endif -%}
+    {%- else -%}
+    <span class="stock out-of-stock">{{ 'products.product.sold_out' | t | escape }}</span>
+    {%- endif -%}
+  {%- else -%}
+    <span class="stock out-of-stock">
+      {%- if my_product.variants.first.incoming -%}
+        {{- 'products.label.incoming' | t -}}
+      {%- else -%}
+        {{- 'products.product.unavailable' | t | escape -}}
+      {%- endif -%}
+    </span>
+  {%- endif -%}
+{%- endif -%}

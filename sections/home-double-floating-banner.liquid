@@ -1,0 +1,305 @@
+	
+{% if section.settings.featured_products_used == true %}
+<section class="banners-floating-group has-products mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}} container{% unless section.settings.has_container %}-fluid{% endunless %}" id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="double-floating-banner-section">
+	<div class="banner-double-floating floating-{{ section.settings.floating_side }}{% unless section.settings.featured_products_used == true %} border-top{% endunless %} align-items-start mb-5">
+		<div class="banner-left-section appear-animate"
+			data-animation-options="{'name': 'fadeInLeftShorter', 'delay': '.5s'}">
+            <div class="banner-content mb-10 appear-animate"
+                data-animation-options="{'name': 'blurIn', 'delay': '.7s'}">
+                {% if section.settings.title != blank %}
+                <h3 class="banner-title font-weight-slight-bold ls-m mb-3 fs-custom lh-custom mb-4 fs-mobile-4" style="--fs:{{ section.settings.fs_title }}rem;--lh:1.1">{{ section.settings.title }}</h3>
+                {% endif %}
+                {% if section.settings.sub_title != blank %}
+                <p class="mb-3 fs-2 font-weight-normal fs-custom lh-custom mb-4" style="--fs:{{ section.settings.fs_subtitle }}rem;--lh:1.8">{{ section.settings.sub_title }}</p>
+                {% endif %}
+                {% if section.settings.button_text != blank %}
+                <a class="btn btn-primary btn-shadow-lg btn-ellipse text-normal"
+                    href="{{ section.settings.button_url | default: 'javascript:void(0);' }}">{{ section.settings.button_text }}<i class="d-icon-arrow-right"></i></a>
+                {% endif %}
+            </div>
+
+            {% if section.settings.image_1 != blank%}
+			<img src="{{ section.settings.image_1 | img_url: '785x600', scale:2 }}" class="d-block w-100" alt="banner" width="785" height="500">
+			{% else %}
+			<figure style="min-height:40rem;background-color:#ccc;" class="d-block"></figure>
+			{% endif %}
+
+			<div class="rt-banner hover-zoom">
+				{% if section.settings.image_2 != blank%}
+				<img src="{{ section.settings.image_2 | img_url: '453x300', scale:2 }}" class="d-block" alt="banner" width="453" height="300">
+				{% else %}
+				<figure style="background-color:#eee;min-height:30rem;width:45rem" class="d-block"></figure>
+				{% endif %}
+			</div>
+		</div>
+		<div class="banner-right-section has-products d-flex justify-content-center overflow-hidden bg-white mt-4 mt-md-0{% if section.settings.floating_side == 'right' %} pl-lg-10 ml-lg-10 pl-5{% else %} pr-lg-10 mr-lg-10 pr-5{% endif %}">
+			<div class="row cols-2">
+                {% assign _collection = collections[section.settings.featured_products_collection] %}
+                {% if _collection != blank %}
+                {% for _product in _collection.products limit:4 %}
+                <div class="product-wrapper">
+                {% render 'product-item', product:_product, sign: section.id,  %}
+                </div>
+                {% endfor %}
+                {% else %}
+                {% for i in (1..4) %}
+                <div class="product-wrapper">
+                    {% render 'product-item-dummy' %}
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+		</div>
+    </div>
+    <hr class="mb-0{% if section.settings.has_container %} mt-lg-18{% endif %}">
+</section>
+{% else %}
+<section class="banners-floating-group mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}}{% if section.settings.has_container %} container{% endif %}" id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="double-floating-banner-section">
+	<div class="banner-double-floating floating-{{ section.settings.floating_side }} align-items-end mb-5 pb-md-10">
+        <div class="banner-content{% unless section.settings.has_container %} container x-50{% endunless %} w-100 pr-5 pl-5 pl-lg-0 pr-lg-10 pt-lg-18 pt-4 appear-animate"
+			data-animation-options="{'name': 'blurIn', 'delay': '.7s'}">
+            <div>
+                {% if section.settings.title != blank %}
+                <h3 class="banner-title font-weight-slight-bold ls-m mb-3 fs-custom lh-custom mb-4 fs-mobile-4" style="--fs:{{ section.settings.fs_title }}rem;--lh:1.1">{{ section.settings.title }}</h3>
+                {% endif %}
+                {% if section.settings.sub_title != blank %}
+                <p class="mb-3 font-weight-normal fs-custom lh-custom mb-4" style="--fs:{{ section.settings.fs_subtitle }}rem;--lh:1.8">{{ section.settings.sub_title }}</p>
+                {% endif %}
+                {% if section.settings.button_text != blank %}
+                <a class="btn btn-primary btn-shadow-lg btn-ellipse text-normal"
+                    href="{{ section.settings.button_url | default: 'javascript:void(0);' }}">{{ section.settings.button_text }}<i class="d-icon-arrow-right"></i></a>
+                {% endif %}
+            </div>
+		</div>
+		<div class="banner-left-section appear-animate"
+			data-animation-options="{'name': 'fadeInLeftShorter', 'delay': '.5s'}">
+			<div class="rt-banner hover-zoom">
+				{% if section.settings.image_2 != blank%}
+				<img src="{{ section.settings.image_2 | img_url: '453x300', scale:2 }}" class="d-block w-100" alt="banner" width="453" height="300">
+				{% else %}
+				<figure style="background-color:#eee;min-height:30rem;width:45rem" class="d-block"></figure>
+				{% endif %}
+			</div>
+		</div>
+		<div class="banner-right-section d-flex justify-content-center overflow-hidden bg-white mt-0">
+			{% if section.settings.image_1 != blank%}
+			<img src="{{ section.settings.image_1 | img_url: '785x600', scale:2 }}" class="d-block w-100" alt="banner" width="785" height="500">
+			{% else %}
+			<figure style="min-height:40rem;width:78rem" class="d-block"></figure>
+			{% endif %}
+		</div>
+    </div>
+</section>
+{% endif %}
+
+{% schema %}
+
+{
+    "name": "Double Floating Banner",
+    "class": "index-section index-section--double-floating-banner",
+    "settings": [
+        {
+            "type": "header",
+            "content": "Layout"
+        },
+        {
+            "type": "checkbox",
+            "id": "has_container",
+            "label": "Within container",
+            "default": true
+        },
+		{
+			"type": "select",
+			"id": "floating_side",
+			"label": "Floating side",
+            "info": "Floating side of featured products if any. Otherwise, this is the main image's",
+			"options": [
+				{
+					"value": "left",
+					"label": "Left"
+				},
+				{
+					"value": "right",
+					"label": "Right"
+				}
+			],
+			"default": "right"
+		},
+        {
+            "type": "header",
+            "content": "Images"
+        },
+        {
+            "type": "image_picker",
+            "id": "image_1",
+            "label": "Primary image"
+        },
+        {
+            "type": "image_picker",
+            "id": "image_2",
+            "label": "Secondary image"
+        },
+        {
+            "type": "header",
+            "content": "Content"
+        },
+        {
+            "type": "textarea",
+            "id": "title",
+            "label": "Title",
+            "default": "Banner title"
+        },
+        {
+            "type": "textarea",
+            "id": "sub_title",
+            "label": "Subtitle"
+        },
+        {
+            "type": "text",
+            "id": "button_text",
+            "label": "Button text",
+            "default": "Shop now"
+        },
+        {
+            "type": "url",
+            "id": "button_url",
+            "label": "Button URL"
+        },
+        {
+            "type": "header",
+            "content": "Font size"
+        },
+        {
+            "type": "range",
+            "id": "fs_title",
+            "label": "Title font size",
+            "unit": "x",
+            "min": 1,
+            "max": 6,
+            "step": 0.1,
+            "default": 5.5
+        },
+        {
+            "type": "range",
+            "id": "fs_subtitle",
+            "label": "Subtitle font size",
+            "unit": "x",
+            "min": 1,
+            "max": 6,
+            "step": 0.1,
+            "default": 2.2
+        },
+        {
+            "type": "header",
+            "content": "Featured products"
+        },
+        {
+            "type": "checkbox",
+            "id": "featured_products_used",
+            "label": "Enabled",
+            "default": false
+        },
+        {
+            "type": "collection",
+            "id": "featured_products_collection",
+            "label": "Choose a collection",
+            "info": "Please note that only 4 first products will be displayed."
+        },
+        {
+            "type": "header",
+            "content": "Spacing (large screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt_lg",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 8
+        },
+        {
+            "type": "range",
+            "id": "pt_lg",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb_lg",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb_lg",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "header",
+            "content": "Spacing (mobile screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "pt",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        }
+    ],
+    "presets": [
+        {
+            "name": "Double Floating Banner",
+            "category": "Fastor"
+        }
+    ]
+}
+
+{% endschema %}

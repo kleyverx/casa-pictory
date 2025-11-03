@@ -1,0 +1,256 @@
+<section class="rt-banner parallax mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}}"{% if section.settings.video != blank %} data-video-src="{{ section.settings.video }}"{% endif %}{% if section.settings.image %} data-image-src="{{ section.settings.image | img_url: 'master' }}"{% endif %} data-option="{'offset': 0}" id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="parallax-banner-section"
+  style="background-color:{{ section.settings.color_bg }}">
+  <div class="{% if section.settings.has_container %}container{% endif %} banner-content appear-animate text-{{ section.settings.content_hori_align }} pt-10 pb-10"
+    data-animation-options="{
+                    'name': 'blurIn',
+                    'delay': '.3s'
+                }">
+    <h2 class="banner-title font-weight-slight-bold text-{{ section.settings.color_text }} fs-custom fs-mobile-4 ls-m mb-4 lh-custom" style="--fs:{{ section.settings.fs_title | append: 'rem' }};--lh:1.1">{{ section.settings.title }}
+    </h2>
+    {% if section.settings.description != blank %}
+    <p class="font-primary text-{{ section.settings.color_text }} fs-custom mb-4 font-weight-normal lh-custom" style="--fs:{{ section.settings.fs_description | append: 'rem' }};--lh:1.8">{{ section.settings.description }}</p>
+    {% endif %}
+    {% if section.settings.button_text != blank %}
+    <a class="btn btn-primary btn-shadow-lg btn-ellipse text-normal" href="{{ section.settings.button_url | default: 'javascript:void(0);' }}">{{ section.settings.button_text }}</a>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+    "name": "Parallax Banner",
+    "class": "index-section index-section--parallax-banner",
+    "settings": [
+        {
+            "type": "header",
+            "content": "General"
+        },
+        {
+            "type": "checkbox",
+            "id": "has_container",
+            "label": "Within container",
+            "default": true
+        },
+        {
+            "type": "select",
+            "id": "content_hori_align",
+            "label": "Content horizontal align",
+            "options": [
+                {
+                    "value": "left",
+                    "label": "Left"
+                },
+                {
+                    "value": "center",
+                    "label": "Center"
+                },
+                {
+                    "value": "right",
+                    "label": "Right"
+                }
+            ],
+            "default": "center"
+        },
+        {
+            "type": "header",
+            "content": "Background"
+        },
+        {
+            "type": "url",
+            "id": "video",
+            "label": "Video URL"
+        },
+        {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image",
+            "info": "If you are using video, the background image will be disabled."
+        },
+        {
+            "type": "color",
+            "id": "color_bg",
+            "label": "Color",
+            "default": "#44352d"
+        },
+        {
+            "type": "header",
+            "content": "Content"
+        },
+        {
+            "type": "textarea",
+            "id": "title",
+            "label": "Title",
+            "default": "Banner title"
+        },
+        {
+            "type": "textarea",
+            "id": "description",
+            "label": "Description"
+        },
+        {
+            "type": "header",
+            "content": "Button"
+        },
+        {
+            "type": "text",
+            "id": "button_text",
+            "label": "Text"
+        },
+        {
+            "type": "url",
+            "id": "button_url",
+            "label": "URL"
+        },
+        {
+            "type": "header",
+            "content": "Font size"
+        },
+        {
+            "type": "range",
+            "id": "fs_title",
+            "label": "Title",
+            "unit": "x",
+            "min": 1,
+            "max": 8,
+            "step": 0.5,
+            "default": 6
+        },
+        {
+            "type": "range",
+            "id": "fs_description",
+            "label": "Description",
+            "unit": "x",
+            "min": 1,
+            "max": 6,
+            "step": 0.5,
+            "default": 2.5
+        },
+        {
+            "type": "header",
+            "content": "Color"
+        },
+        {
+            "type": "select",
+            "id": "color_text",
+            "label": "Text color",
+            "options": [
+                {
+                    "value": "white",
+                    "label": "White",
+                    "group": "Basic"
+                },
+                {
+                    "value": "black",
+                    "label": "Black",
+                    "group": "Basic"
+                },
+                {
+                    "value": "primary",
+                    "label": "Primary",
+                    "group": "From settings"
+                },
+                {
+                    "value": "dark",
+                    "label": "Dark",
+                    "group": "From settings"
+                }
+            ],
+            "default": "white"
+        },
+        {
+            "type": "header",
+            "content": "Spacing (large screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt_lg",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 8
+        },
+        {
+            "type": "range",
+            "id": "pt_lg",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 10
+        },
+        {
+            "type": "range",
+            "id": "mb_lg",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb_lg",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 10
+        },
+        {
+            "type": "header",
+            "content": "Spacing (mobile screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "pt",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "mb",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        }
+    ],
+    "presets": [
+        {
+            "name": "Parallax Banner",
+            "category": "Fastor"
+        }
+    ]
+}
+{% endschema %}

@@ -1,0 +1,240 @@
+<section class="grey-section mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}} appear-animate" id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="categories-list-section" data-animation-options="{
+            'delay': '.3s'
+        }">
+    <div class="{% if section.settings.has_container %} container{% endif %}">
+        <h2 class="title">{{ section.settings.title }}</h2>
+        {% if section.blocks.size > 0 %}
+        {% assign _items_per_row = 12 | divided_by: section.settings.items_per_row %}
+        <div class="row">
+            {% for block in section.blocks %}
+            {% assign _collection = collections[block.settings.collection] %}
+            {% if _collection != blank %}
+            <div class="col-md-{{ _items_per_row }} col-6 mb-4" {{ block.shopify_attributes }}>
+                <div class="category category-default category-absolute hover-gloom hover-zoom">
+                    <a href="{{ _collection.url }}">
+                        {% if block.settings.bk_image == blank and _collection.image == blank %}
+                        <figure class="category-media" style="background-color:#ccc;min-height:280px"></figure>
+                        {% else %}
+                        {% if block.settings.bk_image %}
+                        {% assign _image = block.settings.bk_image %}
+                        {% else %}
+                        {% assign _image = _collection.image %}
+                        {% endif %}
+                        <figure class="category-media">
+                            <img alt="category" height="280" src="{{ _image | img_url: '280x280', scale: 2 }}" width="280"/>
+                        </figure>
+                        {% endif %}
+                    </a>
+                    <div class="category-content">
+                        <h4 class="category-name">
+                            <a href="{{ _collection.url }}">{% if block.settings.bk_title != blank %}{{ block.settings.bk_title }}{% else %}{{ _collection.title }}{% endif %}</a>
+                        </h4>
+                        <span class="category-count">
+                            {% if block.settings.bk_count != blank %}
+                            {{ 'collections.general.items_with_count' | t: count: block.settings.bk_count }}
+                            {% else %}
+                            {{ 'collections.general.items_with_count' | t: count: _collection.all_products_count }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-md-{{ _items_per_row }} col-6 mb-4">
+                <div class="category category-default category-absolute hover-gloom hover-zoom">
+                    <a href="javascript:void(0);">
+                        <figure class="category-media" style="background-color: #eee;">
+                            {{ 'collection-1' | placeholder_svg_tag }}
+                        </figure>
+                    </a>
+                    <div class="category-content">
+                        <h4 class="category-name">
+                            <a href="javascript:void(0);">Collection</a>
+                        </h4>
+                        <span class="category-count">
+                            {{ 'collections.general.items_with_count' | t: count: 20 }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <h4>Please add collections...</h4>
+        {% endif %}
+    </div>
+</section>
+
+{% schema %}
+{
+    "name": "Categories List",
+    "class": "index-section index-section--categories-list",
+    "settings": [
+        {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Categories list"
+        },
+        {
+            "type": "checkbox",
+            "id": "has_container",
+            "label": "Within container",
+            "default": false
+        },
+        {
+            "type": "range",
+            "id": "items_per_row",
+            "label": "Items per row",
+            "min": 2,
+            "max": 4,
+            "step": 1,
+            "default": 4
+        },
+        {
+            "type": "header",
+            "content": "Spacing (large screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt_lg",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 8
+        },
+        {
+            "type": "range",
+            "id": "pt_lg",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb_lg",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb_lg",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "header",
+            "content": "Spacing (mobile screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "pt",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        }
+    ],
+    "blocks": [
+        {
+            "type": "category",
+            "name": "Category",
+            "settings": [
+                {
+                    "type": "collection",
+                    "id": "collection",
+                    "label": "Your collection"
+                },
+                {
+                    "type": "header",
+                    "content": "Backup info",
+                    "info": "In general, the info is obtained from the collection. However, you can also set it manually if you want"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "bk_image",
+                    "label": "Image"
+                },
+                {
+                    "type": "text",
+                    "id": "bk_title",
+                    "label": "Title"
+                },
+                {
+                    "type": "text",
+                    "id": "bk_count",
+                    "label": "Products count",
+                    "info": "Please enter a number only"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Categories List",
+            "category": "Fastor",
+            "blocks": [
+                {
+                    "type": "category"
+                },
+                {
+                    "type": "category"
+                },
+                {
+                    "type": "category"
+                },
+                {
+                    "type": "category"
+                }
+            ]
+        }
+    ]
+}
+
+{% endschema %}

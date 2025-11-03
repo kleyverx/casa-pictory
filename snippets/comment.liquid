@@ -1,0 +1,18 @@
+<!-- /snippets/comment.liquid -->
+<div class="comment w-100">
+  <figure class="comment-media d-none">
+      <a href="javascript:void(0);" style="height: 50px;" class="d-flex align-items-center justify-content-center">
+        <i class="user-icon"></i>
+      </a>
+  </figure>
+
+  <div class="comment-body pt-0 pl-0 d-flex justify-content-between row">
+      <div class="comment-user d-flex col-12 col-md-3">
+          <p><a href="javascript:void(0);" class="font-weight-slight-bold">{{ comment.author }}</a></p>
+          <p class="ml-4">{{ comment.created_at | time_tag: format: 'date' }}</p>
+      </div>
+      <div class="comment-content col-12 col-md-9">
+          {{ comment.content }}
+      </div>
+  </div>
+</div>

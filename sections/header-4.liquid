@@ -1,0 +1,684 @@
+<header class="header header-type{{ settings.header_type }}{% if template == 'index' %} header-transparent{% endif %}" id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="header-section" data-header-section>
+    <div class="bg-black text-white header-top">
+        <div class="container-fluid">
+            <div class="header-left">
+                {% if section.settings.social_icons %}
+                    <div class="social-links d-none d-lg-block">
+                        {% assign _socials = 'facebook,twitter,linkedin,pinterest,instagram,tumblr,snapchat,youtube,vimeo' | split: ',' %}
+                        {% assign _social_displaytexts = 'Facebook,Twitter,LinkedIn,Pinterest,Instagram,Tumblr,SnapChat,YouTube,Vimeo' | split: ',' %}
+                        {% for _social in _socials %}
+                            {% assign _setting_name = 'social_' | append: _social | append: '_link' %}
+                            {% assign _social_link = settings[_setting_name] %}
+                            {% if _social_link != blank %}
+                                <a href="{{ _social_link }}" class="pr-4 text-normal fs-1p3">{{ _social_displaytexts[forloop.index0] }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="header-right text-normal">
+                <div class="d-flex align-items-baseline">
+                    <div class="fs-1p3 font-weight-normal pr-4">
+                        <a href="tel:{{ section.settings.contact_phone }}">{{ section.settings.contact_phone | default: 'YOUR PHONE NUMBER'}}</a>
+                    </div>
+                    <div class="fs-1p3 font-weight-normal">
+                        <a href="mailto:{{ section.settings.contact_email }}">{{ section.settings.contact_email | default: 'YOUR EMAIL'}}</a>
+                    </div>
+                </div>
+                <span class="divider mr-0"></span>
+                {% if section.settings.top_currency %}
+                    <div class="dropdown">
+                        <a href="#currency">{{ cart.currency.iso_code | upcase }}</a>
+                        <ul class="dropdown-box">
+                            {%- for currency in shop.enabled_currencies -%}
+                                <li>
+                                    <a href="{{ shop.url }}?currency={{ currency.iso_code }}">{{ currency.iso_code | upcase }}</a>
+                                </li>
+                            {%- endfor -%}
+                        </ul>
+                    </div>
+                    <!-- End of DropDown Menu -->
+                {% endif %}
+                {% if section.settings.top_language %}
+                    {%- if shop.published_locales.size > 1 -%}
+                        {%- form 'localization' -%}
+                            <div class="dropdown">
+                                <a href="#language"><img src="{{ form.current_locale.iso_code | append: '.png' | asset_url }}" alt="USA Flag" class="dropdown-image"/>{{ form.current_locale.endonym_name }}</a>
+                                <ul class="dropdown-box">
+                                    {%- for locale in form.available_locales -%}
+                                        <li>
+                                            <a href="{{ locale.root_url }}">
+                                                <img src="{{ locale.iso_code | append: '.png' | asset_url }}" alt="{{ locale.iso_code }} Flag" class="dropdown-image"/>{{ locale.endonym_name }}
+                                            </a>
+                                        </li>
+                                    {%- endfor -%}
+                                </ul>
+                            </div>
+                        {%- endform -%}
+                    {%- endif -%}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="header-middle sticky-header fix-top sticky-content font-weight-normal{% if template == 'index' %} text-white{% endif %}">
+        <div class="container-fluid justify-content-between">
+            <div class="header-left">
+                <a class="mobile-menu-toggle d-none" href="#">
+                    <svg enable-background="new 0 0 70 70" height="70px" version="1.1" viewbox="0 0 70 70" width="70px" x="0px" xml:space="preserve" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" y="0px">
+                        <line fill="none" stroke-linecap="square" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="3.028" x1="17.953" x2="52.047" y1="23.538" y2="23.538"/>
+                        <line fill="none" stroke-linecap="square" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="3.028" x1="17.953" x2="52.047" y1="34.999" y2="34.999"/>
+                        <line fill="none" stroke-linecap="square" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="3.028" x1="17.953" x2="34.707" y1="46.462" y2="46.462"/>
+                    </svg>
+                </a>
+                <a href="{{ shop.url }}" class="logo">
+                    {% if section.settings.header_logo != blank %}
+                        <img src="{{ section.settings.header_logo | img_url: '163x39', scale: 2 }}" alt="logo" width="163" height="39"/>
+                    {% else %}
+                        YOUR LOGO
+                    {% endif %}
+                </a>
+                <!-- End of Logo -->
+            </div>
+            <div class="header-center">
+                {% if section.settings.main_menu %}
+                    {% if linklists[section.settings.main_menu_linklist] != blank %}
+                        {% include 'site-nav', is_mainmenu: true, linklist: section.settings.main_menu_linklist %}
+                    {% else %}
+                        {% include 'site-nav-dummie' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="header-right is--header-search-legal-parent">
+                <div class="header-search hs-toggle ml-4">
+                    <a class="search-toggle js-drawer-open-top" data-predictive-search-open-drawer href="javascript:void(0);">
+                        {% include 'icon-search' %}
+                    </a>
+                    <form action="/search" class="input-wrapper search-bar drawer drawer--top critical-hidden" data-predictive-search-drawer id="SearchDrawer">
+                        <input type="text" name="q" placeholder="{{ 'general.search.placeholder' | t }}" role="combobox" aria-autocomplete="list" aria-owns="predictive-search-results" aria-expanded="false" aria-label="{{ 'general.search.placeholder' | t }}" aria-haspopup="listbox" class="search-form__input search-bar__input form-control" data-predictive-search-drawer-input/>
+                        <input aria-hidden="true" name="options[prefix]" type="hidden" value="last"/>
+                        <div class="predictive-search-wrapper predictive-search-wrapper--drawer" data-predictive-search-mount="drawer"></div>
+                        <button class="btn btn-search text-black" data-search-form-submit type="submit">
+                            {% include 'icon-search' %}
+                        </button>
+                    </form>
+                </div>
+                <!-- End of Header Search -->
+                {% if shop.customer_accounts_enabled %}
+                    {% if customer %}
+                        <a class="login logged label-down link" href="{{ routes.account_url }}" data-toggle="login-modal">
+                            {% include 'icon-account' %}
+                        </a>
+                    {% else %}
+                        <a class="login label-down link" href="{{ routes.account_login_url }}" data-toggle="login-modal">
+                            {% include 'icon-account' %}
+                        </a>
+                    {% endif %}
+                {% endif %}
+                <!-- End of Login -->
+                {% if settings.enable_wishlist %}
+                    <a class="wishlist label-down link" href="{{ pages[settings.wishlist_page].url }}">
+                        {% include 'icon-wishlist' %}
+                    </a>
+                {% endif %}
+                <div class="mobile-search" data-mobile-menu-toggle>
+                    <a class="search-toggle" href="#">
+                        {% include 'icon-search' %}
+                    </a>
+                </div>
+                <!-- End of Header Search -->
+                {% include "header-cart", _has_label: false %}
+            </div>
+        </div>
+    </div>
+</header>
+
+<style>
+  header:not(.header-transparent) .logo img {
+      filter: drop-shadow(1px 2px 3px #808080);
+  }
+</style>
+
+{% schema %}
+
+{
+    "name": "Header",
+    "class": "section-header",
+    "settings": [
+        {
+            "type": "header",
+            "content": "Top bar"
+        },
+        {
+            "type": "checkbox",
+            "id": "social_icons",
+            "label": "Enabled social icons",
+            "default": true
+        },
+        {
+            "type": "text",
+            "id": "contact_phone",
+            "label": "Contact phone"
+        },
+        {
+            "type": "text",
+            "id": "contact_email",
+            "label": "Contact email"
+        },
+        {
+            "type": "header",
+            "content": "Header elements"
+        },
+        {
+            "type": "image_picker",
+            "id": "header_logo",
+            "label": "Logo"
+        },
+        {
+            "type": "checkbox",
+            "id": "main_menu",
+            "label": "Enable main menu",
+            "default": true
+        },
+        {
+            "type": "link_list",
+            "id": "main_menu_linklist",
+            "label": "Main menu"
+        },
+        {
+            "type": "checkbox",
+            "id": "top_currency",
+            "label": "Enable currency switcher",
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "top_language",
+            "label": "Enable language switcher",
+            "default": true
+        }
+    ],
+    "blocks": [
+        {
+            "type": "banner1",
+            "name": "Menu banner - type 1",
+            "settings": [
+                {
+                    "type": "header",
+                    "content": "Where to put"
+                },
+                {
+                    "type": "text",
+                    "id": "hook",
+                    "label": "Menu Item",
+                    "info": "The menu item in which you want to put the banner"
+                },
+                {
+                    "type": "range",
+                    "id": "order",
+                    "label": "Order",
+                    "min": 1,
+                    "max": 10,
+                    "step": 1,
+                    "default": 1
+                },
+                {
+                    "type": "header",
+                    "content": "Width"
+                },
+                {
+                    "type": "select",
+                    "id": "width_destop",
+                    "label": "Width",
+                    "options": [
+                        {
+                            "value": "3",
+                            "label": "25%"
+                        },
+                        {
+                            "value": "4",
+                            "label": "One third"
+                        },
+                        {
+                            "value": "6",
+                            "label": "50%"
+                        },
+                        {
+                            "value": "8",
+                            "label": "Two thirds"
+                        },
+                        {
+                            "value": "12",
+                            "label": "100%"
+                        }
+                    ],
+                    "default": "3"
+                },
+                {
+                    "type": "header",
+                    "content": "Content"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Background image"
+                },
+                {
+                    "type": "text",
+                    "id": "title",
+                    "label": "Title",
+                    "default": "Banner title"
+                },
+                {
+                    "type": "text",
+                    "id": "sub_title",
+                    "label": "Sub title"
+                },
+                {
+                    "type": "url",
+                    "id": "button_url",
+                    "label": "Button URL"
+                },
+                {
+                    "type": "header",
+                    "content": "Layout"
+                },
+                {
+                    "type": "select",
+                    "id": "content_hori_align",
+                    "label": "Content horizontal align",
+                    "options": [
+                        {
+                            "value": "x-left pl-8",
+                            "label": "Left"
+                        },
+                        {
+                            "value": "w-100 text-center",
+                            "label": "Center"
+                        },
+                        {
+                            "value": "x-right pr-8",
+                            "label": "Right"
+                        }
+                    ],
+                    "default": "w-100 text-center"
+                },
+                {
+                    "type": "select",
+                    "id": "content_vert_align",
+                    "label": "Content vertical align",
+                    "options": [
+                        {
+                            "value": "y-top pt-8",
+                            "label": "Top"
+                        },
+                        {
+                            "value": "y-50",
+                            "label": "Middle"
+                        },
+                        {
+                            "value": "y-bottom pb-8",
+                            "label": "Bottom"
+                        }
+                    ],
+                    "default": "y-50"
+                },
+                {
+                    "type": "header",
+                    "content": "Font size"
+                },
+                {
+                    "type": "range",
+                    "id": "fs_title",
+                    "label": "Title",
+                    "unit": "x",
+                    "min": 1,
+                    "max": 6,
+                    "step": 0.5,
+                    "default": 4
+                },
+                {
+                    "type": "range",
+                    "id": "fs_subtitle",
+                    "label": "Sub title",
+                    "unit": "x",
+                    "min": 1,
+                    "max": 6,
+                    "step": 0.5,
+                    "default": 2.5
+                },
+                {
+                    "type": "header",
+                    "content": "Color"
+                },
+                {
+                    "type": "select",
+                    "id": "color_text",
+                    "label": "Text color",
+                    "options": [
+                        {
+                            "value": "white",
+                            "label": "White",
+                            "group": "Basic"
+                        },
+                        {
+                            "value": "black",
+                            "label": "Black",
+                            "group": "Basic"
+                        },
+                        {
+                            "value": "primary",
+                            "label": "Primary",
+                            "group": "From settings"
+                        },
+                        {
+                            "value": "dark",
+                            "label": "Dark",
+                            "group": "From settings"
+                        }
+                    ],
+                    "default": "white"
+                }
+            ]
+        },
+        {
+            "type": "banner2",
+            "name": "Menu banner - type 2",
+            "settings": [
+                {
+                    "type": "header",
+                    "content": "Where to put"
+                },
+                {
+                    "type": "text",
+                    "id": "hook",
+                    "label": "Menu Item",
+                    "info": "The menu item in which you want to put the banner"
+                },
+                {
+                    "type": "header",
+                    "content": "Content"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Background image"
+                },
+                {
+                    "type": "textarea",
+                    "id": "title",
+                    "label": "Title",
+                    "default": "Banner title"
+                },
+                {
+                    "type": "textarea",
+                    "id": "description",
+                    "label": "Description"
+                },
+                {
+                    "type": "text",
+                    "id": "button_text",
+                    "label": "Button text",
+                    "default": "Shop now"
+                },
+                {
+                    "type": "url",
+                    "id": "button_url",
+                    "label": "Button URL"
+                },
+                {
+                    "type": "header",
+                    "content": "Layout"
+                },
+                {
+                    "type": "select",
+                    "id": "content_hori_align",
+                    "label": "Content alignment",
+                    "options": [
+                        {
+                            "value": "left",
+                            "label": "Left"
+                        },
+                        {
+                            "value": "center",
+                            "label": "Center"
+                        },
+                        {
+                            "value": "right",
+                            "label": "Right"
+                        }
+                    ],
+                    "default": "left"
+                },
+                {
+                    "type": "select",
+                    "id": "content_vert_align",
+                    "label": "Content vertical align",
+                    "options": [
+                        {
+                            "value": "y-top pt-9",
+                            "label": "Top"
+                        },
+                        {
+                            "value": "y-50",
+                            "label": "Middle"
+                        },
+                        {
+                            "value": "y-bottom pb-9",
+                            "label": "Bottom"
+                        }
+                    ],
+                    "default": "y-50"
+                },
+                {
+                    "type": "header",
+                    "content": "Font size"
+                },
+                {
+                    "type": "range",
+                    "id": "fs_title",
+                    "label": "Title",
+                    "unit": "x",
+                    "min": 1,
+                    "max": 6,
+                    "step": 0.5,
+                    "default": 5.5
+                },
+                {
+                    "type": "range",
+                    "id": "fs_description",
+                    "label": "Description",
+                    "unit": "x",
+                    "min": 1,
+                    "max": 6,
+                    "step": 0.5,
+                    "default": 2.5
+                },
+                {
+                    "type": "header",
+                    "content": "Color"
+                },
+                {
+                    "type": "select",
+                    "id": "color_text",
+                    "label": "Text color",
+                    "options": [
+                        {
+                            "value": "white",
+                            "label": "White",
+                            "group": "Basic"
+                        },
+                        {
+                            "value": "black",
+                            "label": "Black",
+                            "group": "Basic"
+                        },
+                        {
+                            "value": "primary",
+                            "label": "Primary",
+                            "group": "From settings"
+                        },
+                        {
+                            "value": "dark",
+                            "label": "Dark",
+                            "group": "From settings"
+                        }
+                    ],
+                    "default": "white"
+                }
+            ]
+        },
+		{
+			"type": "product",
+			"name": "Product",
+			"settings": [
+				{
+					"type": "header",
+					"content": "Where to put"
+				},
+				{
+					"type": "text",
+					"id": "hook",
+					"label": "Menu Item",
+					"info": "The menu item in which you want to put the banner"
+				},
+				{
+					"type": "range",
+					"id": "order",
+					"label": "Order",
+					"min": 1,
+					"max": 10,
+					"step": 1,
+					"default": 1
+				},
+				{
+					"type": "header",
+					"content": "Width"
+				},
+				{
+					"type": "select",
+					"id": "width_destop",
+					"label": "Width",
+					"options": [
+						{
+							"value": "3",
+							"label": "25%"
+						},
+						{
+							"value": "4",
+							"label": "One third"
+						},
+						{
+							"value": "6",
+							"label": "50%"
+						},
+						{
+							"value": "8",
+							"label": "Two thirds"
+						},
+						{
+							"value": "12",
+							"label": "100%"
+						}
+					],
+					"default": "3"
+				},
+				{
+					"type": "header",
+					"content": "Content"
+				},
+				{
+					"type": "product",
+					"id": "product",
+					"label": "Choose a product"
+				}
+			]
+		},
+		{
+			"type": "circle_collection",
+			"name": "Circle collection",
+			"settings": [
+				{
+					"type": "header",
+					"content": "Where to put"
+				},
+				{
+					"type": "text",
+					"id": "hook",
+					"label": "Menu Item",
+					"info": "The menu item in which you want to put the banner"
+				},
+				{
+					"type": "range",
+					"id": "order",
+					"label": "Order",
+					"min": 1,
+					"max": 10,
+					"step": 1,
+					"default": 1
+				},
+				{
+					"type": "header",
+					"content": "Width"
+				},
+				{
+					"type": "select",
+					"id": "width_destop",
+					"label": "Width",
+					"options": [
+						{
+							"value": "2",
+							"label": "16.7%"
+						},
+						{
+							"value": "3",
+							"label": "25%"
+						},
+						{
+							"value": "4",
+							"label": "One third"
+						},
+						{
+							"value": "6",
+							"label": "50%"
+						},
+						{
+							"value": "8",
+							"label": "Two thirds"
+						},
+						{
+							"value": "12",
+							"label": "100%"
+						}
+					],
+					"default": "3"
+				},
+				{
+					"type": "header",
+					"content": "Content"
+				},
+				{
+					"type": "collection",
+					"id": "collection",
+					"label": "Your collection"
+				},
+				{
+					"type": "header",
+					"content": "Backup info",
+					"info": "In general, the info is obtained from the collection. However, you can also set it manually if you want"
+				},
+				{
+					"type": "image_picker",
+					"id": "bk_image",
+					"label": "Image"
+				},
+				{
+					"type": "text",
+					"id": "bk_title",
+					"label": "Title"
+				}
+			]
+		}
+    ]
+}
+
+{% endschema %}

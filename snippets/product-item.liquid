@@ -1,0 +1,1057 @@
+{% if product != blank %}
+{% if product_type == blank %}
+{% assign product_type = settings.product_item_type | default: "default" %}
+{% endif %}
+
+{% if product_class == blank %}
+{% assign product_class = 'shadow-visual' %}
+{% endif %}
+
+{%- liquid
+    if product.title
+      assign compare_at_price = product.compare_at_price
+      assign price = product.price
+      assign available = product.available
+      assign current_variant = product.selected_or_first_available_variant
+    else
+      assign compare_at_price = 1999
+      assign price = 1999
+      assign available = true
+    endif
+  
+    assign money_price = price | money
+-%}
+{%- assign preview_image = product.featured_media.preview_image -%}
+{%- assign aspect_ratio = settings.product_item_image_ratio %}
+{% case product_type %}
+{% when 'default' %}
+<div class="product {{ product_class }} {% if product.available  %}product-item-wrapper{% endif %}" >
+    <figure class="product-visual" style="--aspect-ratio:{{ aspect_ratio }}">
+        <a href="{{ product.url }}">
+            <img src="{{ preview_image | img_url: '280x315', scale: 2 }}" alt="product" width="280"
+                height="315">
+        </a>
+        {%- render 'product-labels', product: product, current_variant: current_variant  -%}
+        {% if product.metafields.info.countdown != blank %}
+        <div class="product-item-countdown product-countdown countdown bg-white text-black" data-until="{{ product.metafields.info.countdown }}">00:00:00</div>
+        {% endif %}
+        {%- if available == true %}
+        <div class="product-cta-upright">
+            {%- if settings.enable_wishlist and settings.wishlist_page != blank -%}
+            {%- assign wishlist = customer.metafields.wishlist | json -%}
+            <a href="/pages/{{ settings.wishlist_page }}" class="btn-product-icon btn-wishlist addwishlist_btn{% if wishlist contains product.id %} added{% endif %}" {% unless wishlist contains product.id %} data-added="{{ 'wishlist.general.view_wishlist' | t | escape }}" data-product_handle="{{ product.handle }}" data-product_id="{{ product.id }}" data-customer_id="{{ customer.id }}" data-shop_domain="{{ shop.permanent_domain }}"{% endunless %}>
+                <i class="">{% render 'icon-wishlist', _wrapper_class: 'stroke-protected' %}</i>
+            </a>
+            {%- endif -%}
+            {%- if settings.enable_compare -%}
+            <a href="javascript:void(0);" class="btn-product-icon btn-compare addcompare_btn" 
+            data-tooltip="{{ 'compare.general.add_to_compare' | t | escape }}" 
+            data-added="{{ 'compare.general.view_compare' | t | escape }}" data-product_id="{{ product.id }}">
+                <i class="">{% render 'icon-compare', _wrapper_class: 'stroke-protected' %}</i>
+                
+            </a>
+            {%- endif -%}
+            {% if collection.metafields.custom.direct_add_to_cart %}
+          
+            <a href="{{ product.url }}" 
+               
+                class="btn-product-icon" 
+                title="{{ 'products.product.quick_view' | t }}">
+                <i class="">{% render 'icon-search' %}</i>
+            </a>
+          {% else %}
+          {% if settings.show_quickview %}
+          <a href="{{ product.url | within: collection  }}" 
+             data-handle="{{product.handle}}"
+             class="btn-product-icon btn-quickview" 
+             {% if product_type !=  "list" %} data-tposition="left"{% endif %}
+             data-tooltip="{{ 'products.product.quick_view' | t }}">
+            <i class="">{% render 'icon-search', _wrapper_class: 'stroke-protected' %}</i>
+          </a>
+          {% endif %}
+          {% endif %}
+        </div>
+        {% endif -%}
+        <div class="product-cta">
+            {%- if available == true %}
+            <a href="{{ product.url }}" class="btn-product btn-cart" 
+                {% if product.available  %}data-add-to-cart{% endif %} 
+                title="{% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}">
+                <i class="mr-1"></i>
+                {% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}
+            </a>
+            {% endif -%}
+        </div>
+    </figure>
+    <div class="product-details">
+        <h3 class="product-name">
+            <a href="{{ product.url }}">{{ product.title }}</a>
+        </h3>
+  <div class="loox-rating" data-id="{{ product.id }}" data-rating="{{ product.metafields.loox.avg_rating }}" data-raters="{{ product.metafields.loox.num_reviews }}"></div>
+        <div class="product-price" data-price="{{ price }}" data-price_old="{% if compare_at_price > price %}{{ compare_at_price}}{% endif %}">
+            {% if available == false %}
+            <span class="old-price">{{ 'products.product.sold_out' | t }}</span>
+            {% else %}
+            {% if compare_at_price > price %}
+            <ins class="new-price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </ins>
+            <del class="old-price">{{ compare_at_price | money }}</del>
+            {% else %}
+            <span class="new-price price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </span>
+            {% endif %}
+            {% endif %}
+        </div>
+        {%- if settings.enable_review -%}
+        <div class="ratings-wrapper">
+        <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+        </div>
+        {%- endif -%}
+        {% if product.available  %}
+        <form class="product__form_card" action="/cart/add" method="post" enctype="multipart/form-data" data-product-form>
+            {% unless product.has_only_default_variant %}
+                <div class="product-form__controls-group">
+                    {% for option in product.options_with_values %}
+                    {% assign swatch_option = false %}
+                    {%- assign downcased_option = option.name | downcase -%}
+                    {% if downcased_option contains 'color' and settings.product_swatch_color %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if downcased_option contains 'size' and settings.product_swatch_size %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if swatch_option %}
+                        {% render 'product-options-swatch', product: product, option:option, function: "item", option_drop: option, forloop: forloop, option_index: forloop.index, option_index0: forloop.index0, sign: sign %}
+                    {% else %} 
+                    <div class="product-form product-variations product-form__item mb-2" >
+                        <label class="hide label--hidden" for="{{singleOptionSelector}}">
+                            <b class="product_section-title">{{ option.name }}</b>
+                        </label>
+                        <div class="select-box">
+                            <select class="form-control {{singleOptionSelector}} single-option-selector single-option-selector-item product-form__input w-100" data-index="option{{ forloop.index }}">
+                                {% for value in option.values %}
+                                <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            {% endunless %}
+            <select class="hide product__form_variant_id" name="id">
+                {%- for variant in product.variants -%}
+                <option {% if variant == current_variant %}selected="selected" {% endif %} value="{{variant.id}}">{{variant.title | escape}} - {{variant.price | money}}</option>
+                {%- endfor -%}
+            </select>
+            <input type="hidden" name="quantity" value="1" />
+        </form>
+        {% unless product == empty %}
+        <script type="application/json" class="ProductItemJson">
+            {{ product | json }}
+        </script>
+        {% endunless %}
+        {% endif %}
+    </div>
+</div>
+{% when 'default-hide-actions' %}
+<div class="product {{ product_class }} {% if product.available  %}product-item-wrapper{% endif %}">
+    <figure class="product-visual" style="--aspect-ratio:{{ aspect_ratio }}">
+        <a href="{{ product.url }}">
+            <img src="{{ preview_image | img_url: '280x315', scale: 2 }}" alt="product" width="280"
+                height="315">
+        </a>
+        {%- render 'product-labels', product: product, current_variant: current_variant  -%}
+        <div class="product-cta-upright">
+            {%- if available == true %}
+            <a href="{{ product.url }}" class="btn-product-icon btn-cart" 
+            {% if product.available  %}data-add-to-cart{% endif %} 
+            title=" {% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}">
+                <i class="d-icon-add-to-cart"></i>
+            </a>
+            {% endif -%}
+            {%- if settings.enable_wishlist and settings.wishlist_page != blank -%}
+            {%- assign wishlist = customer.metafields.wishlist | json -%}
+            <a href="/pages/{{ settings.wishlist_page }}" class="btn-product-icon btn-wishlist addwishlist_btn{% if wishlist contains product.id %} added{% endif %}" {% unless wishlist contains product.id %} data-added="{{ 'wishlist.general.view_wishlist' | t | escape }}" data-product_handle="{{ product.handle }}" data-product_id="{{ product.id }}" data-customer_id="{{ customer.id }}" data-shop_domain="{{ shop.permanent_domain }}"{% endunless %}>
+                <i class="icon-wishlist-2"></i>
+            </a>
+        {%- endif -%}
+        </div>
+        <div class="product-cta">
+            <a href="{{ product.url }}" 
+                data-handle="{{product.handle}}"
+                class="btn-product btn-quickview" 
+                title="{{ 'products.product.quick_view' | t }}">
+                {{ 'products.product.quick_view' | t }}
+            </a>
+        </div>
+    </figure>
+    <div class="product-details">
+        {% if product.collections.size > 0 %}
+        <div class="product-cat">
+            <a href="{{ product.collections[0].url }}">{{ product.collections[0].title }}</a>
+        </div>
+        {% endif %}
+        <h3 class="product-name">
+            <a href="{{ product.url }}">{{ product.title }}</a>
+        </h3>
+      <div product-id="{{ product.id }}" product-handle="{{ product.handle }}" class="alireviews-review-star-rating"></div>
+        <div class="product-price">
+            {% if available == false %}
+            <span class="old-price">{{ 'products.product.sold_out' | t }}</span>
+            {% else %}
+            {% if compare_at_price > price %}
+            <ins class="new-price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </ins>
+            <del class="old-price">{{ compare_at_price | money }}</del>
+            {% else %}
+            <span class="price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </span>
+            {% endif %}
+            {% endif %}
+        </div>
+        {%- if settings.enable_review -%}
+        <div class="ratings-wrapper">
+        <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+        </div>
+        {%- endif -%}
+        {% if product.available  %}
+        <form class="product__form_card" action="/cart/add" method="post" enctype="multipart/form-data" data-product-form>
+            {% unless product.has_only_default_variant %}
+                <div class="product-form__controls-group">
+                    {% for option in product.options_with_values %}
+                    {% assign swatch_option = false %}
+                    {%- assign downcased_option = option.name | downcase -%}
+                    {% if downcased_option contains 'color' and settings.product_swatch_color %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if downcased_option contains 'size' and settings.product_swatch_size %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if swatch_option %}
+                        {% render 'product-options-swatch', product: product, option:option, function: "item", option_drop: option, forloop: forloop, option_index: forloop.index, option_index0: forloop.index0, sign: sign %}
+                    {% else %} 
+                    <div class="product-form product-variations product-form__item mb-2" >
+                        <label class="hide label--hidden" for="{{singleOptionSelector}}">
+                            <b class="product_section-title">{{ option.name }}</b>
+                        </label>
+                        <div class="select-box">
+                            <select class="form-control {{singleOptionSelector}} single-option-selector single-option-selector-item product-form__input w-100" data-index="option{{ forloop.index }}">
+                                {% for value in option.values %}
+                                <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            {% endunless %}
+            <select class="hide product__form_variant_id" name="id">
+                {%- for variant in product.variants -%}
+                <option {% if variant == current_variant %}selected="selected" {% endif %} value="{{variant.id}}">{{variant.title | escape}} - {{variant.price | money}}</option>
+                {%- endfor -%}
+            </select>
+            <input type="hidden" name="quantity" value="1" />
+        </form>
+        {% unless product == empty %}
+        <script type="application/json" class="ProductItemJson">
+            {{ product | json }}
+        </script>
+        {% endunless %}
+        {% endif %}
+    </div>
+</div>
+{% when 'centered' %}
+<div class="product text-center {{ product_class }} {% if product.available  %}product-item-wrapper{% endif %}">
+    <figure class="product-visual" style="--aspect-ratio:{{ aspect_ratio }}">
+        <a href="{{ product.url }}">
+            <img src="{{ preview_image | img_url: '280x315', scale: 2 }}" alt="product" width="280"
+                height="315">
+        </a>
+        {%- render 'product-labels', product: product, current_variant: current_variant  -%}
+        <div class="product-cta-upright">
+            {%- if available == true %}
+            <a href="{{ product.url }}" class="btn-product-icon btn-cart" 
+            {% if product.available  %}data-add-to-cart{% endif %} 
+            title=" {% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}">
+                <i class="d-icon-add-to-cart"></i>
+            </a>
+            {% endif -%}
+            {%- if settings.enable_wishlist and settings.wishlist_page != blank -%}
+            {%- assign wishlist = customer.metafields.wishlist | json -%}
+            <a href="/pages/{{ settings.wishlist_page }}" class="btn-product-icon btn-wishlist addwishlist_btn{% if wishlist contains product.id %} added{% endif %}" {% unless wishlist contains product.id %} data-added="{{ 'wishlist.general.view_wishlist' | t | escape }}" data-product_handle="{{ product.handle }}" data-product_id="{{ product.id }}" data-customer_id="{{ customer.id }}" data-shop_domain="{{ shop.permanent_domain }}"{% endunless %}>
+                <i class="icon-wishlist-2"></i>
+            </a>
+        {%- endif -%}
+        </div>
+        <div class="product-cta">
+            <a href="{{ product.url }}" 
+                data-handle="{{product.handle}}"
+                class="btn-product btn-quickview" 
+                title="{{ 'products.product.quick_view' | t }}">
+                {{ 'products.product.quick_view' | t }}
+            </a>
+        </div>
+    </figure>
+    <div class="product-details">
+        {% if product.collections.size > 0 %}
+        <div class="product-cat">
+            <a href="{{ product.collections[0].url }}">{{ product.collections[0].title }}</a>
+        </div>
+        {% endif %}
+        <h3 class="product-name">
+            <a href="{{ product.url }}">{{ product.title }}</a>
+        </h3>
+        <div class="product-price">
+            {% if available == false %}
+            <span class="old-price">{{ 'products.product.sold_out' | t }}</span>
+            {% else %}
+            {% if compare_at_price > price %}
+            <ins class="new-price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </ins>
+            <del class="old-price">{{ compare_at_price | money }}</del>
+            {% else %}
+            <span class="price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </span>
+            {% endif %}
+            {% endif %}
+        </div>
+        {%- if settings.enable_review -%}
+        <div class="ratings-wrapper">
+        <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+        </div>
+        {%- endif -%}
+        {% if product.available  %}
+        <form class="product__form_card" action="/cart/add" method="post" enctype="multipart/form-data" data-product-form>
+            {% unless product.has_only_default_variant %}
+                <div class="product-form__controls-group">
+                    {% for option in product.options_with_values %}
+                    {% assign swatch_option = false %}
+                    {%- assign downcased_option = option.name | downcase -%}
+                    {% if downcased_option contains 'color' and settings.product_swatch_color %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if downcased_option contains 'size' and settings.product_swatch_size %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if swatch_option %}
+                        {% render 'product-options-swatch', product: product, option:option, function: "item", option_drop: option, forloop: forloop, option_index: forloop.index, option_index0: forloop.index0, sign: sign %}
+                    {% else %} 
+                    <div class="product-form product-variations product-form__item mb-2" >
+                        <label class="hide label--hidden" for="{{singleOptionSelector}}">
+                            <b class="product_section-title">{{ option.name }}</b>
+                        </label>
+                        <div class="select-box">
+                            <select class="form-control {{singleOptionSelector}} single-option-selector single-option-selector-item product-form__input w-100" data-index="option{{ forloop.index }}">
+                                {% for value in option.values %}
+                                <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            {% endunless %}
+            <select class="hide product__form_variant_id" name="id">
+                {%- for variant in product.variants -%}
+                <option {% if variant == current_variant %}selected="selected" {% endif %} value="{{variant.id}}">{{variant.title | escape}} - {{variant.price | money}}</option>
+                {%- endfor -%}
+            </select>
+            <input type="hidden" name="quantity" value="1" />
+        </form>
+        {% unless product == empty %}
+        <script type="application/json" class="ProductItemJson">
+            {{ product | json }}
+        </script>
+        {% endunless %}
+        {% endif %}
+    </div>
+</div>
+{% when 'centered-simple' %}
+<div class="product text-center {{ product_class }} {% if product.available  %}product-item-wrapper{% endif %}">
+    <figure class="product-visual" style="--aspect-ratio:{{ aspect_ratio }}">
+        <a href="{{ product.url }}">
+            <img src="{{ preview_image | img_url: '280x315', scale: 2 }}" alt="product" width="280"
+                height="315">
+        </a>
+        {%- render 'product-labels', product: product, current_variant: current_variant  -%}
+        <div class="product-cta-upright">
+            {%- if available == true %}
+            <a href="{{ product.url }}" class="btn-product-icon btn-cart" 
+            {% if product.available  %}data-add-to-cart{% endif %} 
+            title=" {% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}">
+                <i class="d-icon-add-to-cart"></i>
+            </a>
+            {% endif -%}
+            {%- if settings.enable_wishlist and settings.wishlist_page != blank -%}
+            {%- assign wishlist = customer.metafields.wishlist | json -%}
+            <a href="/pages/{{ settings.wishlist_page }}" class="btn-product-icon btn-wishlist addwishlist_btn{% if wishlist contains product.id %} added{% endif %}" {% unless wishlist contains product.id %} data-added="{{ 'wishlist.general.view_wishlist' | t | escape }}" data-product_handle="{{ product.handle }}" data-product_id="{{ product.id }}" data-customer_id="{{ customer.id }}" data-shop_domain="{{ shop.permanent_domain }}"{% endunless %}>
+                <i class="icon-wishlist-2"></i>
+            </a>
+        {%- endif -%}
+        </div>
+        <div class="product-cta">
+            <a href="{{ product.url }}" 
+                data-handle="{{product.handle}}"
+                class="btn-product btn-quickview" 
+                title="{{ 'products.product.quick_view' | t }}">
+                {{ 'products.product.quick_view' | t }}
+            </a>
+        </div>
+    </figure>
+    <div class="product-details">
+        <h3 class="product-name">
+            <a href="{{ product.url }}">{{ product.title }}</a>
+        </h3>
+        <div class="product-price">
+            {% if available == false %}
+            <span class="old-price">{{ 'products.product.sold_out' | t }}</span>
+            {% else %}
+            {% if compare_at_price > price %}
+            <ins class="new-price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </ins>
+            <del class="old-price">{{ compare_at_price | money }}</del>
+            {% else %}
+            <span class="price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </span>
+            {% endif %}
+            {% endif %}
+        </div>
+        {% unless product == empty %}
+        <script type="application/json" class="ProductItemJson">
+            {{ product | json }}
+        </script>
+        {% endunless %}
+    </div>
+</div>
+{% when 'classic_button' %}
+<div class="product product-classic {{ product_class }} {% if product.available  %}product-item-wrapper{% endif %}" >
+    <figure class="product-visual" style="--aspect-ratio:{{ aspect_ratio }}">
+        <a href="{{ product.url }}">
+            <img src="{{ preview_image | img_url: '280x315', scale: 2 }}" alt="product" width="280"
+                height="315">
+        </a>
+        {%- render 'product-labels', product: product, current_variant: current_variant  -%}
+    </figure>
+    <div class="product-details">
+        
+        {% if product.collections.size > 0 %}
+        <div class="product-cat">
+            <a href="{{ product.collections[0].url }}">{{ product.collections[0].title }}</a>
+        </div>
+        {% endif %}
+        <h3 class="product-name">
+            <a href="{{ product.url }}">{{ product.title }}</a>
+        </h3>
+        <div class="product-price">
+            {% if available == false %}
+            <span class="old-price">{{ 'products.product.sold_out' | t }}</span>
+            {% else %}
+            {% if compare_at_price > price %}
+            <ins class="new-price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </ins>
+            <del class="old-price">{{ compare_at_price | money }}</del>
+            {% else %}
+            <span class="price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </span>
+            {% endif %}
+            {% endif %}
+        </div>
+        {%- if settings.enable_review -%}
+        <div class="ratings-wrapper">
+        <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+        </div>
+        {%- endif -%}
+        {% if product.available  %}
+        <form class="product__form_card" action="/cart/add" method="post" enctype="multipart/form-data" data-product-form>
+            {% unless product.has_only_default_variant %}
+                <div class="product-form__controls-group">
+                    {% for option in product.options_with_values %}
+                    {% assign swatch_option = false %}
+                    {%- assign downcased_option = option.name | downcase -%}
+                    {% if downcased_option contains 'color' and settings.product_swatch_color %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if downcased_option contains 'size' and settings.product_swatch_size %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if swatch_option %}
+                        {% render 'product-options-swatch', product: product, option:option, function: "item", option_drop: option, forloop: forloop, option_index: forloop.index, option_index0: forloop.index0, sign: sign %}
+                    {% else %} 
+                    <div class="product-form product-variations product-form__item mb-2" >
+                        <label class="hide label--hidden" for="{{singleOptionSelector}}">
+                            <b class="product_section-title">{{ option.name }}</b>
+                        </label>
+                        <div class="select-box">
+                            <select class="form-control {{singleOptionSelector}} single-option-selector single-option-selector-item product-form__input w-100" data-index="option{{ forloop.index }}">
+                                {% for value in option.values %}
+                                <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            {% endunless %}
+            <select class="hide product__form_variant_id" name="id">
+                {%- for variant in product.variants -%}
+                <option {% if variant == current_variant %}selected="selected" {% endif %} value="{{variant.id}}">{{variant.title | escape}} - {{variant.price | money}}</option>
+                {%- endfor -%}
+            </select>
+            <input type="hidden" name="quantity" value="1" />
+        </form>
+        {% unless product == empty %}
+        <script type="application/json" class="ProductItemJson">
+            {{ product | json }}
+        </script>
+        {% endunless %}
+        {% endif %}
+        <div class="product-cta">
+            {%- if available == true %}
+                <a href="{{ product.url }}" class="btn-product btn-cart" 
+                {% if product.available  %}data-add-to-cart{% endif %} 
+                title="{% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}">
+                <i class="mr-1"></i><span>{% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}</span>
+                </a>
+            {% endif -%}
+            {%- if settings.enable_wishlist and settings.wishlist_page != blank -%}
+                {%- assign wishlist = customer.metafields.wishlist | json -%}
+                <a href="/pages/{{ settings.wishlist_page }}" class="btn-product-icon btn-wishlist addwishlist_btn{% if wishlist contains product.id %} added{% endif %}" {% unless wishlist contains product.id %} data-added="{{ 'wishlist.general.view_wishlist' | t | escape }}" data-product_handle="{{ product.handle }}" data-product_id="{{ product.id }}" data-customer_id="{{ customer.id }}" data-shop_domain="{{ shop.permanent_domain }}"{% endunless %}>
+                    <i class="icon-wishlist-2"></i>
+                </a>
+            {%- endif -%}
+            <a href="{{ product.url }}" 
+                data-handle="{{product.handle}}"
+                class="btn-product-icon btn-quickview" 
+                title="{{ 'products.product.quick_view' | t }}">
+                <i class="icon-search-3"></i>
+            </a>
+        </div>
+    </div>
+</div>
+{% when "popup" %}
+<div class="product product-slideup-content text-center {{ product_class }} {% if product.available  %}product-item-wrapper{% endif %}" >
+    <figure class="product-visual" style="--aspect-ratio:{{ aspect_ratio }}">
+        <a href="{{ product.url }}">
+            <img src="{{ preview_image | img_url: '280x315', scale: 2 }}" alt="product" width="280"
+                height="315">
+        </a>
+        {%- render 'product-labels', product: product, current_variant: current_variant  -%}
+    </figure>
+    <div class="product-details">
+         
+        {% if product.collections.size > 0 %}
+        <div class="product-cat">
+            <a href="{{ product.collections[0].url }}">{{ product.collections[0].title }}</a>
+        </div>
+        {% endif %}
+        <h3 class="product-name">
+            <a href="{{ product.url }}">{{ product.title }}</a>
+        </h3>
+        <div class="product-price">
+            {% if available == false %}
+            <span class="old-price">{{ 'products.product.sold_out' | t }}</span>
+            {% else %}
+            {% if compare_at_price > price %}
+            <ins class="new-price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </ins>
+            <del class="old-price">{{ compare_at_price | money }}</del>
+            {% else %}
+            <span class="price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </span>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="product-hide-details">
+        {%- if settings.enable_review -%}
+        <div class="ratings-wrapper">
+        <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+        </div>
+        {%- endif -%}
+        {% if product.available  %}
+        <form class="product__form_card" action="/cart/add" method="post" enctype="multipart/form-data" data-product-form>
+            {% unless product.has_only_default_variant %}
+                <div class="product-form__controls-group">
+                    {% for option in product.options_with_values %}
+                    {% assign swatch_option = false %}
+                    {%- assign downcased_option = option.name | downcase -%}
+                    {% if downcased_option contains 'color' and settings.product_swatch_color %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if downcased_option contains 'size' and settings.product_swatch_size %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if swatch_option %}
+                        {% render 'product-options-swatch', product: product, option:option, function: "item", option_drop: option, forloop: forloop, option_index: forloop.index, option_index0: forloop.index0, sign: sign %}
+                    {% else %} 
+                    <div class="product-form product-variations product-form__item mb-2" >
+                        <label class="hide label--hidden" for="{{singleOptionSelector}}">
+                            <b class="product_section-title">{{ option.name }}</b>
+                        </label>
+                        <div class="select-box">
+                            <select class="form-control {{singleOptionSelector}} single-option-selector single-option-selector-item product-form__input w-100" data-index="option{{ forloop.index }}">
+                                {% for value in option.values %}
+                                <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            {% endunless %}
+            <select class="hide product__form_variant_id" name="id">
+                {%- for variant in product.variants -%}
+                <option {% if variant == current_variant %}selected="selected" {% endif %} value="{{variant.id}}">{{variant.title | escape}} - {{variant.price | money}}</option>
+                {%- endfor -%}
+            </select>
+            <input type="hidden" name="quantity" value="1" />
+        </form>
+        {% unless product == empty %}
+        <script type="application/json" class="ProductItemJson">
+            {{ product | json }}
+        </script>
+        {% endunless %}
+        {% endif %}
+        <div class="product-cta">
+            {%- if settings.enable_wishlist and settings.wishlist_page != blank -%}
+                {%- assign wishlist = customer.metafields.wishlist | json -%}
+                <a href="/pages/{{ settings.wishlist_page }}" class="btn-product-icon btn-wishlist addwishlist_btn{% if wishlist contains product.id %} added{% endif %}" {% unless wishlist contains product.id %} data-added="{{ 'wishlist.general.view_wishlist' | t | escape }}" data-product_handle="{{ product.handle }}" data-product_id="{{ product.id }}" data-customer_id="{{ customer.id }}" data-shop_domain="{{ shop.permanent_domain }}"{% endunless %}>
+                    <i class="icon-wishlist-2"></i>
+                </a>
+            {%- endif -%}
+            {%- if available == true %}
+                <a href="{{ product.url }}" class="btn-product btn-cart" 
+                {% if product.available  %}data-add-to-cart{% endif %} 
+                title="{% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}">
+                <i class="mr-1"></i><span>{% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}</span>
+                </a>
+            {% endif -%}
+            <a href="{{ product.url }}" 
+                data-handle="{{product.handle}}"
+                class="btn-product-icon btn-quickview" 
+                title="{{ 'products.product.quick_view' | t }}">
+                <i class="icon-search-3"></i>
+            </a>
+        </div>
+    </div>
+</div>
+{% when "split_line" %}
+<div class="product product-slideup text-center {{ product_class }} {% if product.available  %}product-item-wrapper{% endif %}" >
+    <figure class="product-visual" style="--aspect-ratio:{{ aspect_ratio }}">
+        <a href="{{ product.url }}">
+            <img src="{{ preview_image | img_url: '280x315', scale: 2 }}" alt="product" width="280"
+                height="315">
+        </a>
+        {%- render 'product-labels', product: product, current_variant: current_variant  -%}
+    </figure>
+    <div class="product-details">
+        {% if product.collections.size > 0 %}
+        <div class="product-cat">
+            <a href="{{ product.collections[0].url }}">{{ product.collections[0].title }}</a>
+        </div>
+        {% endif %}
+        <h3 class="product-name">
+            <a href="{{ product.url }}">{{ product.title }}</a>
+        </h3>
+        <div class="product-price">
+            {% if available == false %}
+            <span class="old-price">{{ 'products.product.sold_out' | t }}</span>
+            {% else %}
+            {% if compare_at_price > price %}
+            <ins class="new-price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </ins>
+            <del class="old-price">{{ compare_at_price | money }}</del>
+            {% else %}
+            <span class="price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </span>
+            {% endif %}
+            {% endif %}
+        </div>
+        {%- if settings.enable_review -%}
+        <div class="ratings-wrapper">
+        <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+        </div>
+        {%- endif -%}
+        {% if product.available  %}
+        <form class="product__form_card" action="/cart/add" method="post" enctype="multipart/form-data" data-product-form>
+            {% unless product.has_only_default_variant %}
+                <div class="product-form__controls-group">
+                    {% for option in product.options_with_values %}
+                    {% assign swatch_option = false %}
+                    {%- assign downcased_option = option.name | downcase -%}
+                    {% if downcased_option contains 'color' and settings.product_swatch_color %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if downcased_option contains 'size' and settings.product_swatch_size %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if swatch_option %}
+                        {% render 'product-options-swatch', product: product, option:option, function: "item", option_drop: option, forloop: forloop, option_index: forloop.index, option_index0: forloop.index0, sign: sign %}
+                    {% else %} 
+                    <div class="product-form product-variations product-form__item mb-2" >
+                        <label class="hide label--hidden" for="{{singleOptionSelector}}">
+                            <b class="product_section-title">{{ option.name }}</b>
+                        </label>
+                        <div class="select-box">
+                            <select class="form-control {{singleOptionSelector}} single-option-selector single-option-selector-item product-form__input w-100" data-index="option{{ forloop.index }}">
+                                {% for value in option.values %}
+                                <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            {% endunless %}
+            <select class="hide product__form_variant_id" name="id">
+                {%- for variant in product.variants -%}
+                <option {% if variant == current_variant %}selected="selected" {% endif %} value="{{variant.id}}">{{variant.title | escape}} - {{variant.price | money}}</option>
+                {%- endfor -%}
+            </select>
+            <input type="hidden" name="quantity" value="1" />
+        </form>
+        {% unless product == empty %}
+        <script type="application/json" class="ProductItemJson">
+            {{ product | json }}
+        </script>
+        {% endunless %}
+        {% endif %}
+        <div class="product-cta">
+            {%- if settings.enable_wishlist and settings.wishlist_page != blank -%}
+                {%- assign wishlist = customer.metafields.wishlist | json -%}
+                <a href="/pages/{{ settings.wishlist_page }}" class="btn-product-icon btn-wishlist addwishlist_btn{% if wishlist contains product.id %} added{% endif %}" {% unless wishlist contains product.id %} data-added="{{ 'wishlist.general.view_wishlist' | t | escape }}" data-product_handle="{{ product.handle }}" data-product_id="{{ product.id }}" data-customer_id="{{ customer.id }}" data-shop_domain="{{ shop.permanent_domain }}"{% endunless %}>
+                    <i class="icon-wishlist-2"></i>
+                </a>
+            {%- endif -%}
+            {%- if available == true %}
+                <a href="{{ product.url }}" class="btn-product btn-cart" 
+                {% if product.available  %}data-add-to-cart{% endif %} 
+                title="{% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}">
+                <i class="mr-1"></i><span>{% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}</span>
+                </a>
+            {% endif -%}
+            <a href="{{ product.url }}" 
+                data-handle="{{product.handle}}"
+                class="btn-product-icon btn-quickview" 
+                title="{{ 'products.product.quick_view' | t }}">
+                <i class="icon-search-3"></i>
+            </a>
+
+        </div>
+    </div>
+
+</div>
+{% when "without_space" %}
+<div class="product text-center {{ product_class }} {% if product.available  %}product-item-wrapper{% endif %}">
+    <figure class="product-visual" style="--aspect-ratio:{{ aspect_ratio }}">
+        <a href="{{ product.url }}">
+            <img src="{{ preview_image | img_url: '280x315', scale: 2 }}" alt="product" width="280"
+                height="315">
+        </a>
+        {%- render 'product-labels', product: product, current_variant: current_variant  -%}
+        {%- if available == true %}
+        <div class="product-cta-upright">
+            <a href="{{ product.url }}" class="btn-product-icon btn-cart" 
+            {% if product.available  %}data-add-to-cart{% endif %} 
+            title=" {% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}">
+                <i class="d-icon-add-to-cart"></i>
+            </a>
+            {%- if settings.enable_wishlist and settings.wishlist_page != blank -%}
+                {%- assign wishlist = customer.metafields.wishlist | json -%}
+                <a href="/pages/{{ settings.wishlist_page }}" class="btn-product-icon btn-wishlist addwishlist_btn{% if wishlist contains product.id %} added{% endif %}" {% unless wishlist contains product.id %} data-added="{{ 'wishlist.general.view_wishlist' | t | escape }}" data-product_handle="{{ product.handle }}" data-product_id="{{ product.id }}" data-customer_id="{{ customer.id }}" data-shop_domain="{{ shop.permanent_domain }}"{% endunless %}>
+                    <i class="icon-wishlist-2"></i>
+                </a>
+            {%- endif -%}
+        </div>
+        {% endif -%}
+        <div class="product-cta">
+            <a href="{{ product.url }}" 
+                data-handle="{{product.handle}}"
+                class="btn-product btn-quickview" 
+                title="{{ 'products.product.quick_view' | t }}">
+                {{ 'products.product.quick_view' | t }}
+            </a>
+        </div>
+    </figure>
+    <div class="product-details">
+        {% if product.collections.size > 0 %}
+        <div class="product-cat">
+            <a href="{{ product.collections[0].url }}">{{ product.collections[0].title }}</a>
+        </div>
+        {% endif %}
+        <h3 class="product-name">
+            <a href="{{ product.url }}">{{ product.title }}</a>
+        </h3>
+        <div class="product-price">
+            {% if available == false %}
+            <span class="old-price">{{ 'products.product.sold_out' | t }}</span>
+            {% else %}
+            {% if compare_at_price > price %}
+            <ins class="new-price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </ins>
+            <del class="old-price">{{ compare_at_price | money }}</del>
+            {% else %}
+            <span class="price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </span>
+            {% endif %}
+            {% endif %}
+        </div>
+        {%- if settings.enable_review -%}
+        <div class="ratings-wrapper">
+        <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+        </div>
+        {%- endif -%}
+        {% if product.available  %}
+        <form class="product__form_card mt-3" action="/cart/add" method="post" enctype="multipart/form-data" data-product-form>
+            {% unless product.has_only_default_variant %}
+                <div class="product-form__controls-group">
+                    {% for option in product.options_with_values %}
+                    {% assign swatch_option = false %}
+                    {%- assign downcased_option = option.name | downcase -%}
+                    {% if downcased_option contains 'color' and settings.product_swatch_color %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if downcased_option contains 'size' and settings.product_swatch_size %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if swatch_option %}
+                        {% render 'product-options-swatch', product: product, option:option, function: "item", option_drop: option, forloop: forloop, option_index: forloop.index, option_index0: forloop.index0, sign: sign %}
+                    {% else %} 
+                    <div class="product-form product-variations product-form__item mb-2" >
+                        <label class="hide label--hidden" for="{{singleOptionSelector}}">
+                            <b class="product_section-title">{{ option.name }}</b>
+                        </label>
+                        <div class="select-box">
+                            <select class="form-control {{singleOptionSelector}} single-option-selector single-option-selector-card product-form__input w-100 w-100" data-index="option{{ forloop.index }}">
+                                {% for value in option.values %}
+                                <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            {% endunless %}
+            <select class="hide product__form_variant_id" name="id">
+                {%- for variant in product.variants -%}
+                <option {% if variant == current_variant %}selected="selected" {% endif %} value="{{variant.id}}">{{variant.title | escape}} - {{variant.price | money}}</option>
+                {%- endfor -%}
+            </select>
+            <input type="hidden" name="quantity" value="1" />
+        </form>
+        {% unless product == empty %}
+        <script type="application/json" class="ProductItemJson">
+            {{ product | json }}
+        </script>
+        {% endunless %}
+        {% endif %}
+    </div>
+</div>
+{% when "image_gap" %}
+<div class="product product-image-gap {{ product_class }} {% if product.available  %}product-item-wrapper{% endif %}" >
+    <figure class="product-visual" style="--aspect-ratio:{{ aspect_ratio }}">
+        <a href="{{ product.url }}">
+            <img src="{{ preview_image | img_url: '280x315', scale: 2 }}" alt="product" width="280"
+                height="315">
+        </a>
+        {%- render 'product-labels', product: product, current_variant: current_variant  -%}
+        {%- if available == true %}
+        <div class="product-cta-upright">
+            <a href="{{ product.url }}" class="btn-product-icon btn-cart" 
+            {% if product.available  %}data-add-to-cart{% endif %} 
+            title=" {% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}">
+                <i class="d-icon-add-to-cart"></i>
+            </a>
+            {%- if settings.enable_wishlist and settings.wishlist_page != blank -%}
+                {%- assign wishlist = customer.metafields.wishlist | json -%}
+                <a href="/pages/{{ settings.wishlist_page }}" class="btn-product-icon btn-wishlist addwishlist_btn{% if wishlist contains product.id %} added{% endif %}" {% unless wishlist contains product.id %} data-added="{{ 'wishlist.general.view_wishlist' | t | escape }}" data-product_handle="{{ product.handle }}" data-product_id="{{ product.id }}" data-customer_id="{{ customer.id }}" data-shop_domain="{{ shop.permanent_domain }}"{% endunless %}>
+                    <i class="icon-wishlist-2"></i>
+                </a>
+            {%- endif -%}
+        </div>
+        {% endif -%}
+        <div class="product-cta">
+            <a href="{{ product.url }}" 
+                data-handle="{{product.handle}}"
+                class="btn-product btn-quickview" 
+                title="{{ 'products.product.quick_view' | t }}">
+                {{ 'products.product.quick_view' | t }}
+            </a>
+        </div>
+    </figure>
+    <div class="product-details">
+        {% if product.collections.size > 0 %}
+        <div class="product-cat">
+            <a href="{{ product.collections[0].url }}">{{ product.collections[0].title }}</a>
+        </div>
+        {% endif %}
+        <h3 class="product-name">
+            <a href="{{ product.url }}">{{ product.title }}</a>
+        </h3>
+        <div class="product-price">
+            {% if available == false %}
+            <span class="old-price">{{ 'products.product.sold_out' | t }}</span>
+            {% else %}
+            {% if compare_at_price > price %}
+            <ins class="new-price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </ins>
+            <del class="old-price">{{ compare_at_price | money }}</del>
+            {% else %}
+            <span class="price">
+                {%- if product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price }}
+                {%- else -%}
+                {{ money_price }}
+                {%- endif -%}
+            </span>
+            {% endif %}
+            {% endif %}
+        </div>
+        {%- if settings.enable_review -%}
+        <div class="ratings-wrapper">
+        <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+        </div>
+        {%- endif -%}
+        {% if product.available  %}
+        <form class="product__form_card mt-3" action="/cart/add" method="post" enctype="multipart/form-data" data-product-form>
+            {% unless product.has_only_default_variant %}
+                <div class="product-form__controls-group">
+                    {% for option in product.options_with_values %}
+                    {% assign swatch_option = false %}
+                    {%- assign downcased_option = option.name | downcase -%}
+                    {% if downcased_option contains 'color' and settings.product_swatch_color %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if downcased_option contains 'size' and settings.product_swatch_size %}
+                        {% assign swatch_option = true %}
+                    {% endif %}
+                    {% if swatch_option %}
+                        {% render 'product-options-swatch', product: product, option:option, function: "item", option_drop: option, forloop: forloop, option_index: forloop.index, option_index0: forloop.index0, sign: sign %}
+                    {% else %} 
+                    <div class="product-form product-variations product-form__item mb-2" >
+                        <label class="hide label--hidden" for="{{singleOptionSelector}}">
+                            <b class="product_section-title">{{ option.name }}</b>
+                        </label>
+                        <div class="select-box">
+                            <select class="form-control {{singleOptionSelector}} single-option-selector single-option-selector-item product-form__input w-100" data-index="option{{ forloop.index }}">
+                                {% for value in option.values %}
+                                <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %} 
+                </div>
+            {% endunless %}
+            <select class="hide product__form_variant_id" name="id">
+                {%- for variant in product.variants -%}
+                <option {% if variant == current_variant %}selected="selected" {% endif %} value="{{variant.id}}">{{variant.title | escape}} - {{variant.price | money}}</option>
+                {%- endfor -%}
+            </select>
+            <input type="hidden" name="quantity" value="1" />
+        </form>
+        {% unless product == empty %}
+        <script type="application/json" class="ProductItemJson">
+            {{ product | json }}
+        </script>
+        {% endunless %}
+        {% endif %}
+    </div>
+</div>
+{% when 'list' %}
+{% include 'product-item-list' %}
+{% endcase %}
+{% endif %}

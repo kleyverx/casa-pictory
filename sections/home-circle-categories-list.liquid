@@ -1,0 +1,238 @@
+<section class="circled-section mt-{{ section.settings.mt}} mb-{{ section.settings.mb}} pt-{{ section.settings.pt}} pb-{{ section.settings.pb}} mt-lg-{{ section.settings.mt_lg}} mb-lg-{{ section.settings.mb_lg}} pt-lg-{{ section.settings.pt_lg}} pb-lg-{{ section.settings.pb_lg}} container{% unless section.settings.has_container %}-fluid{% endunless %}" id="{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="circle-categories-list-section">
+    {% if section.settings.title != blank %}
+    <h2 class="title title-simple text-normal font-weight-slight-bold">{{ section.settings.title }}</h2>
+    {% endif %}
+    <div class="owl-carousel owl-theme row cols-lg-4 cols-md-3 cols-xs-2 cols-1" data-owl-options="{
+        'nav': false,
+        'dots': true,
+        'items': {{ section.settings.items_visible }},
+        'margin':  20,
+        'loop': false,
+        'responsive': {
+            '0': {
+                'items': 2
+            },
+            '480': {
+                'items': 2
+            },
+            '768': {
+                'items': 3
+            },
+            '992': {
+                'items': 4
+            },
+            '1200': {
+                'items': {{ section.settings.items_visible }},
+                'dots': false
+            }
+        }
+    }">
+        {% if section.blocks.size > 0 %}
+        {% for block in section.blocks %}
+        {% assign _collection = collections[block.settings.collection] %}
+        {% if _collection != blank %}
+        <div class="category category-circled pl-2 pr-2" {{ block.shopify_attributes }}>
+            <a href="{{ _collection.url }}">
+                {% if block.settings.bk_image == blank and _collection.image == blank %}
+                <figure class="category-media" style="background-color: transparent;">
+                    COLLECTION IMAGE
+                </figure>
+                {% else %}
+                {% if block.settings.bk_image %}
+                {% assign _image = block.settings.bk_image %}
+                {% else %}
+                {% assign _image = _collection.image %}
+                {% endif %}
+                <figure class="category-media">
+                    <img alt="category" height="196" src="{{ _image | img_url: '196x196', scale: 2 }}" width="196"/>
+                </figure>
+                {% endif %}
+            </a>
+            <div class="category-content">
+                <h4 class="category-name text-normal fs-1p7 font-weight-normal"><a href="{{ _collection.url }}">{% if block.settings.bk_title != blank %}{{ block.settings.bk_title }}{% else %}{{ _collection.title }}{% endif %}</a></h4>
+            </div>
+        </div>
+        {% else %}
+        <div class="category category-circled  pl-2 pr-2">
+            <a href="#">
+                <figure class="category-media" style="background-color: transparent;">
+                    COLLECTION IMAGE
+                </figure>
+            </a>
+            <div class="category-content">
+                <h4 class="category-name"><a href="javascript:void(0);">Collection Name</a></h4>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% else %}
+        <h4>Please add collections...</h4>
+        {% endif %}
+    </div>
+</section>
+{% schema %}
+{
+    "name": "Circle Categories List",
+    "class": "index-section index-section--circle-categories-list",
+    "settings": [
+        {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Categories list"
+        },
+        {
+            "type": "checkbox",
+            "id": "has_container",
+            "label": "Within container",
+            "default": false
+        },
+        {
+            "type": "range",
+            "id": "items_visible",
+            "label": "Visible items",
+            "min": 2,
+            "max": 6,
+            "step": 1,
+            "default": 4
+        },
+        {
+            "type": "header",
+            "content": "Spacing (large screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt_lg",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 8
+        },
+        {
+            "type": "range",
+            "id": "pt_lg",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb_lg",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb_lg",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "header",
+            "content": "Spacing (mobile screen)"
+        },
+        {
+            "type": "range",
+            "id": "mt",
+            "label": "Margin top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "pt",
+            "label": "Padding top",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "mb",
+            "label": "Margin bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        },
+        {
+            "type": "range",
+            "id": "pb",
+            "label": "Padding bottom",
+            "unit": "x",
+            "min": 0,
+            "max": 20,
+            "step": 1,
+            "default": 0
+        }
+    ],
+    "blocks": [
+        {
+            "type": "category",
+            "name": "Category",
+            "settings": [
+                {
+                    "type": "collection",
+                    "id": "collection",
+                    "label": "Your collection"
+                },
+                {
+                    "type": "header",
+                    "content": "Backup info",
+                    "info": "In general, the info is obtained from the collection. However, you can also set it manually if you want"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "bk_image",
+                    "label": "Image"
+                },
+                {
+                    "type": "text",
+                    "id": "bk_title",
+                    "label": "Title"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Circle Categories List",
+            "category": "Fastor",
+            "blocks": [
+                {
+                    "type": "category"
+                },
+                {
+                    "type": "category"
+                },
+                {
+                    "type": "category"
+                },
+                {
+                    "type": "category"
+                }
+            ]
+        }
+    ]
+}
+
+{% endschema %}

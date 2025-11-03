@@ -1,0 +1,48 @@
+{%-if settings.product_grouped != blank -%}
+{%- assign my_product = product -%}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign product_image_zoom_size = '1024x1024' -%}
+{%- assign product_image_scale = '2' -%}
+{%- assign enable_image_zoom = section.settings.enable_image_zoom -%}
+{%- assign compare_at_price = current_variant.compare_at_price -%}
+{%- assign price = current_variant.price -%}
+
+{%- assign custom_class = 'pb-5 pb-lg-20' -%}
+{%- assign wrapper_class = 'pt-5' -%}
+{%- if section.settings.has_separate == true -%}
+{%- assign custom_class = custom_class | append: ' border-bottom' -%}
+{%- assign wrapper_class = wrapper_class | append: ' border-top' -%}
+{%- endif -%}
+
+<div class="container{% if section.settings.product_fullwidth %}-fluid{% endif %} pt-5 pt-lg-10">
+{%- include "products-grouped", class: custom_class, wrapper_class: wrapper_class, custom_heading: section.settings.heading -%}
+</div>
+{%- endif-%}
+  
+
+{% schema %}
+{
+  "name": "Product - Group buy",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "product_fullwidth",
+      "label": "Full Width",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently bought together"
+    },
+    {
+      "type": "checkbox",
+      "id": "has_separate",
+      "label": "Has separate",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

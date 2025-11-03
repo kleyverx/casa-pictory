@@ -1,0 +1,38 @@
+{%- assign isAllow = false %}
+{%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
+{%- assign pUrl = contentForQuerystring | split:'"pageurl":"' | last | split:'"' | first | split:'cart' | last |
+   replace:'\/','/' | 
+   replace:'%20',' ' | 
+   replace:'\u0026','&'
+-%}
+
+{%- assign aDirect = pUrl | split : "direct=" -%}
+{%- if aDirect.size > 1 and aDirect[1] != blank -%}
+{%- assign aDirect = aDirect[1] | split: "&" -%}
+{%- assign direct = aDirect[0] | strip -%}
+{%- if direct == "false" -%}
+{%- assign isAllow = true %}
+{%- endif -%}
+{%- endif -%}
+
+{%- if isAllow == false -%}
+<h2 class="text-center mt-10 font-weight-light">
+  THIS TEMPLATE IS FOR FUNCTIONAL PURPOSE ONLY.
+  <br><br>CLICK <a class="font-weight-bold" href="{{ routes.search_url }}">HERE</a> FOR DEFAULT SEARCH TEMPLATE.
+</h2>
+<style>
+    .shopify-section { display: none !important; }
+</style>
+{%- else -%}
+{%- layout none -%}
+{% if  search.terms != blank %}
+{% assign sizechart_page = pages[search.terms] %}
+<div class="page-popup">
+    <h3 class="title title-simple text-center">{{sizechart_page.title}}</h3>
+    <div class="page-popup-content text-center">
+        {{ sizechart_page.content }}
+    </div>
+</div>
+{% endif %}
+{%- endif -%}
+

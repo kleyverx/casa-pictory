@@ -1,0 +1,797 @@
+/* Timeline Steps Section - Aislado para evitar interferencias */
+.timeline-steps-section {
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+  isolation: isolate;
+  padding: 2rem 0;
+}
+
+.shopify-section .timeline-steps-section {
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+  isolation: isolate;
+  padding: 2rem 0;
+}
+
+.timeline-steps-section .timeline-header,
+.shopify-section .timeline-steps-section .timeline-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  padding: 0 2rem;
+}
+
+.timeline-steps-section .timeline-title,
+.shopify-section .timeline-steps-section .timeline-title {
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  color: #2c5aa0;
+}
+
+.timeline-steps-section .timeline-subtitle,
+.shopify-section .timeline-steps-section .timeline-subtitle {
+  font-weight: 400;
+  margin-bottom: 0;
+  opacity: 0.8;
+  color: #666666;
+}
+
+.timeline-steps-section .timeline-content,
+.shopify-section .timeline-steps-section .timeline-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  min-height: 600px;
+  overflow: hidden; /* Evitar que el contenido se desborde */
+}
+
+/* Timeline Steps List - Lado Izquierdo */
+.timeline-steps-section .steps-container,
+.shopify-section .timeline-steps-section .steps-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  position: relative;
+  z-index: 2;
+  grid-column: 1;
+  justify-self: start;
+  width: 100%;
+  overflow: hidden; /* Evitar que las líneas de progreso se desborden */
+}
+
+/* Timeline Images Container - Lado Derecho */
+.timeline-steps-section .timeline-images,
+.shopify-section .timeline-steps-section .timeline-images {
+  grid-column: 2;
+  justify-self: end;
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 133.33%; /* 3:4 aspect ratio */
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+/* Individual Step */
+.timeline-steps-section .step-item,
+.shopify-section .timeline-steps-section .step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 24px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 2px solid transparent;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  opacity: 0.6;
+  transform: translateX(-20px);
+  overflow: hidden; /* Evitar que las líneas de progreso se desborden del step-item */
+}
+
+.timeline-steps-section .step-item:hover,
+.shopify-section .timeline-steps-section .step-item:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(44, 90, 160, 0.2);
+  transform: translateX(0);
+  box-shadow: 0 8px 32px rgba(44, 90, 160, 0.15);
+}
+
+.timeline-steps-section .step-item.active,
+.shopify-section .timeline-steps-section .step-item.active {
+  opacity: 1;
+  transform: translateX(0);
+  background: rgba(44, 90, 160, 0.05);
+  border-color: var(--progress-line-color, #2c5aa0);
+  box-shadow: 0 12px 40px rgba(44, 90, 160, 0.2);
+}
+
+/* Step Number */
+.timeline-steps-section .step-number {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--step-bg-color, #2c5aa0), var(--step-bg-color, #4a7bc8));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 19px;
+  box-shadow: 0 4px 16px var(--step-bg-color, rgba(44, 90, 160, 0.3));
+  position: relative;
+  z-index: 2;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.shopify-section .timeline-steps-section .step-number {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--step-bg-color, #2c5aa0), var(--step-bg-color, #4a7bc8));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 19px;
+  box-shadow: 0 4px 16px var(--step-bg-color, rgba(44, 90, 160, 0.3));
+  position: relative;
+  z-index: 2;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.timeline-steps-section .step-number::after,
+.shopify-section .timeline-steps-section .step-number::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(135deg, var(--step-bg-color, #2c5aa0), var(--step-bg-color, #4a7bc8));
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.4s ease;
+}
+
+.timeline-steps-section .step-item.active .step-number::after,
+.shopify-section .timeline-steps-section .step-item.active .step-number::after {
+  opacity: 1;
+}
+
+.timeline-steps-section .step-item:not(.active) .step-number {
+  opacity: 0.4;
+  transform: scale(1.1);
+  animation: desktopCirclePulse 2.5s ease-in-out infinite;
+}
+
+@keyframes desktopCirclePulse {
+  0%, 100% {
+    transform: scale(1.1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+}
+
+.shopify-section .timeline-steps-section .step-item:not(.active) .step-number {
+  background: var(--step-bg-color, #e9ecef);
+  color: #6c757d;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: none;
+}
+
+/* Step Content */
+.shopify-section .timeline-steps-section .step-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.shopify-section .timeline-steps-section .step-title {
+  font-size: var(--timeline-step-title-size, 20px);
+  color: #2c5aa0;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  line-height: 1.3;
+  transition: color 0.3s ease;
+}
+
+.shopify-section .timeline-steps-section .step-item:not(.active) .step-title {
+  color: #495057;
+}
+
+.shopify-section .timeline-steps-section .step-description {
+  font-size: var(--timeline-step-description-size, 15px);
+  color: #6c757d;
+  margin: 0;
+  line-height: 1.6;
+  transition: color 0.4s ease;
+}
+
+.shopify-section .timeline-steps-section .step-item.active .step-description {
+  color: var(--timeline-step-active-description-color, #333333);
+}
+
+
+
+
+
+/* Línea de progreso vertical debajo del círculo del paso actual */
+.timeline-steps-section .step-item .step-progress-line {
+  position: absolute;
+  left: 46px; /* Centrado con el círculo: 48px/2 - 4px/2 = 22px */
+  top: 72px; /* Pegada al círculo (48px altura del círculo) */
+  width: 4px; /* Línea vertical delgada */
+  height: calc(100% - 96px); /* Altura dinámica: 100% del contenedor menos 72px (top) + 24px (padding bottom) */
+  max-height: 40px; /* Altura máxima para evitar desbordamiento */
+  background: var(--progress-line-color, rgba(44, 90, 160, 0.2));
+  border-radius: 2px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 3;
+}
+
+.timeline-steps-section .step-item.active .step-progress-line {
+  opacity: 1;
+}
+
+/* Elemento de progreso dinámico creado por JavaScript */
+.timeline-steps-section .step-item .step-progress-line .js-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background: linear-gradient(180deg, var(--progress-line-color, #2c5aa0) 0%, var(--progress-line-color, #4a7bc8) 100%);
+  border-radius: 2px;
+  transition: none;
+  box-shadow: 0 0 8px var(--progress-line-color, rgba(44, 90, 160, 0.5));
+  z-index: 1;
+}
+
+/* Mantener el ::after como respaldo para casos donde JavaScript no funcione */
+.timeline-steps-section .step-item .step-progress-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%; /* Ancho completo de la línea */
+  height: 0%; /* Altura inicial 0% para animación */
+  background: linear-gradient(180deg, var(--progress-line-color, #2c5aa0) 0%, var(--progress-line-color, #4a7bc8) 100%); /* Gradiente vertical */
+  border-radius: 2px;
+  transition: height 0.8s ease-in-out;
+  box-shadow: 0 0 8px var(--progress-line-color, rgba(44, 90, 160, 0.5));
+}
+
+.timeline-steps-section .step-item.active .step-progress-line::after {
+  height: 100%; /* Altura completa cuando está activo */
+  animation: progressPulse 2s ease-in-out infinite;
+}
+
+.timeline-steps-section .step-item.active:not(:last-child)::before {
+  /* Removido - esta regla ya no es necesaria */
+}
+
+@keyframes progressPulse {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(44, 90, 160, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(44, 90, 160, 0.8);
+  }
+}
+
+/* Animación para la línea de progreso */
+@keyframes progressLine {
+  0% {
+    height: 0%;
+  }
+  100% {
+    height: 100%;
+  }
+}
+
+/* Clase para el efecto de pulso */
+.step-progress-line.pulse {
+  animation: progressPulse var(--pulse-duration, 2s) ease-in-out infinite;
+}
+
+/* Progress Bar */
+.timeline-steps-section .progress-container {
+  position: absolute;
+  left: 24px;
+  top: 50px;
+  width: 2px;
+  height: calc(100% - 100px);
+  background: var(--timeline-line-color, #e0e0e0);
+  z-index: 1;
+}
+
+.timeline-steps-section .progress-bar {
+  width: 100%;
+  height: 0%;
+  background: var(--timeline-line-active-color, #2c5aa0);
+  transition: height 0.4s ease;
+}
+
+/* Timeline Images Container */
+.timeline-images {
+  position: relative;
+  height: 500px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: transparent;
+}
+
+.step-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: scale(1.1);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+.step-image.active {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+}
+
+.step-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.placeholder-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border-radius: 0;
+}
+
+.placeholder-image svg {
+  max-width: 80%;
+  max-height: 80%;
+}
+
+
+
+/* Mobile Navigation - Hidden by default */
+.mobile-navigation {
+  display: none;
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .shopify-section .timeline-steps-section {
+    padding: 1.5rem 0;
+  }
+
+  .shopify-section .timeline-steps-section .timeline-header {
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+  }
+
+  .shopify-section .timeline-steps-section .timeline-title {
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .shopify-section .timeline-steps-section .timeline-subtitle {
+    font-size: 1rem;
+  }
+
+  /* Mobile Layout: Vertical Stack */
+  .shopify-section .timeline-steps-section .timeline-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 0 1rem;
+    min-height: auto;
+    max-width: none;
+  }
+
+  /* Steps Container - Show only active step */
+  .shopify-section .timeline-steps-section .steps-container {
+    order: 1;
+    gap: 0;
+    position: relative;
+    min-height: auto;
+    margin-bottom: 0;
+  }
+
+  /* Mobile progress line positioning */
+  .timeline-steps-section .step-item .step-progress-line {
+    left: 1rem; /* Alineado con el centro del círculo en móvil */
+    top: 72px; /* Justo debajo del círculo en móvil */
+    width: 4px; /* Mantener línea delgada en móvil */
+    height: 50px; /* Altura reducida para que no se salga del contenedor */
+  }
+
+  /* Hide all steps by default on mobile, show only active */
+  .shopify-section .timeline-steps-section .step-item {
+    display: none;
+    position: relative;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(44, 90, 160, 0.1);
+    border-radius: 15px;
+    margin-bottom: 0;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Show only active step */
+  .shopify-section .timeline-steps-section .step-item.active {
+    display: flex;
+    background: rgba(44, 90, 160, 0.05);
+    border-color: rgba(44, 90, 160, 0.2);
+  }
+
+  .shopify-section .timeline-steps-section .step-number {
+    width: 3.5rem;
+    height: 3.5rem;
+    min-width: 3.5rem;
+    min-height: 3.5rem;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #2c5aa0, #4a7bc8);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    box-shadow: 0 6px 20px rgba(44, 90, 160, 0.4);
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .shopify-section .timeline-steps-section .step-number::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, #2c5aa0, #4a7bc8);
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.3;
+    transform: scale(0.9);
+    transition: all 0.3s ease;
+  }
+
+  .shopify-section .timeline-steps-section .step-item.active .step-number::before {
+    transform: scale(1.1);
+    opacity: 0.6;
+    animation: circlePulse 2s ease-in-out infinite;
+  }
+
+  @keyframes circlePulse {
+    0%, 100% {
+      transform: scale(1.1);
+      opacity: 0.6;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 0.8;
+    }
+  }
+
+  .shopify-section .timeline-steps-section .step-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .shopify-section .timeline-steps-section .step-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    color: #2c5aa0;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .shopify-section .timeline-steps-section .step-description {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Images Container - Below steps */
+  .shopify-section .timeline-steps-section .timeline-images {
+    order: 2;
+    width: 100%;
+    height: 0;
+    padding-bottom: 133.33%; /* 3:4 aspect ratio */
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+    background: transparent;
+  }
+
+  .shopify-section .timeline-steps-section .step-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    z-index: 1;
+  }
+
+  .shopify-section .timeline-steps-section .step-image.active {
+    opacity: 1;
+    z-index: 2;
+  }
+
+  .shopify-section .timeline-steps-section .step-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 0;
+  }
+
+  /* Mobile Navigation Buttons */
+  .mobile-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding: 0 1rem;
+    order: 3;
+  }
+
+  .mobile-nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    background: linear-gradient(135deg, var(--mobile-btn-color, #2c5aa0), var(--mobile-btn-color, #4a7bc8));
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-nav-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--mobile-btn-color, #1e3f73), var(--mobile-btn-color, #2c5aa0));
+    transform: translateY(-2px);
+  }
+
+  .mobile-nav-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    opacity: 0.6;
+  }
+
+  .mobile-nav-btn svg {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+  }
+
+  .mobile-step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c5aa0;
+    background: rgba(44, 90, 160, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    min-width: 80px;
+    justify-content: center;
+  }
+
+  .current-step {
+    color: #2c5aa0;
+    font-weight: 700;
+  }
+
+  /* Hide desktop elements on mobile */
+  .timeline-steps-section .step-item::after,
+  .timeline-steps-section .progress-container,
+  .timeline-steps-section .timeline-progress-container {
+    display: none;
+  }
+
+  /* Vertical progress line for mobile */
+  .timeline-steps-section .step-item .step-progress-line {
+    left: 30px; /* Centrado con el círculo: 48px/2 - 4px/2 = 22px */
+    top: 50px; /* Pegada al círculo (48px altura del círculo) */
+    width: 4px;
+    height: calc(100% - 74px); /* Altura dinámica: 100% del contenedor menos 50px (top) + 24px (padding) */
+    max-height: 30px; /* Altura máxima para evitar desbordamiento en móvil */
+    background: var(--progress-line-color, rgba(44, 90, 160, 0.2));
+    border-radius: 2px;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Mobile progress line ::after pseudo-element for animation */
+  .timeline-steps-section .step-item .step-progress-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(180deg, var(--progress-line-color, #2c5aa0) 0%, var(--progress-line-color, #4a7bc8) 100%);
+    border-radius: 2px;
+    transition: height 0.8s ease-in-out;
+    box-shadow: 0 0 8px var(--progress-line-color, rgba(44, 90, 160, 0.5));
+  }
+
+  /* Elemento de progreso dinámico creado por JavaScript para móvil */
+  .timeline-steps-section .step-item .step-progress-line .js-progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(180deg, var(--progress-line-color, #2c5aa0) 0%, var(--progress-line-color, #4a7bc8) 100%);
+    border-radius: 2px;
+    transition: none;
+    box-shadow: 0 0 8px var(--progress-line-color, rgba(44, 90, 160, 0.5));
+    z-index: 1;
+  }
+
+  /* Animate mobile progress line for active steps */
+  .timeline-steps-section .step-item.active .step-progress-line {
+    opacity: 1;
+  }
+
+  .timeline-steps-section .step-item.active .step-progress-line::after {
+    height: 100%;
+    animation: progressPulse 2s ease-in-out infinite;
+  }
+}
+
+/* Tablet Styles */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .timeline-steps-section .timeline-content {
+    gap: 3rem;
+    padding: 0 1.5rem;
+  }
+
+  .timeline-steps-section .step-title {
+    font-size: 18px;
+  }
+
+  .timeline-steps-section .step-description {
+    font-size: 14px;
+  }
+}
+
+/* Large Desktop */
+@media (min-width: 1200px) {
+  .timeline-content {
+    gap: 5rem;
+    max-width: 1400px;
+  }
+
+  .timeline-images {
+    height: 600px;
+  }
+
+  .step-item {
+    padding: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .step-number {
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 1.4rem;
+  }
+
+  .step-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .step-description {
+    font-size: 1rem;
+  }
+}
+
+/* Animation for step transitions */
+@keyframes stepFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.timeline-steps-section .step-item.active {
+  animation: stepFadeIn 0.4s ease forwards;
+}
+
+/* Accessibility improvements */
+.timeline-steps-section .step-item:focus-within {
+  outline: none;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .timeline-steps-section .step-number {
+    border: 2px solid currentColor;
+  }
+  
+  .timeline-steps-section .step-image {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .timeline-steps-section .step-item,
+  .timeline-steps-section .step-image {
+    transition: none;
+    animation: none;
+  }
+  
+  .timeline-steps-section .step-item.active .step-number {
+    transform: none;
+  }
+  
+  .timeline-steps-section .step-image.active {
+    transform: none;
+  }
+
+  /* Desactivar animaciones de progreso y círculos para usuarios con preferencia de movimiento reducido */
+  .timeline-steps-section .step-item:not(:last-child)::before,
+  .timeline-steps-section .step-number::after,
+  .shopify-section .timeline-steps-section .step-number::before {
+    animation: none;
+  }
+}

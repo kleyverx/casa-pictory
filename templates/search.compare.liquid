@@ -1,0 +1,180 @@
+{%- assign isAllow = false %}
+{%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
+{%- assign pUrl = contentForQuerystring | split:'"pageurl":"' | last | split:'"' | first | split:'cart' | last |
+   replace:'\/','/' | 
+   replace:'%20',' ' | 
+   replace:'\u0026','&'
+-%}
+
+{%- assign aDirect = pUrl | split : "direct=" -%}
+{%- if aDirect.size > 1 and aDirect[1] != blank -%}
+{%- assign aDirect = aDirect[1] | split: "&" -%}
+{%- assign direct = aDirect[0] | strip -%}
+{%- if direct == "false" -%}
+{%- assign isAllow = true %}
+{%- endif -%}
+{%- endif -%}
+
+{%- if isAllow == false -%}
+<h2 class="text-center mt-10 font-weight-light">
+  THIS TEMPLATE IS FOR FUNCTIONAL PURPOSE ONLY.
+  <br><br>CLICK <a class="font-weight-bold" href="{{ routes.search_url }}">HERE</a> FOR DEFAULT SEARCH TEMPLATE.
+</h2>
+<style>
+    .shopify-section { display: none !important; }
+</style>
+{%- else -%}
+{%- layout none -%}
+<div class="page-compare">
+  <h3 class="title title-simple text-center">{{ 'compare.general.title' | t }}</h3>
+  <div class="page-content d-flex">
+    <div class="compare__left"></div>
+    <div class="compare__right">
+      <table cellspacing="0" cellpadding="0" class="compare__list">
+        <tr class="item__image">
+          <th>{{ 'compare.label.image' | t }}<div class="fixed-th"></div></th>
+          {%- for my_product in search.results -%}
+            <td class="{% cycle 'odd', 'even' %} product__{{ my_product.id }}">
+              <div class="item__link">
+                <a href="javascript:void(0);" class="removecompare_btn" data-product_id="{{ my_product.id }}">
+                  <i class="la la-close"></i>
+                </a>
+                <a href="{{ my_product.url }}">
+                  <img src="{{ my_product | img_url: '150x150' }}" srcset="{{ my_product | img_url: '150x150' }} 1x, {{ my_product | img_url: '150x150', scale: 2 }} 2x" alt="{{ my_product.title | escape }}" />
+                </a>
+              </div>
+            </td>
+          {%- endfor -%}
+        </tr>
+        <tr class="item__name">
+          <th>{{ 'compare.label.name' | t }}</th>
+          {%- for my_product in search.results -%}
+            <td class="{% cycle 'odd', 'even' %} product__{{ my_product.id }}">
+              <a href="{{ my_product.url }}">{{ my_product.title }}</a>
+            </td>
+          {%- endfor -%}
+        </tr>
+        
+        <tr class="item__price">
+          <th>{{ 'compare.label.price' | t }}</th>
+          {%- for my_product in search.results -%}
+          {%- assign current_variant = my_product.first_available_variant -%}
+          <td class="product-price {% cycle 'odd', 'even' %} product__{{ my_product.id }}">
+            {% if current_variant.available == false %}
+            <span class="old-price">{{ 'products.product.sold_out' | t }}</span>
+            {% else %}
+            {% if current_variant.compare_at_price > current_variant.price %}
+            <ins class="new-price">
+                {%- if my_product.price_varies -%}
+                {% assign money_price = current_variant.price | money %}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: money_price}}
+                {%- else -%}
+                {{ current_variant.price | money }}
+                {%- endif -%}
+            </ins>
+            <del class="old-price">{{ current_variant.compare_at_price | money }}</del>
+            {% else %}
+            <span class="price">
+                {%- if my_product.price_varies -%}
+                {{ 'products.product.from_lowest_price_html' | t: lowest_price: current_variant.price }}
+                {%- else -%}
+                {{ current_variant.price }}
+                {%- endif -%}
+            </span>
+            {% endif %}
+            {% endif %}
+          </td>
+          {%- endfor -%}
+        </tr>
+        {%- if settings.enable_review -%}
+        <tr class="item__rating">
+          <th>{{ 'compare.label.rating' | t }}</th>
+          {%- for my_product in search.results -%}
+            <td class="{% cycle 'odd', 'even' %} product__{{ my_product.id }}">
+              <span class="shopify-product-reviews-badge" data-id="{{ my_product.id }}"></span>
+            </td>
+          {%- endfor -%}
+        </tr>
+        {%- endif -%}
+        <tr class="item__status">
+          <th>{{ 'compare.label.availability' | t }}</th>
+          {%- for my_product in search.results -%}
+            {%- assign current_variant = my_product.first_available_variant -%}
+            <td class="{% cycle 'odd', 'even' %} product__{{ my_product.id }}">
+              {%- assign is_external_product = false -%}
+              {%- if my_product.metafields.info.external_btn != blank and my_product.metafields.info.external_link != blank -%}
+                {%- assign is_external_product = true -%}
+              {%- endif -%}
+              {%- render 'product-stock', my_product: my_product, is_external_product: is_external_product -%}
+            </td>
+          {%- endfor -%}
+        </tr>
+        {%- assign options =  settings.compare_options | split: ',' -%}
+        {%- if options.size > 0 -%}
+          {%- for option in options -%}
+          {%- assign option_handle = option | handleize -%}
+          <tr class="item__status">
+            <th>{{ option | capitalize }}</th>
+            {%- for my_product in search.results -%}
+              <td class="{% cycle 'odd', 'even' %} product__{{ my_product.id }}">
+                {%- for my_option in my_product.options_with_values  %}
+                  {%- assign my_option_handle = my_option.name | handleize  -%}
+                  {%- if option_handle == my_option_handle -%}
+                    {{- my_option.values | join: ', ' -}}
+                  {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </td>
+            {%- endfor -%}
+          </tr>
+          {%- endfor -%}
+        {%- endif -%}
+        <tr class="item__action">
+          <th>&nbsp;</th>
+          {%- for my_product in search.results -%}
+            <td class="{% cycle 'odd', 'even' %} product__{{ my_product.id }}">
+              {%- assign is_external_product = false -%}
+              {%- assign is_grouped_product = false -%}
+              
+              {%- if my_product.metafields.info.external_btn != blank and my_product.metafields.info.external_link != blank -%}
+                {%- assign is_external_product = true -%}
+              {%- endif -%}
+              {%- if my_product.metafields.info.grouped != blank and linklists[my_product.metafields.info.grouped].links.size > 0 -%}
+                {%- assign is_grouped_product = true -%}
+              {%- endif -%}
+              {%- if is_external_product == false -%}
+                {%- if is_grouped_product == false -%}
+                  {%- if my_product.available -%}
+                    {%- if my_product.variants.size > 1 -%}
+                    <a href="{{ my_product.url }}" class="btn btn-primary">{{ 'products.product.select_options' | t }}</a>
+                    {%- else -%}
+                    <form class="product-form addcart-product-form justify-content-center" action="/cart/add" method="POST">
+                      <input type="hidden" name="quantity" value="1" />
+                      <select class="hide" name="id">
+                        {%- for variant in my_product.variants -%}
+                        <option value="{{ variant.id }}">{{ variant.title | escape }} - {{ variant.price | money }}</option>
+                        {%- endfor -%}
+                      </select>
+                      <button type="submit" class="btn-product btn-cart addcart_btn" >
+                        <i class="d-icon-add-to-cart"></i>
+                        <span>{% if current_variant.inventory_quantity <= 0 and current_variant.inventory_management == 'shopify' %}{{ 'products.product.pre_order' | t | escape }}{% else %}{{ 'products.product.add_to_cart' | t | escape }}{% endif %}</span>
+                      </button>
+                    </form>
+                    {%- endif -%}
+                  {%- else -%}
+                    <a href="{{ my_product.url }}" class="btn btn-primary">{{ 'products.product.read_more' | t }}</a>
+                  {%- endif -%}
+                {%- else -%}
+                  <a href="{{ my_product.url }}" class="btn btn-primary">{{ 'products.product.view_products' | t }}</a>
+                {%- endif -%}
+              {%- else -%}
+                <a href="{{ my_product.metafields.info.external_link }}" class="btn btn-primary">{{ my_product.metafields.info.external_btn }}</a>
+              {%- endif -%}
+            </td>
+          {%- endfor -%}
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+{%- endif -%}
