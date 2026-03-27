@@ -147,16 +147,22 @@
 .custom-title {
     margin: 0;
     font-family: inherit;
+    word-wrap: break-word;
+    hyphens: auto;
 }
 
 .custom-subtitle {
     margin: 0;
     font-family: inherit;
+    word-wrap: break-word;
+    hyphens: auto;
 }
 
 .custom-description {
     margin: 0;
     font-family: "bree", var(--font-stack-first), Arial, sans-serif;
+    word-wrap: break-word;
+    hyphens: auto;
 }
 
 /* Button Styles */
